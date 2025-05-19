@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>HomePage</title>
   </head>
-  <body style="height: 3000px; background-color: cyan">
+  <body style="background-color: cyan">
     <header
       style="
         background-color: gray;
@@ -89,11 +89,31 @@
           bottom: 0;
           top: 5%;
           width: 20%;
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
         "
       >
-        <div>tbd</div>
-        <div>useful stuff</div>
-        <footer>information</footer>
+        <div style="background-color: burlywood; margin: 5px; height: 50%">
+          tbd
+        </div>
+        <div
+          style="
+            background-color: chartreuse;
+            height: 50%;
+            margin: 5px;
+            display: flex;
+            flex-direction: column;
+            justify-content: end;
+          "
+        >
+          <div style="background-color: burlywood; margin: 5px; height: 10%">
+            useful stuff
+          </div>
+          <footer style="background-color: burlywood; margin: 5px; height: 10%">
+            information
+          </footer>
+        </div>
       </nav>
       <main>
         <div
@@ -103,12 +123,49 @@
             top: 5%;
             left: 20%;
             right: 20%;
-            bottom: -3000px;
+            bottom: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: start;
           "
         >
-          <div>creare postare</div>
-          <div>for you/following</div>
-          <div>feed</div>
+          <div
+            style="
+              background-color: violet;
+              margin: 5px;
+              margin-top: 30px;
+              height: 15%;
+            "
+          >
+            creare postare
+          </div>
+          <div
+            style="
+              background-color: lightslategrey;
+              margin: 5px;
+              height: 5%;
+              display: flex;
+              flex-direction: row;
+              justify-content: space-evenly;
+            "
+          >
+            <div style="background-color: tomato; margin: 5px; width: 50%">
+              for you
+            </div>
+            <div style="background-color: tomato; margin: 5px; width: 50%">
+              following
+            </div>
+          </div>
+          <div
+            style="
+              background-color: gray;
+              margin-left: 5px;
+              margin-right: 5px;
+              flex: 1;
+            "
+          >
+            feed
+          </div>
         </div>
       </main>
       <nav
@@ -119,10 +176,31 @@
           bottom: 0;
           top: 5%;
           width: 20%;
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
         "
       >
-        <div>postari recente</div>
-        <div>postari salvate</div>
+        <div
+          style="
+            background-color: white;
+            margin: 5px;
+            margin-top: 40px;
+            height: 65%;
+          "
+        >
+          postari recente
+        </div>
+        <div
+          style="
+            background-color: white;
+            height: 7%;
+            margin: 5px;
+            margin-bottom: 10px;
+          "
+        >
+          postari salvate
+        </div>
       </nav>
     </div>
   </body>
