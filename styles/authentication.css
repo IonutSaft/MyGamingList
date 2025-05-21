@@ -339,6 +339,16 @@ body {
   text-decoration: underline;
 }
 
+.terms-and-conditions {
+  color: #aaa;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.terms-and-conditions:hover {
+  text-decoration: underline;
+}
+
 /*Login Button*/
 .login-btn {
   background-color: rgb(31, 125, 83);

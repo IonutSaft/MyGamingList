@@ -3,65 +3,101 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="styles/authentication.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&family=Share+Tech+Mono&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
     <title>RegisterPage</title>
   </head>
   <body>
-    <main>
-      <div>
-        <div>MGL</div>
-        <div>
-          <div>
-            <div>user</div>
-            <div>email</div>
-            <div>pass</div>
-            <div>confirm pass</div>
-            <div>confirm human</div>
+    <div class="animation-container">
+      <div class="gamepad">
+        <div class="gamepad-top"></div>
+        <div class="gamepad-body">
+          <div class="d-pad">
+            <div class="d-pad-center"></div>
+            <div class="d-pad-up"></div>
+            <div class="d-pad-right"></div>
+            <div class="d-pad-down"></div>
+            <div class="d-pad-left"></div>
           </div>
-          <div>already registered?</div>
-          <div>
-            <div>next</div>
+          <div class="buttons">
+            <div class="button button-a"></div>
+            <div class="button button-b"></div>
+            <div class="button button-x"></div>
+            <div class="button button-y"></div>
           </div>
-        </div>
-      </div>
-      <div>
-        <div>MGL</div>
-        <div>
-          <div>
-            <div>picture</div>
-            <div>banner</div>
-            <div>bio</div>
-            <div>allow nsfw</div>
-          </div>
-          <div>
-            <div>back</div>
-            <div>next</div>
+          <div class="triggers">
+            <div class="trigger trigger-left"></div>
+            <div class="trigger trigger-right"></div>
           </div>
         </div>
       </div>
-      <div>
-        <div>MGL</div>
-        <div>
-          <div>
-            <div>message</div>
-            <div>search game + add</div>
-            <div>list of games added</div>
-          </div>
-          <div>
-            <div>back</div>
-            <div>next</div>
+      <div class="pulse-effect"></div>
+    </div>
+
+    <div class="login-container">
+      <h1>MyGameList</h1>
+      <p class="subtitle">Enter the gaming universe</p>
+
+      <form class="login-form">
+        <div class="input-group">
+          <label for="username">Username</label>
+          <input type="text" id="username" placeholder="Enter your username" />
+        </div>
+
+        <div class="input-group">
+          <label for="username">Email</label>
+          <input type="text" id="email" placeholder="Enter your email" />
+        </div>
+
+        <div class="input-group">
+          <label for="password">Password</label>
+          <div class="password-input">
+            <input
+              type="password"
+              id="password"
+              placeholder="Enter your password"
+            />
+            <i class="fas fa-eye toggle-password"></i>
           </div>
         </div>
-      </div>
-      <div>
-        <div>MGL</div>
-        <div>
-          <div>account overview</div>
-          <div>
-            <div>back</div>
-            <div>register</div>
+
+        <div class="input-group">
+          <label for="conf-password">Confirm Password</label>
+          <div class="password-input">
+            <input
+              type="password"
+              id="conf-password"
+              placeholder="Confirm password"
+            />
+            <i class="fas fa-eye toggle-password"></i>
           </div>
         </div>
-      </div>
-    </main>
+
+        <div class="options">
+          <div class="remember-me">
+            <input type="checkbox" id="remember" required />
+            <label for="remember"
+              >Accept
+              <a href="" class="terms-and-conditions"
+                >terms and conditions</a
+              ></label
+            >
+          </div>
+        </div>
+
+        <button type="submit" class="login-btn">Register</button>
+
+        <div class="register-link">
+          <p>Already a member? <a href="#">Login now</a></p>
+        </div>
+      </form>
+    </div>
   </body>
 </html>
