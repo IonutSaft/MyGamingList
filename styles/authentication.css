@@ -1,26 +1,89 @@
 .login-container {
+  width: 400px;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  box-shadow: -5px 0 15px rgba(0, 0, 0, 0.3);
+}
+
+.login-container h1 {
+  color: rgb(31, 125, 83);
+  text-align: center;
+  margin-bottom: 10px;
+  font-size: 32px;
+}
+
+.login-container .subtitle {
+  text-align: center;
+  margin-bottom: 30px;
+  font-size: 14px;
 }
 
 .login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
 .input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.input-group label {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.input-group input {
+  padding: 12px 15px;
+  border: 1px solid #999;
+  border-radius: 5px;
+  font-size: 14px;
 }
 
 .password-input {
+  position: relative;
+}
+
+.password-input input {
+  width: 100%;
+  padding-right: 40px;
 }
 
 .options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
 }
 
 .remember-me {
+  display: flex;
+  align-items: center;
+  gap: 5px;
 }
 
 .forgot-password {
+  color: rgb(37, 95, 56);
+  text-decoration: none;
+  font-weight: 500;
 }
 
 .login-btn {
+  background-color: rgb(31, 125, 83);
+  color: white;
+  border: none;
+  padding: 12px;
+  border-radius: 5px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
 }
 
 .register-link {
+  text-align: center;
+  font-size: 14px;
 }
