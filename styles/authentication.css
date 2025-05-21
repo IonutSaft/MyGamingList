@@ -63,6 +63,13 @@ body {
   border-radius: 5px;
   font-size: 14px;
   color: #fff;
+  transition: all 0.3s;
+}
+
+.input-group input:focus {
+  outline: none;
+  border-color: rgb(31, 125, 83);
+  box-shadow: 0 0 0 2px rgba(31, 125, 83, 0.3);
 }
 
 .password-input {
@@ -72,6 +79,19 @@ body {
 .password-input input {
   width: 100%;
   padding-right: 40px;
+}
+
+.toggle-password {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #777;
+  cursor: pointer;
+}
+
+.toggle-password:hover {
+  color: rgb(31, 125, 83);
 }
 
 .options {
