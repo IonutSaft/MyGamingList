@@ -1,5 +1,20 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Share Tech Mono", monospace;
+}
+
+body {
+  background-color: #121212;
+  display: flex;
+  min-height: 100vh;
+  overflow: hidden;
+}
+
 .login-container {
   width: 400px;
+  background-color: #1e1e1e;
   padding: 40px;
   display: flex;
   flex-direction: column;
@@ -12,9 +27,12 @@
   text-align: center;
   margin-bottom: 10px;
   font-size: 32px;
+  font-weight: 700;
+  font-family: "Orbitron", sans-serif;
 }
 
 .login-container .subtitle {
+  color: #aaa;
   text-align: center;
   margin-bottom: 30px;
   font-size: 14px;
@@ -33,15 +51,18 @@
 }
 
 .input-group label {
+  color: #ddd;
   font-size: 14px;
   font-weight: 600;
 }
 
 .input-group input {
   padding: 12px 15px;
-  border: 1px solid #999;
+  background-color: #2a2a2a;
+  border: 1px solid #333;
   border-radius: 5px;
   font-size: 14px;
+  color: #fff;
 }
 
 .password-input {
@@ -66,10 +87,23 @@
   gap: 5px;
 }
 
+.remember-me input {
+  accent-color: rgb(31, 125, 83);
+}
+
+.remember-me label {
+  color: #aaa;
+}
+
 .forgot-password {
   color: rgb(37, 95, 56);
   text-decoration: none;
   font-weight: 500;
+}
+
+.forgot-password:hover {
+  color: rgb(31, 125, 83);
+  text-decoration: underline;
 }
 
 .login-btn {
@@ -81,9 +115,25 @@
   font-size: 16px;
   font-weight: 600;
   cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.login-btn:hover {
+  background-color: rgb(37, 95, 56);
 }
 
 .register-link {
   text-align: center;
   font-size: 14px;
+  color: #777;
+}
+
+.register-link a {
+  color: rgb(31, 125, 83);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.register-link a:hover {
+  text-decoration: underline;
 }
