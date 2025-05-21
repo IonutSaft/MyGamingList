@@ -1,3 +1,4 @@
+/* General Styles*/
 * {
   margin: 0;
   padding: 0;
@@ -11,7 +12,191 @@ body {
   min-height: 100vh;
   overflow: hidden;
 }
+/*Animation Container*/
+.animation-container {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, rgb(24, 35, 15) 0%, rgb(15, 22, 10) 100%);
+  position: relative;
+  overflow: hidden;
+}
 
+/*Gamepad Animation*/
+.gamepad {
+  position: relative;
+  width: 300px;
+  height: 200px;
+  z-index: 2;
+  transform: scale(2);
+  transform-origin: center;
+}
+
+.gamepad-top {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100px;
+  height: 40px;
+  background-color: #333;
+  border-radius: 20px 20px 0 0;
+}
+
+.gamepad-body {
+  position: absolute;
+  top: 30px;
+  width: 100%;
+  height: 170px;
+  background-color: #222;
+  border-radius: 40px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+}
+
+.d-pad {
+  position: absolute;
+  left: 30px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 80px;
+  height: 80px;
+}
+
+.d-pad-center {
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  background-color: #444;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 5px;
+}
+
+.d-pad-up,
+.d-pad-down,
+.d-pad-left,
+.d-pad-right {
+  position: absolute;
+  background-color: #555;
+  width: 30px;
+  height: 20px;
+}
+
+.d-pad-up {
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  border-radius: 5px 5px 0 0;
+  animation: pulse 2s infinite;
+}
+
+.d-pad-right {
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%) rotate(90deg);
+  border-radius: 5px 5px 0 0;
+  animation: pulse 2s infinite 0.5s;
+}
+
+.d-pad-down {
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%) rotate(180deg);
+  border-radius: 5px 5px 0 0;
+  animation: pulse 2s infinite 1s;
+}
+
+.d-pad-left {
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%) rotate(270deg);
+  border-radius: 5px 5px 0 0;
+  animation: pulse 2s infinite 1.5s;
+}
+
+.buttons {
+  position: absolute;
+  right: 30px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 100px;
+  height: 80px;
+}
+
+.button {
+  position: absolute;
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  background-color: #555;
+}
+
+.button-a {
+  right: 0;
+  top: 15px;
+  background-color: #e74c3c;
+  animation: pulse 2x infinite;
+}
+
+.button-b {
+  right: 30px;
+  top: 0;
+  background-color: #3498db;
+  animation: pulse 2x infinite 0.5s;
+}
+
+.button-x {
+  right: 30px;
+  top: 30px;
+  background-color: #2ecc71;
+  animation: pulse 2x infinite 1s;
+}
+
+.button-y {
+  right: 60px;
+  top: 15px;
+  background-color: #f1c60f;
+  animation: pulse 2x infinite 1.5s;
+}
+
+.triggers {
+  position: absolute;
+  top: -20px;
+  left: 0px;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 40px;
+}
+
+.trigger {
+  width: 40px;
+  height: 15px;
+  background-color: #444;
+  border-radius: 5px 5px 0 0;
+}
+
+.trigger-left {
+  animation: pulse 2s infinite;
+}
+
+.trigger-right {
+  animation: pulse 2s infinite 1s;
+}
+
+.pulse-effect {
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  background-color: rgba(31, 125, 83, 0.2);
+  border-radius: 50%;
+  animation: ripple 4s infinite;
+  z-index: 1;
+}
+
+/*Login Container*/
 .login-container {
   width: 400px;
   background-color: #1e1e1e;
@@ -38,6 +223,7 @@ body {
   font-size: 14px;
 }
 
+/*Form Styles*/
 .login-form {
   display: flex;
   flex-direction: column;
@@ -94,6 +280,7 @@ body {
   color: rgb(31, 125, 83);
 }
 
+/*Options*/
 .options {
   display: flex;
   justify-content: space-between;
@@ -126,6 +313,7 @@ body {
   text-decoration: underline;
 }
 
+/*Login Button*/
 .login-btn {
   background-color: rgb(31, 125, 83);
   color: white;
@@ -142,6 +330,7 @@ body {
   background-color: rgb(37, 95, 56);
 }
 
+/*Register Link*/
 .register-link {
   text-align: center;
   font-size: 14px;
