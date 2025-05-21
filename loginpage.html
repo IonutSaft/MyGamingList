@@ -6,21 +6,42 @@
     <title>LoginPage</title>
   </head>
   <body>
-    <main>
-      <div>
-        <div>MGL</div>
+    <div>
+      <form>
         <div>
+          <label for="username">Username or Email</label>
           <div>
-            <div>user</div>
-            <div>pass</div>
-            <div>forgot pass</div>
-          </div>
-          <div>
-            <div>login</div>
-            <div>register</div>
+            <input
+              type="text"
+              id="username"
+              placeholder="Enter your username or email"
+            />
           </div>
         </div>
-      </div>
-    </main>
+
+        <div>
+          <label for="password">Password</label>
+          <div>
+            <input
+              type="text"
+              id="password"
+              placeholder="Enter your password"
+            />
+          </div>
+        </div>
+        <div>
+          <div>
+            <input type="checkbox" id="remember" />
+            <label for="remember">Remember me</label>
+          </div>
+          <a href="">Forgot Password?</a>
+        </div>
+
+        <button type="submit">Login</button>
+        <div>
+          <p>Not a member? <a href="">Join now</a></p>
+        </div>
+      </form>
+    </div>
   </body>
 </html>
