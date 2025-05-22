@@ -3,205 +3,25 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="styles/general.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Share+Tech+Mono&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
     <title>HomePage</title>
   </head>
-  <body style="background-color: cyan">
-    <header
-      style="
-        background-color: gray;
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 5%;
-        z-index: 100;
-        display: flex;
-        flex-direction: row;
-        justify-content: space-between;
-      "
-    >
-      <div style="background-color: aqua; width: 20%; display: flex">
-        <div style="background-color: red; width: 70%; margin: 5px">logo</div>
-        <div style="background-color: pink; width: 30%; margin: 5px">
-          home button
-        </div>
-      </div>
-      <div
-        style="
-          background-color: chocolate;
-          width: 60%;
-          display: flex;
-          flex-direction: row;
-          justify-content: center;
-        "
-      >
-        <div
-          style="
-            background-color: lightblue;
-            width: 90%;
-            margin: 5px;
-            margin-left: 30px;
-
-            padding-left: 20px;
-          "
-        >
-          search bar
-        </div>
-        <div
-          style="
-            background-color: yellow;
-            width: 10%;
-            margin-top: 5px;
-            margin-bottom: 5px;
-            margin-right: 30px;
-          "
-        >
-          button
-        </div>
-      </div>
-      <div
-        style="
-          background-color: violet;
-          width: 20%;
-          display: flex;
-          flex-direction: row;
-          justify-content: space-between;
-        "
-      >
-        <div style="background-color: tomato; margin: 5px; width: 15%">
-          mail
-        </div>
-        <div style="background-color: lightgreen; margin: 5px; width: 15%">
-          notif
-        </div>
-        <div style="background-color: steelblue; margin: 5px; width: 50%">
-          user
-        </div>
-        <div style="background-color: silver; width: 20%">picture</div>
-      </div>
+  <body>
+    <header class="top-bar">
+      <div class="top-bar-left"></div>
+      <div class="top-bar-center"></div>
+      <div class="top-bar-right"></div>
     </header>
-    <div>
-      <nav
-        style="
-          background-color: green;
-          position: fixed;
-          left: 0;
-          bottom: 0;
-          top: 5%;
-          width: 20%;
-          display: flex;
-          flex-direction: column;
-          justify-content: space-between;
-        "
-      >
-        <div style="background-color: burlywood; margin: 5px; height: 50%">
-          tbd
-        </div>
-        <div
-          style="
-            background-color: chartreuse;
-            height: 50%;
-            margin: 5px;
-            display: flex;
-            flex-direction: column;
-            justify-content: end;
-          "
-        >
-          <div style="background-color: burlywood; margin: 5px; height: 10%">
-            useful stuff
-          </div>
-          <footer style="background-color: burlywood; margin: 5px; height: 10%">
-            information
-          </footer>
-        </div>
-      </nav>
-      <main>
-        <div
-          style="
-            color: white;
-            position: absolute;
-            top: 5%;
-            left: 20%;
-            right: 20%;
-            bottom: 0;
-            display: flex;
-            flex-direction: column;
-            justify-content: start;
-          "
-        >
-          <div
-            style="
-              background-color: violet;
-              margin: 5px;
-              margin-top: 30px;
-              height: 15%;
-            "
-          >
-            creare postare
-          </div>
-          <div
-            style="
-              background-color: lightslategrey;
-              margin: 5px;
-              height: 5%;
-              display: flex;
-              flex-direction: row;
-              justify-content: space-evenly;
-            "
-          >
-            <div style="background-color: tomato; margin: 5px; width: 50%">
-              for you
-            </div>
-            <div style="background-color: tomato; margin: 5px; width: 50%">
-              following
-            </div>
-          </div>
-          <div
-            style="
-              background-color: gray;
-              margin-left: 5px;
-              margin-right: 5px;
-              flex: 1;
-            "
-          >
-            feed
-          </div>
-        </div>
-      </main>
-      <nav
-        style="
-          position: fixed;
-          background-color: red;
-          right: 0;
-          bottom: 0;
-          top: 5%;
-          width: 20%;
-          display: flex;
-          flex-direction: column;
-          justify-content: space-between;
-        "
-      >
-        <div
-          style="
-            background-color: white;
-            margin: 5px;
-            margin-top: 40px;
-            height: 65%;
-          "
-        >
-          postari recente
-        </div>
-        <div
-          style="
-            background-color: white;
-            height: 7%;
-            margin: 5px;
-            margin-bottom: 10px;
-          "
-        >
-          postari salvate
-        </div>
-      </nav>
-    </div>
+    <aside class="sidebar left-sidebar"></aside>
+    <main class="main-content"></main>
+    <aside class="sidebar right-sidebar"></aside>
   </body>
 </html>
