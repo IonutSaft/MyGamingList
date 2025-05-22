@@ -382,3 +382,37 @@ body {
 .register-link a:hover {
   text-decoration: underline;
 }
+
+/*Birth Date*/
+.birth-date-selectors {
+  display: flex;
+  gap: 10px;
+}
+
+.dob-select {
+  flex: 1;
+  padding: 12px 15px;
+  background-color: #2a2a2a;
+  border: 1px solid #333;
+  border-radius: 5px;
+  color: #fff;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.dob-select:focus {
+  outline: none;
+  border-color: rgb(31, 125, 83);
+  box-shadow: 0 0 0 2px rgba(31, 125, 83, 0.3);
+}
+
+.dob-select option {
+  background-color: #1a1a1a;
+}
+
+@media (max-width: 480px) {
+  .birth-date-selectors {
+    flex-direction: column;
+    gap: 8px;
+  }
+}
