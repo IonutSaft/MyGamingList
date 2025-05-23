@@ -33,7 +33,10 @@
         />
       </div>
       <div class="top-bar-right">
-        <button class="icon-button" title="Change Theme"></button>
+        <button id="theme-toggle" class="theme-btn" aria-label="Toggle theme">
+          <i class="fas fa-sun"></i>
+          <i class="fas fa-moon" style="display: none"></i>
+        </button>
         <button class="icon-button" title="Mail">
           <i class="fas fa-envelope"></i>
         </button>
@@ -45,5 +48,6 @@
     <aside class="sidebar left-sidebar"></aside>
     <main class="main-content"></main>
     <aside class="sidebar right-sidebar"></aside>
+    <script src="scripts/changeThemeScript.js"></script>
   </body>
 </html>
