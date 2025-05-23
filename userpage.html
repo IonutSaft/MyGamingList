@@ -19,12 +19,35 @@
   </head>
   <body>
     <header class="top-bar">
-      <div class="top-bar-left"></div>
-      <div class="top-bar-center"></div>
-      <div class="top-bar-right"></div>
+      <div class="top-bar-left">
+        <a class="site-name" href="homepage.html">MyGameList</a>
+        <button class="icon-button">
+          <i class="fas fa-home"></i>
+        </button>
+      </div>
+      <div class="top-bar-center">
+        <input
+          type="text"
+          class="search-bar"
+          placeholder="Search posts, users..."
+        />
+      </div>
+      <div class="top-bar-right">
+        <button id="theme-toggle" class="theme-btn" aria-label="Toggle theme">
+          <i class="fas fa-sun"></i>
+          <i class="fas fa-moon" style="display: none"></i>
+        </button>
+        <button class="icon-button" title="Mail">
+          <i class="fas fa-envelope"></i>
+        </button>
+        <button class="icon-button" title="Notifications">
+          <i class="fas fa-bell"></i>
+        </button>
+      </div>
     </header>
     <aside class="sidebar left-sidebar"></aside>
     <main class="main-content"></main>
     <aside class="sidebar right-sidebar"></aside>
+    <script src="scripts/changeThemeScript.js"></script>
   </body>
 </html>
