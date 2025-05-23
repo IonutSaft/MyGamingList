@@ -3,10 +3,49 @@
   position: sticky;
   top: 0;
   z-index: 100;
-  background-color: #1e1e1e;
+  background-color: var(--header-color);
   box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3);
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0 1rem;
+}
+
+.top-bar-left,
+.top-bar-center,
+.top-bar-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.site-name {
+  color: var(--text-color);
+  font-weight: bold;
+  font-size: 1.5rem;
+  font-family: "Orbitron", sans-serif;
+  text-decoration: none;
+}
+
+.icon-button {
+  background: none;
+  border: none;
+  color: var(--secondary-text);
+  font-size: 1.2rem;
+  transition: color 0.2s;
+  cursor: pointer;
+}
+
+.icon-button:hover {
+  color: var(--text-color);
+}
+
+.search-bar {
+  padding: 0.4rem 1rem;
+  border-radius: 5px;
+  border: none;
+  outline: none;
+  width: 600px;
+  background-color: var(--elements-bg-color);
+  color: var(--text-color);
 }

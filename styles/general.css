@@ -1,3 +1,29 @@
+:root {
+  --base-color: linear-gradient(
+    135deg,
+    rgb(24, 35, 15) 0%,
+    rgb(15, 22, 10) 100%
+  );
+  --text-color: #fff;
+  --secondary-text: #ccc;
+  --header-color: #1e1e1e;
+  --elements-bg-color: #2a2a2a;
+  --border-color: rgb(39, 57, 28);
+}
+
+.light-mode {
+  --base-color: linear-gradient(
+    135deg,
+    rgb(245, 250, 240) 0%,
+    rgb(230, 240, 220) 100%
+  );
+  --text-color: #111;
+  --secondary-text: #444;
+  --header-color: #f0f0f0;
+  --elements-bg-color: #ffffff;
+  --border-color: rgb(181, 207, 231);
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -13,7 +39,7 @@ body {
   grid-template-columns: 448px 1fr 448px;
   grid-template-rows: 70px 1fr;
   min-height: 100vh;
-  background: linear-gradient(135deg, rgb(24, 35, 15) 0%, rgb(15, 22, 10) 100%);
+  background: var(--base-color);
   overflow: hidden;
 }
 
