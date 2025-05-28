@@ -1,3 +1,7 @@
+<?php
+session_start();
+?>
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -53,7 +57,7 @@
 
         <div class="input-group">
           <label for="username">Email</label>
-          <input type="text" id="email" placeholder="Enter your email" />
+          <input type="email" id="email" placeholder="Enter your email" />
         </div>
 
         <div class="input-group">
