@@ -49,13 +49,25 @@ session_start();
       <h1>MyGameList</h1>
       <p class="subtitle">Enter the gaming universe</p>
 
-      <form class="login-form">
+      <form class="login-form" method="post" action="http://localhost/mygamelist/backend/signin.php">
+        <?php
+        if(isset($_SESSION['error'])) {
+          echo '<div class="error-message">';
+          echo '<p>' .  htmlspecialchars($_SESSION['error']) . '</p>';
+          echo '</div>';
+          unset($_SESSION['error']);
+        }  
+        $old_input = $_SESSION['old_input'] ?? [];
+        unset($_SESSION['old_input']);
+        ?>
         <div class="input-group">
           <label for="username">Username or Email</label>
           <input
             type="text"
             id="username"
             placeholder="Enter your username or email"
+            name="username"
+            value="<?= htmlspecialchars($old_input["username"] ?? "") ?>"
           />
         </div>
 
@@ -66,13 +78,14 @@ session_start();
               type="password"
               id="password"
               placeholder="Enter your password"
+              name="password"
             />
-            <i class="fas fa-eye toggle-password"></i>
+            <i class="fas fa-eye toggle-password" onclick="togglePassword(this)"></i>
           </div>
         </div>
         <div class="options">
           <div class="remember-me">
-            <input type="checkbox" id="remember" />
+            <input type="checkbox" id="remember" name="remember" />
             <label for="remember">Remember me</label>
           </div>
           <a href="chpasspage.html" class="forgot-password">Forgot Password?</a>
@@ -80,9 +93,10 @@ session_start();
 
         <button type="submit" class="login-btn">Login</button>
         <div class="register-link">
-          <p>Not a member? <a href="registerpage.html">Join now</a></p>
+          <p>Not a member? <a href="http://localhost/mygamelist/registerpage.php">Join now</a></p>
         </div>
       </form>
     </div>
+    <script src="scripts/togglePasswordScript.js"></script>
   </body>
 </html>
