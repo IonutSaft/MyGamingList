@@ -68,7 +68,7 @@ session_start();
               id="password"
               placeholder="Enter your password"
             />
-            <i class="fas fa-eye toggle-password"></i>
+            <i class="fas fa-eye toggle-password" onclick="togglePassword(this)"></i>
           </div>
         </div>
 
@@ -80,7 +80,7 @@ session_start();
               id="conf-password"
               placeholder="Confirm password"
             />
-            <i class="fas fa-eye toggle-password"></i>
+            <i class="fas fa-eye toggle-password" onclick="togglePassword(this)"></i>
           </div>
         </div>
 
@@ -143,5 +143,6 @@ session_start();
         </div>
       </form>
     </div>
+    <script src="scripts/togglePasswordScript.js"></script>
   </body>
 </html>
