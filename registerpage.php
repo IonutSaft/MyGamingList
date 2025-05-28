@@ -49,15 +49,39 @@ session_start();
       <h1>MyGameList</h1>
       <p class="subtitle">Enter the gaming universe</p>
 
-      <form class="login-form">
+      <form class="login-form" method="post" action=http://localhost/mygamelist/backend/registration.php>
+        <?php
+        if(isset($_SESSION['errors'])) {
+          echo '<div class="error-message">';
+          foreach ($_SESSION['errors'] as $error) {
+            echo '<p>' .  htmlspecialchars($error) . '</p>';
+          }
+          echo '</div>';
+          unset($_SESSION['errors']);
+        }  
+        $old_input = $_SESSION['old_input'] ?? [];
+        unset($_SESSION['old_input']);
+        ?>
         <div class="input-group">
           <label for="username">Username</label>
-          <input type="text" id="username" placeholder="Enter your username" />
+          <input
+            type="text"
+            id="username"
+            placeholder="Enter your username"
+            name="username"
+            value="<?php echo htmlspecialchars($old_input['username'] ?? ''); ?>"
+          />
         </div>
 
         <div class="input-group">
           <label for="username">Email</label>
-          <input type="email" id="email" placeholder="Enter your email" />
+          <input
+            type="email"
+            id="email"
+            placeholder="Enter your email"
+            name="email"
+            value="<?php echo htmlspecialchars($old_input['email'] ?? ''); ?>"
+          />
         </div>
 
         <div class="input-group">
@@ -67,8 +91,12 @@ session_start();
               type="password"
               id="password"
               placeholder="Enter your password"
+              name="password"
             />
-            <i class="fas fa-eye toggle-password" onclick="togglePassword(this)"></i>
+            <i
+              class="fas fa-eye toggle-password"
+              onclick="togglePassword(this)"
+            ></i>
           </div>
         </div>
 
@@ -79,54 +107,74 @@ session_start();
               type="password"
               id="conf-password"
               placeholder="Confirm password"
+              name="cpassword"
             />
-            <i class="fas fa-eye toggle-password" onclick="togglePassword(this)"></i>
+            <i
+              class="fas fa-eye toggle-password"
+              onclick="togglePassword(this)"
+            ></i>
           </div>
         </div>
 
         <div class="input-group">
           <label>Date of Birth</label>
           <div class="birthday-selectors">
-            <select class="dob-select" id="birth-day" required>
-              <option value="" disabled selected>Day</option>
-              <script>
-                for (let i = 1; i <= 31; i++) {
-                  document.write(`<option value="${i}">${i}</option>`);
-                }
-              </script>
+            <select class="dob-select" id="birth-day" required name="birth-day">
+              <option value="" disabled <?= empty($selected_day) ? 'selected' : '' ?>>Day</option>
+              <?php
+              $selected_day = $old_input['birth-day'] ?? '';
+              for ($i = 1; $i <= 31; $i++) {
+                  $selected = ($i == $selected_day) ? 'selected' : '';
+                  echo "<option value='$i' $selected>$i</option>";
+              }
+              ?>
             </select>
 
-            <select class="dob-select" id="birth-month" required>
-              <option value="" disabled selected>Month</option>
-              <option value="1">January</option>
-              <option value="2">February</option>
-              <option value="3">March</option>
-              <option value="4">April</option>
-              <option value="5">May</option>
-              <option value="6">June</option>
-              <option value="7">July</option>
-              <option value="8">August</option>
-              <option value="9">September</option>
-              <option value="10">October</option>
-              <option value="11">November</option>
-              <option value="12">December</option>
+            <select
+              class="dob-select"
+              id="birth-month"
+              required
+              name="birth-month"
+            >
+              <option value="" disabled <?= empty($selected_month) ? 'selected' : '' ?>>Month</option>
+              <?php
+              $selected_month = $old_input['birth-month'] ?? '';
+              $months = [
+                  1 => 'January', 2 => 'February', 3 => 'March', 4 => 'April',
+                  5 => 'May', 6 => 'June', 7 => 'July', 8 => 'August',
+                  9 => 'September', 10 => 'October', 11 => 'November', 12 => 'December'
+              ];
+              
+              foreach ($months as $num => $name) {
+                  $selected = ($num == $selected_month) ? 'selected' : '';
+                  echo "<option value='$num' $selected>$name</option>";
+              }
+              ?>
             </select>
 
-            <select class="dob-select" id="birth-year" required>
-              <option value="" disabled selected>Year</option>
-              <script>
-                const currentYear = new Date().getFullYear();
-                for (let i = currentYear; i >= 1900; i--) {
-                  document.write(`<option value="${i}">${i}</option>`);
-                }
-              </script>
+            <select
+              class="dob-select"
+              id="birth-year"
+              required
+              name="birth-year"
+            >
+              <option value="" disabled <?= empty($selected_year) ? 'selected' : '' ?>>Year</option>
+              <?php
+              $selected_year = $old_input['birth-year'] ?? '';
+              $current_year = date("Y");
+              
+              for ($i = $current_year; $i >= 1900; $i--) {
+                  $selected = ($i == $selected_year) ? 'selected' : '';
+                  echo "<option value='$i' $selected>$i</option>";
+              }
+              ?>
             </select>
           </div>
         </div>
 
         <div class="options">
           <div class="remember-me">
-            <input type="checkbox" id="remember" required />
+            <input type="checkbox" id="terms" name="terms" />
             <label for="remember"
               >Accept
               <a href="" class="terms-and-conditions"
