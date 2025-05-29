@@ -74,8 +74,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
   if(empty($errors)) {
     $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
-    $avatar = "assets/default/default-avatar.png";
-    $cover = "assets/default/default-cover.png";  
+    $avatar = "default/default_avatar.png";
+    $cover = "default/default_cover.png";  
     $join_date = date('Y-m-d');
 
     $query = mysqli_query($connect, "INSERT INTO user (username, password, email_address, birth_date, avatar, cover, join_date) VALUES ('$username','$hashed_password', '$email', '$birth_date', '$avatar', '$cover', '$join_date')");

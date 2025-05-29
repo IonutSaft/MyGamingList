@@ -35,12 +35,13 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
     if(password_verify($password, $user["password"])) {
       $_SESSION["user_id"] = $user["user_id"];
       $_SESSION["username"] = $user["username"];
+      $_SESSION["avatar"] = $user["avatar"];
 
       if($remember) {
         setcookie("remember_user", $user["user_id"], time() + 86400 * 30, "/");
       }
 
-      header("Location: ../homepage.html");
+      header("Location: ../homepage.php");
       exit();
     }
   }

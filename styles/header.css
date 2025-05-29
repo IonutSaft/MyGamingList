@@ -64,3 +64,79 @@
 .theme-btn:hover {
   color: var(--text-color);
 }
+
+.user-profile {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  position: relative;
+  cursor: pointer;
+  padding-left: 0.5rem;
+  padding-right: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  transition: background-color 0.2s;
+  border: 2px solid var(--border-color);
+}
+
+.user-profile:hover {
+  background-color: var(--elements-bg-color);
+}
+
+.username {
+  color: var(--text-color);
+  font-weight: 600;
+  font-size: 0.95rem;
+  padding: 0.5rem;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background-color: var(--header-color);
+  box-shadow: 0 5px 15px rbga (0, 0, 0, 0.3);
+  width: 100px;
+  z-index: 101;
+  display: none;
+  overflow: hidden;
+}
+
+.dropdown-menu.show {
+  display: block;
+}
+
+.dropdown-item {
+  padding: 0/75rem 1rem;
+  color: var(--text-color);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  transition: background-color 0.2s;
+  cursor: pointer;
+  margin-bottom: 5px;
+}
+
+.dropdown-item i {
+  width: 20px;
+  text-align: center;
+}
+
+.dropdown-item:hover {
+  background-color: var(--elements-bg-color);
+}
+
+.dropdown-divider {
+  height: 1px;
+  background-color: var(--border-color);
+  margin: 0.25rem 0;
+}
+
+.profile-pic {
+  width: 36px;
+  height: 36px;
+  object-fit: cover;
+  border-left: 2px solid var(--border-color);
+  cursor: pointer;
+}

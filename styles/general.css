@@ -36,11 +36,11 @@ body {
   grid-template-areas:
     "top-bar top-bar top-bar"
     "left-sidebar main-content right-sidebar";
-  grid-template-columns: 448px 1fr 448px;
+  grid-template-columns: minmax(150px, 1fr) 2fr minmax(150px, 1fr);
   grid-template-rows: 70px 1fr;
   min-height: 100vh;
   background: var(--base-color);
-  overflow: hidden;
+  overflow: auto;
 }
 
 @media (max-width: 1200px) {
