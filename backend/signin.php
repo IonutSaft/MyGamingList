@@ -8,9 +8,6 @@ function test_input($data) {
   return $data;
 }
 
-$error = '';
-$username = '';
-
 if($_SERVER["REQUEST_METHOD"] == "POST") {
   $username = test_input($_POST["username"]);
   $password = test_input($_POST["password"]);

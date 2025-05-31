@@ -1,5 +1,10 @@
 <?php
 session_start();
+
+if(isset($_SESSION['user_id'])) {
+  header("Location: homepage.php");
+  exit();
+}
 ?>
 
 <!DOCTYPE html>
@@ -88,7 +93,7 @@ session_start();
             <input type="checkbox" id="remember" name="remember" />
             <label for="remember">Remember me</label>
           </div>
-          <a href="chpasspage.html" class="forgot-password">Forgot Password?</a>
+          <a href="http://localhost/mygamelist/chpasspage.php" class="forgot-password">Forgot Password?</a>
         </div>
 
         <button type="submit" class="login-btn">Login</button>

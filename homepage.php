@@ -31,10 +31,10 @@ if(!isset($_SESSION['user_id'])) {
   <body>
     <header class="top-bar">
       <div class="top-bar-left">
-        <a class="site-name" href="homepage.html">MyGameList</a>
-        <button class="icon-button">
+        <a class="site-name" href="homepage.php">MyGameList</a>
+        <a class="icon-button" href="homepage.php">
           <i class="fas fa-home"></i>
-        </button>
+        </a >
       </div>
       <div class="top-bar-center">
         <input
@@ -87,6 +87,7 @@ if(!isset($_SESSION['user_id'])) {
     <aside class="sidebar left-sidebar"></aside>
     <main class="main-content"></main>
     <aside class="sidebar right-sidebar"></aside>
+    
     <script src="scripts/changeThemeScript.js"></script>
     <script>
       const userProfile = document.getElementById("usernameDisplay");

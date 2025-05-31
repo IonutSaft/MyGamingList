@@ -1,3 +1,8 @@
+<?php
+session_start();
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -44,13 +49,26 @@
     <div class="login-container">
       <h1>Reset Password</h1>
 
-      <form class="login-form">
+      <form
+        class="login-form"
+        method="POST"
+        action="http://localhost/mygamelist/backend/reset_pass_request.php"
+      >
+        <?php
+        if(isset($_SESSION['error'])) {
+          echo '<div class="error-message">';
+          echo '<p>' .  htmlspecialchars($_SESSION['error']) . '</p>';
+          echo '</div>';
+          unset($_SESSION['error']);
+        }
+        ?>
         <div class="input-group">
           <p class="subtitle"></p>
           <label for="email" r>Enter your email address</label>
           <input
             type="email"
             id="email"
+            name="email"
             placeholder="example@email.com"
             required
           />
@@ -58,7 +76,7 @@
         <button type="submit" class="login-btn">Send Link</button>
 
         <div class="register-link">
-          <p>Remember your password? <a href="loginpage.html">Login now</a></p>
+          <p>Remember your password? <a href="loginpage.php">Login now</a></p>
         </div>
       </form>
     </div>
