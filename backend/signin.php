@@ -33,6 +33,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
       $_SESSION["user_id"] = $user["user_id"];
       $_SESSION["username"] = $user["username"];
       $_SESSION["avatar"] = $user["avatar"];
+      $_SESSION["loggedin"] = true;
 
       if($remember) {
         setcookie("remember_user", $user["user_id"], time() + 86400 * 30, "/");

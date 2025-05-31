@@ -33,6 +33,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
     } else {
       $user = mysqli_fetch_assoc($query);
 
+      $_SESSION["user_id"] = $user["user_id"]; 
+
       $token = bin2hex(random_bytes(50));
       $expires = date("Y-m-d H:i:s", strtotime("+1 hour"));
 

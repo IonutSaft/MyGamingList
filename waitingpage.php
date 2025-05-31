@@ -61,6 +61,13 @@ session_start();
           echo '</div>';
           unset($_SESSION['success']);
         }
+        if(isset($_SESSION['reseted'])) {
+          echo '<div class="input-group">';
+          echo '<p>' .  htmlspecialchars($_SESSION['reseted']) . '</p>';
+          echo '</div>';
+          unset($_SESSION["reseted"]);
+          unset($_SESSION["user_id"]);
+        }
         ?>
         <button type="submit" class="login-btn">Inapoi la pagina de Login</button>
         <div class="register-link">
