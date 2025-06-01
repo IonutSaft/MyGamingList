@@ -36,15 +36,6 @@
   margin-right: 10px;
 }
 
-.post-author {
-  font-weight: 600;
-}
-
-.post-time {
-  font-size: 13px;
-  color: var(--secondary-text);
-}
-
 .sidebar-title {
   font-size: 17px;
   font-weight: 600;

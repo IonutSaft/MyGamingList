@@ -116,6 +116,48 @@ if(!isset($_SESSION['loggedin'])) {
           <div class="sort-option">Following</div>
         </div>
         <!-- Aici o sa fie feedul generat -->
+        <!-- Exemplu: -->
+        <div class="feed-item">
+          <div class="post-header">
+            <img src="default/default_avatar.png" alt="User">
+            <div>
+              <div class="post-author">User_Test</div>
+              <div class="post-time">
+                3 hrs ago . <i class="fas fa-globe-americas"></i>
+              </div>
+            </div>
+            <div class="post-menu">
+              <i class="fas fa-ellipsis-h"></i>
+            </div>
+          </div>
+          <div class="post-content">
+            <p class="post-text">
+              This is a sample post. NIGGERS NIGGERS NIGGERS!
+            </p>
+            <img src="default/default_cover.png" alt="Post" class="post-image">
+          </div>
+          <div class="post-stats">
+            <div></div>
+            <div>
+              937 <i class="fas fa-thumbs-up"></i> 34 comments · 34 shares
+            </div>
+          </div>
+          <div class="post-actions">
+            <div class="post-action">
+              <i class="far fa-thumbs-up"></i>
+              <span>Like</span>
+            </div>
+            <div class="post-action">
+              <i class="far fa-comment"></i>
+              <span>Comment</span>
+            </div>
+            <div class="post-action">
+              <i class="fas fa-share"></i>
+              <span>Share</span>
+            </div>
+          </div>
+        </div>
+        
       </main>
       <aside class="right-sidebar">
         <div class="sidebar-section">Recent Posts</div>
