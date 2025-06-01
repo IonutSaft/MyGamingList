@@ -26,13 +26,13 @@ if(!isset($_SESSION['loggedin'])) {
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
     />
-    <title>MyGameList</title>
+    <title>MyGameWorld</title>
   </head>
   <body>
     <header class="top-bar">
       <a class="logo" href="homepage.php">
         <i class="fas fa-gamepad"></i>
-        MyGameList
+        MyGameWorld
       </a>
 
       <div class="search-container">
@@ -94,7 +94,7 @@ if(!isset($_SESSION['loggedin'])) {
     <div class="container">
       <aside class="sidebar">
         <div class="sidebar-section">
-          <div class="user-card">
+          <a class="user-card" href="http://localhost/mygamelist/userpage.php">
             <img src="<?php echo $_SESSION["avatar"]; ?>" alt="Profile">
             <div>
               <div class="post-author">
@@ -102,7 +102,7 @@ if(!isset($_SESSION['loggedin'])) {
               </div>
               <div class="post-time">See your profile</div>
             </div>
-          </div>
+          </a>
         </div>
         <div class="sidebar-section">
           <div class="sidebar-title">Shortcuts</div>

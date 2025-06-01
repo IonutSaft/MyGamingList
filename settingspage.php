@@ -26,13 +26,13 @@ if(!isset($_SESSION['loggedin'])) {
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
     />
-    <title>MyGameList</title>
+    <title>MyGameWorld</title>
   </head>
   <body>
     <header class="top-bar">
       <a class="logo" href="homepage.php">
         <i class="fas fa-gamepad"></i>
-        MyGameList
+        MyGameWorld
       </a>
 
       <div class="search-container">

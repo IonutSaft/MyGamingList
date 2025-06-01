@@ -16,7 +16,7 @@ session_start();
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
     />
-    <title>MyGameList</title>
+    <title>MyGameWorld</title>
   </head>
   <body>
     <div class="animation-container">
@@ -46,7 +46,7 @@ session_start();
     </div>
 
     <div class="login-container">
-      <h1>MyGameList</h1>
+      <h1>MyGameWorld</h1>
       <p class="subtitle">Enter the gaming universe</p>
 
       <form class="login-form" method="post" action="http://localhost/mygamelist/backend/registration.php">

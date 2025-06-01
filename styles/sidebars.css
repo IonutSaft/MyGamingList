@@ -21,6 +21,7 @@
   padding: 12px;
   border-radius: 8px;
   text-decoration: none;
+  color: var(--text-color);
   transition: background-color 0.2s;
 }
 
