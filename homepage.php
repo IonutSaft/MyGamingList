@@ -30,64 +30,69 @@ if(!isset($_SESSION['loggedin'])) {
   </head>
   <body>
     <header class="top-bar">
-      <div class="top-bar-left">
-        <a class="site-name" href="homepage.php">MyGameList</a>
-        <a class="icon-button" href="homepage.php">
-          <i class="fas fa-home"></i>
-        </a >
-      </div>
-      <div class="top-bar-center">
+      <a class="logo" href="homepage.php">
+        <i class="fas fa-gamepad"></i>
+        MyGameList
+      </a>
+
+      <div class="search-container">
+        <i class="fas fa-search"></i>
         <input
           type="text"
-          class="search-bar"
           placeholder="Search posts, users..."
         />
       </div>
-      <div class="top-bar-right">
-        <button id="theme-toggle" class="theme-btn" aria-label="Toggle theme">
+      
+      <div class="nav-icons">
+        <a class="nav-icon" href="homepage.php">
+          <i class="fas fa-home"></i>
+        </a >
+        <a class="nav-icon" title="Mail" href="#">
+          <i class="fas fa-envelope"></i>
+          <span class="notification-badge">4</span>
+        </a>
+        <button class="nav-icon" title="Notifications">
+          <i class="fas fa-bell"></i>
+          <span class="notification-badge">3</span>
+        </button>
+        <button id="theme-toggle" class="theme-btn nav-icon" aria-label="Toggle theme">
           <i class="fas fa-sun"></i>
           <i class="fas fa-moon" style="display: none"></i>
         </button>
-        <button class="icon-button" title="Mail">
-          <i class="fas fa-envelope"></i>
-        </button>
-        <button class="icon-button" title="Notifications">
-          <i class="fas fa-bell"></i>
-        </button>
-        <div class="user-profile" id="userProfile">
-          <span class="username" id="usernameDisplay">
-            <?php echo isset($_SESSION['username']) ? htmlspecialchars($_SESSION['username']) : 'Guest'; ?>
-          </span>
-          <div class="dropdown-menu" id="dropdownMenu">
-            <a href="" class="dropdown-item">
-              <i class="fas fa-user"></i>
-              <span>Profile</span>
-            </a>
-            <a href="" class="dropdown-item">
-              <i class="fas fa-bookmark"></i>
-              <span>Saved</span>
-            </a>
-            <a href="" class="dropdown-item">
-              <i class="fas fa-cog"></i>
-              <span>Settings</span>
-            </a>
-            <div class="dropdown-divider"></div>
-            <a href="" class="dropdown-item">
-              <i class="fas fa-sign-out-alt"></i>
-              <span>Log Out</span>
-            </a>
-          </div>
-          <a href="userpage.html">
-            <img src="<?php echo $_SESSION["avatar"]; ?>" class="profile-pic" alt="Profile">
-          </a>    
+      </div>
+
+      <div class="user-profile" id="userProfile">
+        <span class="username" id="usernameDisplay">
+          <?php echo isset($_SESSION['username']) ? htmlspecialchars($_SESSION['username']) : 'Guest'; ?>
+        </span>
+        <i class="fas fa-caret-down"></i>
+        <div class="dropdown-menu" id="dropdownMenu">
+          <a href="" class="dropdown-item">
+            <i class="fas fa-user"></i>
+            <span>Profile</span>
+          </a>
+          <a href="" class="dropdown-item">
+            <i class="fas fa-bookmark"></i>
+            <span>Saved</span>
+          </a>
+          <a href="" class="dropdown-item">
+            <i class="fas fa-cog"></i>
+            <span>Settings</span>
+          </a>
+          <div class="dropdown-divider"></div>
+          <a href="" class="dropdown-item">
+            <i class="fas fa-sign-out-alt"></i>
+            <span>Log Out</span>
+          </a>
         </div>
-        
+        <a href="userpage.html">
+          <img src="<?php echo $_SESSION["avatar"]; ?>" class="profile-pic" alt="Profile">
+        </a>    
       </div>
     </header>
     <aside class="sidebar left-sidebar"></aside>
     <main class="main-content"></main>
     <aside class="sidebar right-sidebar"></aside>
-    
     <script src="scripts/changeThemeScript.js"></script>
     <script>
       const userProfile = document.getElementById("usernameDisplay");
