@@ -12,11 +12,11 @@ if(!isset($_SESSION['loggedin'])) {
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    
-    <link rel="stylesheet" href="styles/general.css">
-    <link rel="stylesheet" href="styles/header.css">
-    <link rel="stylesheet" href="styles/sidebars.css">
-    <link rel="stylesheet" href="styles/feed.css">
+
+    <link rel="stylesheet" href="styles/general.css" />
+    <link rel="stylesheet" href="styles/header.css" />
+    <link rel="stylesheet" href="styles/sidebars.css" />
+    <link rel="stylesheet" href="styles/feed.css" />
 
     <link
       href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Share+Tech+Mono&display=swap"
@@ -37,16 +37,13 @@ if(!isset($_SESSION['loggedin'])) {
 
       <div class="search-container">
         <i class="fas fa-search"></i>
-        <input
-          type="text"
-          placeholder="Search posts, users..."
-        />
+        <input type="text" placeholder="Search posts, users..." />
       </div>
-      
+
       <div class="nav-icons">
         <a class="nav-icon" href="homepage.php">
           <i class="fas fa-home"></i>
-        </a >
+        </a>
         <a class="nav-icon" title="Mail" href="#">
           <i class="fas fa-envelope"></i>
           <span class="notification-badge">4</span>
@@ -55,7 +52,11 @@ if(!isset($_SESSION['loggedin'])) {
           <i class="fas fa-bell"></i>
           <span class="notification-badge">3</span>
         </button>
-        <button id="theme-toggle" class="theme-btn nav-icon" aria-label="Toggle theme">
+        <button
+          id="theme-toggle"
+          class="theme-btn nav-icon"
+          aria-label="Toggle theme"
+        >
           <i class="fas fa-sun"></i>
           <i class="fas fa-moon" style="display: none"></i>
         </button>
@@ -71,23 +72,33 @@ if(!isset($_SESSION['loggedin'])) {
             <i class="fas fa-user"></i>
             <span>Profile</span>
           </a>
-          <a href="http://localhost/mygamelist/savedpage.php" class="dropdown-item">
+          <a
+            href="http://localhost/mygamelist/savedpage.php"
+            class="dropdown-item"
+          >
             <i class="fas fa-bookmark"></i>
             <span>Saved</span>
           </a>
-          <a href="http://localhost/mygamelist/settingspage.php" class="dropdown-item">
+          <a
+            href="http://localhost/mygamelist/settingspage.php"
+            class="dropdown-item"
+          >
             <i class="fas fa-cog"></i>
             <span>Settings</span>
           </a>
           <div class="dropdown-divider"></div>
-          <a href="http://localhost/mygamelist/backend/logout.php" class="dropdown-item">
+          <a
+            href="http://localhost/mygamelist/backend/logout.php"
+            class="dropdown-item"
+          >
             <i class="fas fa-sign-out-alt"></i>
             <span>Log Out</span>
           </a>
         </div>
         <a href="http://localhost/mygamelist/userpage.php">
-          <img src="<?php echo $_SESSION["avatar"]; ?>" class="profile-pic" alt="Profile">
-        </a>    
+          <img src="<?php echo $_SESSION["avatar"]; ?>" class="profile-pic"
+          alt="Profile">
+        </a>
       </div>
     </header>
 
@@ -97,7 +108,9 @@ if(!isset($_SESSION['loggedin'])) {
           <div class="user-card">
             <img src="<?php echo $_SESSION["avatar"]; ?>" alt="Profile">
             <div>
-              <div class="post-author"><?php echo isset($_SESSION['username']) ? htmlspecialchars($_SESSION['username']) : 'Guest'; ?></div>
+              <div class="post-author">
+                <?php echo isset($_SESSION['username']) ? htmlspecialchars($_SESSION['username']) : 'Guest'; ?>
+              </div>
               <div class="post-time">See your profile</div>
             </div>
           </div>
@@ -133,7 +146,7 @@ if(!isset($_SESSION['loggedin'])) {
       });
 
       document.addEventListener("click", () => {
-        if(!userProfile.contains(e.target)) {
+        if (!userProfile.contains(e.target)) {
           dropdownMenu.classList.remove("show");
         }
       });

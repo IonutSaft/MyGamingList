@@ -12,11 +12,11 @@ if(!isset($_SESSION['loggedin'])) {
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    
-    <link rel="stylesheet" href="styles/general.css">
-    <link rel="stylesheet" href="styles/header.css">
-    <link rel="stylesheet" href="styles/sidebars.css">
-    <link rel="stylesheet" href="styles/feed.css">
+
+    <link rel="stylesheet" href="styles/general.css" />
+    <link rel="stylesheet" href="styles/header.css" />
+    <link rel="stylesheet" href="styles/sidebars.css" />
+    <link rel="stylesheet" href="styles/feed.css" />
 
     <link
       href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Share+Tech+Mono&display=swap"
@@ -97,7 +97,9 @@ if(!isset($_SESSION['loggedin'])) {
           <div class="user-card">
             <img src="<?php echo $_SESSION["avatar"]; ?>" alt="Profile">
             <div>
-              <div class="post-author"><?php echo isset($_SESSION['username']) ? htmlspecialchars($_SESSION['username']) : 'Guest'; ?></div>
+              <div class="post-author">
+                <?php echo isset($_SESSION['username']) ? htmlspecialchars($_SESSION['username']) : 'Guest'; ?>
+              </div>
               <div class="post-time">See your profile</div>
             </div>
           </div>
@@ -110,12 +112,7 @@ if(!isset($_SESSION['loggedin'])) {
         </div>
       </aside>
       <main class="feed">
-        <div class="composer">Creating post</div>
-        <div class="feed-sort">
-          <div class="sort-option active">For You</div>
-          <div class="sort-option">Following</div>
-        </div>
-        <!-- Aici o sa fie feedul generat -->
+        <!-- Aici o sa apara postarile salvate -->
       </main>
       <aside class="right-sidebar">
         <div class="sidebar-section">Recent Posts</div>
@@ -133,7 +130,7 @@ if(!isset($_SESSION['loggedin'])) {
       });
 
       document.addEventListener("click", () => {
-        if(!userProfile.contains(e.target)) {
+        if (!userProfile.contains(e.target)) {
           dropdownMenu.classList.remove("show");
         }
       });
