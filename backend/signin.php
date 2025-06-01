@@ -33,6 +33,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
       $_SESSION["user_id"] = $user["user_id"];
       $_SESSION["username"] = $user["username"];
       $_SESSION["avatar"] = $user["avatar"];
+      $_SESSION["email_address"] = $user["email_address"];
+      $_SESSION["cover"] = $user["cover"];
       $_SESSION["loggedin"] = true;
 
       if($remember) {

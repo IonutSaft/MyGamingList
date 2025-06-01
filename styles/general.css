@@ -9,6 +9,9 @@
   --header-color: #1e1e1e;
   --elements-bg-color: #2a2a2a;
   --border-color: rgb(39, 57, 28);
+  --hover: rgba(255, 255, 255, 0.05);
+  --shadow: rgba(0, 0, 0, 0.4);
+  --primary: rgb(31, 125, 83);
 }
 
 .light-mode {
@@ -22,6 +25,9 @@
   --header-color: #f0f0f0;
   --elements-bg-color: #ffffff;
   --border-color: rgb(181, 207, 231);
+  --hover: rgba(0, 0, 0, 0.05);
+  --shadow: rgba(0, 0, 0, 0.1);
+  --primary: rgb(0, 101, 248);
 }
 
 * {
@@ -37,6 +43,14 @@ body {
   color: var(--text-color);
   line-height: 1.5;
   min-height: 100vh;
+}
+
+.container {
+  display: flex;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 1.2rem 1rem;
+  gap: 1.2rem;
 }
 
 .theme-btn {

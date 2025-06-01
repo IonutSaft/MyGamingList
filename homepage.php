@@ -90,9 +90,38 @@ if(!isset($_SESSION['loggedin'])) {
         </a>    
       </div>
     </header>
-    <aside class="sidebar left-sidebar"></aside>
-    <main class="main-content"></main>
-    <aside class="sidebar right-sidebar"></aside>
+
+    <div class="container">
+      <aside class="sidebar">
+        <div class="sidebar-section">
+          <div class="user-card">
+            <img src="<?php echo $_SESSION["avatar"]; ?>" alt="Profile">
+            <div>
+              <div class="post-author"><?php echo isset($_SESSION['username']) ? htmlspecialchars($_SESSION['username']) : 'Guest'; ?></div>
+              <div class="post-time">See your profile</div>
+            </div>
+          </div>
+        </div>
+        <div class="sidebar-section">
+          <div class="sidebar-title">Shortcuts</div>
+        </div>
+        <div class="sidebar-section">
+          <div class="sidebar-title">Trending Games</div>
+        </div>
+      </aside>
+      <main class="feed">
+        <div class="composer">Creating post</div>
+        <div class="feed-sort">
+          <div class="sort-option active">For You</div>
+          <div class="sort-option">Following</div>
+        </div>
+        <!-- Aici o sa fie feedul generat -->
+      </main>
+      <aside class="right-sidebar">
+        <div class="sidebar-section">Recent Posts</div>
+      </aside>
+    </div>
+
     <script src="scripts/changeThemeScript.js"></script>
     <script>
       const userProfile = document.getElementById("usernameDisplay");

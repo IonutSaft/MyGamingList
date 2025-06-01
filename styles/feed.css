@@ -1,0 +1,36 @@
+.feed {
+  flex: 1;
+  max-width: 680px;
+}
+
+.composer {
+  background-color: var(--elements-bg-color);
+  border-radius: 10px;
+  padding: 16px;
+  margin-bottom: 20px;
+  box-shadow: 0 1px 2px var(--shadow);
+}
+
+.feed-sort {
+  display: flex;
+  background-color: var(--elements-bg-color);
+  border-radius: 10px;
+  margin-bottom: 20px;
+  box-shadow: 0 1px 2px var(--shadow);
+  overflow: hidden;
+}
+
+.sort-option {
+  flex: 1;
+  text-align: center;
+  padding: 12px;
+  font-weight: 500;
+  color: var(--secondary-text);
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.sort-option.active {
+  color: var(--text-color);
+  border-bottom: 3px solid var(--primary);
+}

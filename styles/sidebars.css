@@ -1,0 +1,60 @@
+.sidebar {
+  flex: 0 0 280px;
+  position: sticky;
+  top: 80px;
+  height: calc(100vh - 100px);
+  overflow-y: auto;
+  padding-right: 0.75rem;
+}
+
+.sidebar-section {
+  background-color: var(--elements-bg-color);
+  border-radius: 10px;
+  padding: 1rem;
+  margin-bottom: 1.25rem;
+  box-shadow: 0 1px 2px var(--shadow);
+}
+
+.user-card {
+  display: flex;
+  align-items: center;
+  padding: 12px;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: background-color 0.2s;
+}
+
+.user-card:hover {
+  background-color: var(--hover);
+}
+
+.user-card img {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 10px;
+}
+
+.post-author {
+  font-weight: 600;
+}
+
+.post-time {
+  font-size: 13px;
+  color: var(--secondary-text);
+}
+
+.sidebar-title {
+  font-size: 17px;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+.right-sidebar {
+  flex: 0 0 320px;
+  position: sticky;
+  top: 80px;
+  height: calc(100vh - 100px);
+  overflow-y: auto;
+}
