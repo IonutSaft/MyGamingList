@@ -12,7 +12,7 @@ define('MAILHOST', "smtp.gmail.com");
 define('USERNAME', "test1.mygamelist@gmail.com");
 define('PASSWORD', " esusrwebjlepjuzv");
 define('SEND_FROM', "test1.mygamelist@gmail.com");
-define('SEND_FROM_NAME', "MyGameList");
+define('SEND_FROM_NAME', "MyGameWorld");
 
 
 function sendMail($email, $subject, $message) {
