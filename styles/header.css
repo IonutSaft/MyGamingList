@@ -40,6 +40,7 @@
   background-color: var(--header-color);
   font-size: 15px;
   color: var(--text-color);
+  font-family: inherit;
 }
 
 .search-container i {

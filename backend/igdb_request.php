@@ -132,7 +132,7 @@ function insertgames($connect, $games) {
 
 $accessToken = getAccessToken($clientId, $clientSecret);
 
-for($offset = 0; $offset < 100000; $offset += 500) {
+for($offset = 0; $offset < 30000; $offset += 500) {
   echo "Fetching games at offset $offset...\n";
   $games = fetchGames($accessToken, $clientId, $offset);
   if (empty($games)) {

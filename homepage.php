@@ -110,7 +110,23 @@ if(!isset($_SESSION['loggedin'])) {
         </div>
       </aside>
       <main class="feed">
-        <div class="composer">Creating post</div>
+        <div class="composer">
+          <form id="post-form" action="http://localhost/mygamelist/backend/post_handler.php" method="POST" enctype="multipart/form-data">
+            <textarea name="post-content" id="post-content" placeholder="What's on your mind?" rows="3"></textarea>
+            <div id="tag-suggestions" class="tag-suggestions"></div>
+            <div class="composer-actions">
+              <label for="media-upload" class="composer-action">
+                <i class="fas fa-image"></i>
+                <input type="file" id="media-upload" multiple name="media[]" accept="image/*,video/*" style="display:none;">
+              </label>
+              <div class="composer-action" id="tag-button">
+                <i class="fas fa-tag"></i>
+              </div>
+              <button type="submit" class="post-button">Post</button>
+            </div>
+            <div id="media-preview" class="media-preview"></div>
+          </form>
+        </div>
         <div class="feed-sort">
           <div class="sort-option active">For You</div>
           <div class="sort-option">Following</div>
@@ -174,11 +190,12 @@ if(!isset($_SESSION['loggedin'])) {
         dropdownMenu.classList.toggle("show");
       });
 
-      document.addEventListener("click", () => {
+      document.addEventListener("click", (e) => {
         if(!userProfile.contains(e.target)) {
           dropdownMenu.classList.remove("show");
         }
       });
     </script>
+    <script src="scripts/create_post.js"></script>
   </body>
 </html>
