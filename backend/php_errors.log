@@ -1,0 +1,8 @@
+[04-Jun-2025 23:22:34 UTC] PHP Warning:  mkdir(): File exists in D:\wamp\www\MyGameList\backend\create_post.php on line 47
+[04-Jun-2025 23:22:34 UTC] PHP Stack trace:
+[04-Jun-2025 23:22:34 UTC] PHP   1. {main}() D:\wamp\www\MyGameList\backend\create_post.php:0
+[04-Jun-2025 23:22:34 UTC] PHP   2. mkdir($directory = '../uploads', $permissions = 511, $recursive = TRUE) D:\wamp\www\MyGameList\backend\create_post.php:47
+[04-Jun-2025 23:25:05 UTC] PHP Warning:  mkdir(): File exists in D:\wamp\www\MyGameList\backend\create_post.php on line 47
+[04-Jun-2025 23:25:05 UTC] PHP Stack trace:
+[04-Jun-2025 23:25:05 UTC] PHP   1. {main}() D:\wamp\www\MyGameList\backend\create_post.php:0
+[04-Jun-2025 23:25:05 UTC] PHP   2. mkdir($directory = '../uploads', $permissions = 511, $recursive = TRUE) D:\wamp\www\MyGameList\backend\create_post.php:47

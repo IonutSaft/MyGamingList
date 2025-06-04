@@ -1,10 +1,17 @@
 <?php
+
 session_start();
 
 if(!isset($_SESSION['loggedin'])) {
   header("Location: loginpage.php");
   exit();
 }
+
+$conn = new mysqli("localhost", "root", "", "mygamelist");
+if($conn->connect_error) {
+  die("Connection failed: " . $conn->connect_error);
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -133,46 +140,85 @@ if(!isset($_SESSION['loggedin'])) {
         </div>
         <!-- Aici o sa fie feedul generat -->
         <!-- Exemplu: -->
-        <div class="feed-item">
-          <div class="post-header">
-            <img src="default/default_avatar.png" alt="User">
-            <div>
-              <div class="post-author">User_Test</div>
-              <div class="post-time">
-                3 hrs ago . <i class="fas fa-globe-americas"></i>
+        
+        <?php
+        function time_elapsed_string($datetime) {
+          $now = new DateTime;
+          $ago = new DateTime($datetime);
+          $diff = $now->diff($ago);
+
+          if($diff->d > 0) {
+            return $diff->d . ' days ago';
+          } elseif ($diff->h > 0) {
+            return $diff->h . ' hours ago';
+          } elseif ($diff->i > 0) {
+            return $diff->i . ' minutes ago';
+          } else {
+            return 'just now';
+          }
+        }
+
+        $query = "SELECT p.*, u.username, u.avatar
+                  FROM post p
+                  JOIN user u ON p.user_id = u.user_id
+                  ORDER BY p.post_date DESC";
+        $result = mysqli_query($conn, $query);
+
+        if(mysqli_num_rows($result) > 0) {
+          while ($row = mysqli_fetch_assoc($result)) {
+            $avatar = !empty($row['avatar']) ? $row['avatar'] : 'default/default_avatar.png';
+            $relative_time = time_elapsed_string($row['post_date']);
+            ?>
+            <div class="feed-item">
+              <div class="post-header">
+                <img src="<?= htmlspecialchars($avatar) ?>" alt="User">
+                <div>
+                  <div class="post-author"><?= htmlspecialchars($row['username']) ?></div>
+                  <div class="post-time">
+                    <?= $relative_time ?> . <i class="fas fa-globe-americas"></i>
+                  </div>
+                </div>
+                <div class="post-menu">
+                  <i class="fas fa-ellipsis-h"></i>
+                </div>
+              </div>
+              <div class="post-content">
+                <p class="post-text">
+                  <?= htmlspecialchars($row['text_content']) ?>
+                </p>
+                <?php if (!empty($row['media_content'])) : ?>
+                  <img src="<?= htmlspecialchars($row['media_content']) ?>" alt="Post" class="post-image">
+                <?php endif; ?>  
+              </div>
+              <div class="post-stats">
+                <div></div>
+                <div>
+                  <?= $row['like_count'] ?> <i class="fas fa-thumbs-up"></i>
+                  <?= $row['comment_count'] ?> comments ·
+                  <?= $row['shares_count'] ?> shares
+                </div>
+              </div>
+              <div class="post-actions">
+                <div class="post-action">
+                  <i class="far fa-thumbs-up"></i>
+                  <span>Like</span>
+                </div>
+                <div class="post-action">
+                  <i class="far fa-comment"></i>
+                  <span>Comment</span>
+                </div>
+                <div class="post-action">
+                  <i class="fas fa-share"></i>
+                  <span>Share</span>
+                </div>
               </div>
             </div>
-            <div class="post-menu">
-              <i class="fas fa-ellipsis-h"></i>
-            </div>
-          </div>
-          <div class="post-content">
-            <p class="post-text">
-              This is a sample post. NIGGERS NIGGERS NIGGERS!
-            </p>
-            <img src="default/default_cover.png" alt="Post" class="post-image">
-          </div>
-          <div class="post-stats">
-            <div></div>
-            <div>
-              937 <i class="fas fa-thumbs-up"></i> 34 comments · 34 shares
-            </div>
-          </div>
-          <div class="post-actions">
-            <div class="post-action">
-              <i class="far fa-thumbs-up"></i>
-              <span>Like</span>
-            </div>
-            <div class="post-action">
-              <i class="far fa-comment"></i>
-              <span>Comment</span>
-            </div>
-            <div class="post-action">
-              <i class="fas fa-share"></i>
-              <span>Share</span>
-            </div>
-          </div>
-        </div>
+            <?php
+          }
+        } else {
+          echo '<div class="feed-item">No posts found. Be the first to post!</div>';
+        }
+        ?>
         
       </main>
       <aside class="right-sidebar">
