@@ -1,0 +1,118 @@
+.settings-container {
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 2rem;
+  background-color: var(--elements-bg-color);
+  border-radius: 8px;
+  box-shadow: 0 2px 10px var(--shadow);
+}
+
+.settings-title {
+  font-family: "Orbitron", sans-serif;
+  color: var(--text-color);
+  margin-bottom: 2rem;
+  text-align: center;
+  font-size: 1.8rem;
+}
+
+.settings-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.settings-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.settings-item label {
+  color: var(--secondary-text);
+  font-size: 0.9rem;
+}
+
+.settings-item input {
+  padding: 0.8rem 1rem;
+  background-color: var(--header-color);
+  border: 1px solid var(--border-color);
+  border-radius: 5px;
+  color: var(--text-color);
+  font-family: inherit;
+}
+
+.settings-item input:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+
+.settings-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.settings-btn {
+  padding: 0.8rem 1rem;
+  border-radius: 5px;
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-decoration: none;
+  font-family: inherit;
+}
+
+.save-btn {
+  background-color: var(--primary);
+  color: white;
+  border: none;
+}
+
+.save-btn:hover {
+  background-color: var(--secondary);
+}
+
+.change-password-btn {
+  background-color: var(--primary);
+  color: white;
+  border: none;
+}
+
+.change-password-btn:hover {
+  background-color: var(--secondary);
+}
+
+.delete-account-btn {
+  background-color: transparent;
+  color: #e41e3f;
+  border: 1px solid #e41e3f;
+}
+
+.delete-account-btn:hover {
+  background-color: var(--hover);
+}
+
+.alert {
+  padding: 0.8rem 1rem;
+  border-radius: 5px;
+  margin-bottom: 1.5rem;
+  font-size: 0.9rem;
+}
+
+.alert.success {
+  background-color: rgba(31, 125, 83, 0.2);
+  color: var(--text-color);
+  border: 1px solid var(--primary);
+}
+
+.alert.error {
+  background-color: transparent;
+  color: #e41e3f;
+  border: 1px solid #e41e3f;
+}

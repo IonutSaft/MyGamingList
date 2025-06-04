@@ -12,6 +12,7 @@
   --hover: rgba(255, 255, 255, 0.05);
   --shadow: rgba(0, 0, 0, 0.4);
   --primary: rgb(31, 125, 83);
+  --secondary: rgb(37, 95, 56);
 }
 
 .light-mode {
@@ -27,7 +28,8 @@
   --border-color: rgb(181, 207, 231);
   --hover: rgba(0, 0, 0, 0.05);
   --shadow: rgba(0, 0, 0, 0.1);
-  --primary: rgb(0, 101, 248);
+  --primary: rgb(60, 90, 190);
+  --secondary: rgb(80, 110, 210);
 }
 
 * {

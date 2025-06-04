@@ -5,6 +5,8 @@ if(!isset($_SESSION['loggedin'])) {
   header("Location: loginpage.php");
   exit();
 }
+
+$user
 ?>
 
 <!DOCTYPE html>
@@ -16,7 +18,7 @@ if(!isset($_SESSION['loggedin'])) {
     <link rel="stylesheet" href="styles/general.css" />
     <link rel="stylesheet" href="styles/header.css" />
     <link rel="stylesheet" href="styles/sidebars.css" />
-    <link rel="stylesheet" href="styles/feed.css" />
+    <link rel="stylesheet" href="styles/settings.css" />
 
     <link
       href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Share+Tech+Mono&display=swap"
@@ -92,11 +94,54 @@ if(!isset($_SESSION['loggedin'])) {
     </header>
 
     <div class="container">
-      
-      
-        <!-- Aici o sa apara setarile contului -->
-    
-      
+      <div class="settings-container">
+        <h1 class="settings-title">Account Settings</h1>
+
+        <?php
+        if(isset($_SESSION['saved'])) {
+          echo '<div class="alert success">';
+          echo '<p>' .  htmlspecialchars($_SESSION['saved']) . '</p>';
+          echo '</div>';
+          unset($_SESSION['saved']);
+        } else if(isset($_SESSION['errors'])) {
+          echo '<div class="alert error">';
+          foreach($_SESSION['errors'] as $error) {
+            echo '<p>' .  htmlspecialchars($error) . '</p>';
+          }
+          echo '</div>';
+          unset($_SESSION['errors']);
+        }
+        ?>
+
+        <form method="POST" class="settings-form" action="http://localhost/mygamelist/backend/updateuser.php">
+          <div class="settings-section">
+            <div class="settings-item">
+              <label for="">Username</label>
+              <input type="text" name="username" value="<?php echo htmlspecialchars($_SESSION['username']); ?>" required>
+            </div>
+            <div class="settings-item">
+              <label for="">Email</label>
+              <input type="email" name="email" value="<?php echo htmlspecialchars($_SESSION['email_address']); ?>" required>
+            </div>
+
+            <div class="settings-buttons">
+              <button type="submit" class="settings-btn save-btn">
+                <i class="fas fa-save"></i>
+                <span>Save Changes</span>
+              </button>
+              <a href="http://localhost/mygamelist/resetpass.php" class="settings-btn change-password-btn">
+                <i class="fas fa-key"></i>
+                <span>Change Password</span>
+              </a>
+              <a class="settings-btn delete-account-btn" href="http://localhost/mygamelist/backend/deleteuser.php" id="deleteAccountBtn">
+                <i class="fas fa-trash-alt"></i>
+                <span>Delete Account</span>
+              </a>
+            </div>
+          </div>
+        </form>
+
+      </div>
     </div>
 
     <script src="scripts/changeThemeScript.js"></script>
@@ -114,6 +159,12 @@ if(!isset($_SESSION['loggedin'])) {
           dropdownMenu.classList.remove("show");
         }
       });
+
+      document.getElementById("deleteAccountBtn").addEventListener("click", function() {
+        if(confirm("Are you sure you want to delete your account? This action cannot be undone.")) {
+          window.location.href = "../backend/deleteuser.php";          
+        }
+      })
     </script>
   </body>
 </html>

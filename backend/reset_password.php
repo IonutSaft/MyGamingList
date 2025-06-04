@@ -36,11 +36,15 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
     $connect = mysqli_connect("localhost", "root", "") or die("Connection Failed");
     mysqli_select_db($connect, "mygamelist") or die("Database Selection Failed");
     $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-    
+
     $query = mysqli_query($connect, "UPDATE user SET password='$hashed_password' WHERE user_id=$user");
 
     if($query) {
       $_SESSION["reseted"] = "Password has been reset successfully";
+      if(isset($_SESSION["loggedin"])) {
+        header("Location: ../homepage.php");
+        exit();
+      }
       header("Location: ../waitingpage.php");
       exit();
     }

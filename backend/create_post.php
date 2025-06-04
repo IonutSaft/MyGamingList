@@ -44,7 +44,7 @@ try {
     if ($hasMedia) {
         // Create uploads directory if it doesn't exist
         if (!file_exists('uploads')) {
-            mkdir('uploads', 0777, true);
+            mkdir('../uploads', 0777, true);
         }
         
         foreach ($_FILES['media']['tmp_name'] as $key => $tmpName) {
