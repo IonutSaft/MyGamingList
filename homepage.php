@@ -1,17 +1,10 @@
 <?php
-
 session_start();
 
 if(!isset($_SESSION['loggedin'])) {
   header("Location: loginpage.php");
   exit();
 }
-
-$conn = new mysqli("localhost", "root", "", "mygamelist");
-if($conn->connect_error) {
-  die("Connection failed: " . $conn->connect_error);
-}
-
 ?>
 
 <!DOCTYPE html>
@@ -118,17 +111,28 @@ if($conn->connect_error) {
       </aside>
       <main class="feed">
         <div class="composer">
-          <form id="post-form" action="http://localhost/mygamelist/backend/post_handler.php" method="POST" enctype="multipart/form-data">
-            <textarea name="post-content" id="post-content" placeholder="What's on your mind?" rows="3"></textarea>
-            <div id="tag-suggestions" class="tag-suggestions"></div>
+          <form id="post-form" action="http://localhost/mygamelist/backend/create_post.php" method="POST" enctype="multipart/form-data">
+            <?php
+            if(isset($_SESSION["errors"])) {
+              echo '<div class="error-message">';
+              foreach($_SESSION["errors"] as $error) {
+                echo '<p>' .  htmlspecialchars($error) . '</p>';
+              }
+              echo '</div>';
+              unset($_SESSION["errors"]);
+            } else if(isset($_SESSION["saved"])) {
+              echo '<div class="alert success">';
+              echo '<p>' .  htmlspecialchars($_SESSION["saved"]) . '</p>';
+              echo '</div>';
+              unset($_SESSION["saved"]);
+            }  
+            ?>
+            <textarea name="content" id="post-content" placeholder="What's on your mind?" rows="3"></textarea>
             <div class="composer-actions">
               <label for="media-upload" class="composer-action">
                 <i class="fas fa-image"></i>
-                <input type="file" id="media-upload" multiple name="media[]" accept="image/*,video/*" style="display:none;">
+                <input type="file" id="media-upload" multiple name="media[]" accept="image/*,video/mp4" style="display:none;">
               </label>
-              <div class="composer-action" id="tag-button">
-                <i class="fas fa-tag"></i>
-              </div>
               <button type="submit" class="post-button">Post</button>
             </div>
             <div id="media-preview" class="media-preview"></div>
@@ -140,86 +144,91 @@ if($conn->connect_error) {
         </div>
         <!-- Aici o sa fie feedul generat -->
         <!-- Exemplu: -->
-        
-        <?php
-        function time_elapsed_string($datetime) {
-          $now = new DateTime;
-          $ago = new DateTime($datetime);
-          $diff = $now->diff($ago);
-
-          if($diff->d > 0) {
-            return $diff->d . ' days ago';
-          } elseif ($diff->h > 0) {
-            return $diff->h . ' hours ago';
-          } elseif ($diff->i > 0) {
-            return $diff->i . ' minutes ago';
-          } else {
-            return 'just now';
-          }
-        }
-
-        $query = "SELECT p.*, u.username, u.avatar
-                  FROM post p
-                  JOIN user u ON p.user_id = u.user_id
-                  ORDER BY p.post_date DESC";
-        $result = mysqli_query($conn, $query);
-
-        if(mysqli_num_rows($result) > 0) {
-          while ($row = mysqli_fetch_assoc($result)) {
-            $avatar = !empty($row['avatar']) ? $row['avatar'] : 'default/default_avatar.png';
-            $relative_time = time_elapsed_string($row['post_date']);
-            ?>
-            <div class="feed-item">
-              <div class="post-header">
-                <img src="<?= htmlspecialchars($avatar) ?>" alt="User">
-                <div>
-                  <div class="post-author"><?= htmlspecialchars($row['username']) ?></div>
-                  <div class="post-time">
-                    <?= $relative_time ?> . <i class="fas fa-globe-americas"></i>
-                  </div>
-                </div>
-                <div class="post-menu">
-                  <i class="fas fa-ellipsis-h"></i>
-                </div>
-              </div>
-              <div class="post-content">
-                <p class="post-text">
-                  <?= htmlspecialchars($row['text_content']) ?>
-                </p>
-                <?php if (!empty($row['media_content'])) : ?>
-                  <img src="<?= htmlspecialchars($row['media_content']) ?>" alt="Post" class="post-image">
-                <?php endif; ?>  
-              </div>
-              <div class="post-stats">
-                <div></div>
-                <div>
-                  <?= $row['like_count'] ?> <i class="fas fa-thumbs-up"></i>
-                  <?= $row['comment_count'] ?> comments ·
-                  <?= $row['shares_count'] ?> shares
-                </div>
-              </div>
-              <div class="post-actions">
-                <div class="post-action">
-                  <i class="far fa-thumbs-up"></i>
-                  <span>Like</span>
-                </div>
-                <div class="post-action">
-                  <i class="far fa-comment"></i>
-                  <span>Comment</span>
-                </div>
-                <div class="post-action">
-                  <i class="fas fa-share"></i>
-                  <span>Share</span>
-                </div>
+        <div class="feed-item">
+          <div class="post-header">
+            <img src="default/default_avatar.png" alt="User">
+            <div>
+              <div class="post-author">TestName</div>
+              <div class="post-time">
+                3 hours ago . <i class="fas fa-globe-americas"></i>
               </div>
             </div>
-            <?php
-          }
-        } else {
-          echo '<div class="feed-item">No posts found. Be the first to post!</div>';
-        }
-        ?>
+            <div class="post-menu">
+              <i class="fas fa-ellipsis-h"></i>
+            </div>
+          </div>
+          <div class="post-content">
+            <p class="post-text">
+              This text is just a placeholder. It will be replaced with the actual post content.
+            </p>
+            <img src="default/default_cover.png" alt="Post" class="post-image">
+          </div>
+          <div class="post-stats">
+            <div></div>
+            <div>
+              29 <i class="fas fa-thumbs-up"></i>
+              13 comments ·
+              5 shares
+            </div>
+          </div>
+          <div class="post-actions">
+            <div class="post-action">
+              <i class="far fa-thumbs-up"></i>
+              <span>Like</span>
+            </div>
+            <div class="post-action">
+              <i class="far fa-comment"></i>
+              <span>Comment</span>
+            </div>
+            <div class="post-action">
+              <i class="fas fa-share"></i>
+              <span>Share</span>
+            </div>
+          </div>
+        </div>  
         
+        <div class="feed-item">
+          <div class="post-header">
+            <img src="default/default_avatar.png" alt="User">
+            <div>
+              <div class="post-author">TestName</div>
+              <div class="post-time">
+                3 hours ago . <i class="fas fa-globe-americas"></i>
+              </div>
+            </div>
+            <div class="post-menu">
+              <i class="fas fa-ellipsis-h"></i>
+            </div>
+          </div>
+          <div class="post-content">
+            <p class="post-text">
+              This text is just a placeholder. It will be replaced with the actual post content.
+            </p>
+            <img src="default/default_cover.png" alt="Post" class="post-image">
+          </div>
+          <div class="post-stats">
+            <div></div>
+            <div>
+              29 <i class="fas fa-thumbs-up"></i>
+              13 comments ·
+              5 shares
+            </div>
+          </div>
+          <div class="post-actions">
+            <div class="post-action">
+              <i class="far fa-thumbs-up"></i>
+              <span>Like</span>
+            </div>
+            <div class="post-action">
+              <i class="far fa-comment"></i>
+              <span>Comment</span>
+            </div>
+            <div class="post-action">
+              <i class="fas fa-share"></i>
+              <span>Share</span>
+            </div>
+          </div>
+        </div>        
       </main>
       <aside class="right-sidebar">
         <div class="sidebar-section">Recent Posts</div>
@@ -242,6 +251,20 @@ if($conn->connect_error) {
         }
       });
     </script>
-    <script src="scripts/create_post.js"></script>
+    <script>
+      document.getElementById('post-form').addEventListener('submit', function(e) {
+        const fileInput = document.getElementById('media-upload');
+        const maxSize = 5 * 1024 * 1024; // 5MB in bytes
+
+        for(let file of fileInput.files) {
+          if(file.size > maxSize) {
+            alert('File size exceeds the maximum limit of 5MB.');
+            e.preventDefault();
+            return;
+          }
+        }
+      })
+    </script>
+    <script src="scripts/preview_media.js"></script>
   </body>
 </html>
