@@ -144,90 +144,13 @@ if(!isset($_SESSION['loggedin'])) {
         </div>
         <!-- Aici o sa fie feedul generat -->
         <!-- Exemplu: -->
-        <div class="feed-item">
-          <div class="post-header">
-            <img src="default/default_avatar.png" alt="User">
-            <div>
-              <div class="post-author">TestName</div>
-              <div class="post-time">
-                3 hours ago . <i class="fas fa-globe-americas"></i>
-              </div>
-            </div>
-            <div class="post-menu">
-              <i class="fas fa-ellipsis-h"></i>
-            </div>
-          </div>
-          <div class="post-content">
-            <p class="post-text">
-              This text is just a placeholder. It will be replaced with the actual post content.
-            </p>
-            <img src="default/default_cover.png" alt="Post" class="post-image">
-          </div>
-          <div class="post-stats">
-            <div></div>
-            <div>
-              29 <i class="fas fa-thumbs-up"></i>
-              13 comments ·
-              5 shares
-            </div>
-          </div>
-          <div class="post-actions">
-            <div class="post-action">
-              <i class="far fa-thumbs-up"></i>
-              <span>Like</span>
-            </div>
-            <div class="post-action">
-              <i class="far fa-comment"></i>
-              <span>Comment</span>
-            </div>
-            <div class="post-action">
-              <i class="fas fa-share"></i>
-              <span>Share</span>
-            </div>
-          </div>
-        </div>  
         
-        <div class="feed-item">
-          <div class="post-header">
-            <img src="default/default_avatar.png" alt="User">
-            <div>
-              <div class="post-author">TestName</div>
-              <div class="post-time">
-                3 hours ago . <i class="fas fa-globe-americas"></i>
-              </div>
-            </div>
-            <div class="post-menu">
-              <i class="fas fa-ellipsis-h"></i>
-            </div>
-          </div>
-          <div class="post-content">
-            <p class="post-text">
-              This text is just a placeholder. It will be replaced with the actual post content.
-            </p>
-            <img src="default/default_cover.png" alt="Post" class="post-image">
-          </div>
-          <div class="post-stats">
-            <div></div>
-            <div>
-              29 <i class="fas fa-thumbs-up"></i>
-              13 comments ·
-              5 shares
-            </div>
-          </div>
-          <div class="post-actions">
-            <div class="post-action">
-              <i class="far fa-thumbs-up"></i>
-              <span>Like</span>
-            </div>
-            <div class="post-action">
-              <i class="far fa-comment"></i>
-              <span>Comment</span>
-            </div>
-            <div class="post-action">
-              <i class="fas fa-share"></i>
-              <span>Share</span>
-            </div>
-          </div>
+        <div class="feed-item" id="feed-container">
+
+        </div>
+
+        <div id="loading" style="text-align: center; display: none;">
+          <i class="fas fa-spinner fa-spin"></i> Loading more posts...
         </div>        
       </main>
       <aside class="right-sidebar">
@@ -266,5 +189,6 @@ if(!isset($_SESSION['loggedin'])) {
       })
     </script>
     <script src="scripts/preview_media.js"></script>
+    <script src="scripts/generate_feed.js"></script>
   </body>
 </html>

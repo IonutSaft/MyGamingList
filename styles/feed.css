@@ -254,6 +254,20 @@
   border: 1px solid var(--primary);
 }
 
+.no-posts {
+  text-align: center;
+  padding: 40px;
+  color: var(--secondary-text);
+  font-size: 16px;
+}
+
+.post-media {
+  max-width: 100%;
+  max-height: 500px;
+  border-radius: 8px;
+  margin-top: 10px;
+}
+
 @media (max-width: 1200px) {
   .right-sidebar {
     display: none;
