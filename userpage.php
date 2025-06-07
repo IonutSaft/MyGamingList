@@ -131,7 +131,7 @@ if(!isset($_SESSION['loggedin'])) {
         <!-- Aici o sa fie feedul generat -->
       </main>
       <aside class="right-sidebar">
-        <div class="sidebar-section">Recent Posts</div>
+        <div class="sidebar-section">Suggested users</div>
       </aside>
     </div>
 

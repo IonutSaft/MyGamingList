@@ -1,51 +1,61 @@
 document.addEventListener("DOMContentLoaded", function () {
-  let page = 1;
-  let isLoading = false;
-  const feedContainer = document.getElementById("feed-container");
-  const loadingElement = document.getElementById("loading");
+  const confit = {
+    postsPerPage: 10,
+    scrollThreshold: 100,
+  };
+
+  const state = {
+    page: 1,
+    isLoading: false,
+    hasMore: true,
+  };
+
+  const elements = {
+    container: document.getElementById("feed-container"),
+    loading: document.getElementById("loading"),
+  };
 
   loadPosts();
 
-  window.addEventListener("scroll", function () {
-    if (isLoading) return;
+  window.addEventListener("scroll", handleScroll);
 
-    const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
-    if (scrollTop + clientHeight >= scrollHeight - 100) {
-      page++;
-      loadPosts();
-    }
-  });
+  async function loadPosts() {
+    if (state.isLoading || !state.hasMore) return;
 
-  function loadPosts() {
-    isLoading = true;
-    loadingElement.style.display = "block";
+    state.isLoading = true;
+    elements.loading.style.display = "block";
 
-    fetch("../mygamelist/backend/load_posts.php?page=${page}")
-      .then((response) => {
-        if (!response.ok) throw new Error("Network error");
-        return response.json();
-      })
-      .then((data) => {
-        if (!data.success) throw new Error(data.error);
+    try {
+      const response = await fetch(`backend/load_posts.php?page=${state.page}`);
+      const data = await response.json();
 
-        const posts = data.posts;
+      if (!data.success) {
+        throw new Error(data.error || "Failed to load posts");
+      }
 
-        if (posts.length === 0 && page === 1) {
-          feedContainer.innerHTML =
-            '<div class="no-posts">No posts yet. Be the first to post!</div>';
-          return;
+      if (data.posts.length === 0) {
+        state.hasMore = false;
+        if (state.page === 1) {
+          showNoPostsMessage();
         }
-        posts.forEach((post) => {
-          feedContainer.appendChild(createPostElement(post));
-        });
-      })
-      .catch((error) => {
-        console.error("Error loading posts:", error);
-      })
-      .finally(() => {
-        isLoading = false;
-        loadingElement.style.display = "none";
-      });
+        return;
+      }
+
+      renderPosts(data.posts);
+      state.page++;
+    } catch (error) {
+      console.error("Post loading error:", error);
+      showError(error.message);
+    } finally {
+      state.isLoading = false;
+      elements.loading.style.display = "none";
+    }
+  }
+  function renderPosts(posts) {
+    posts.forEach((post) => {
+      const postElement = createPostElement(post);
+      elements.container.appendChild(postElement);
+    });
   }
 
   function createPostElement(post) {
@@ -53,41 +63,29 @@ document.addEventListener("DOMContentLoaded", function () {
     postElement.className = "feed-item";
     postElement.dataset.postId = post.post_id;
 
-    let postHTML = `
+    postElement.innerHTML = `
       <div class="post-header">
-        <img src="${post.avatar} || 'default/default_avatar.png" alt="${post.username}">
+        <img src="${post.avatar}"
+          onerror="this.src='/mygamelist/default/default_avatar.png'"
+          alt="${post.username}">
         <div>
           <div class="post-author">${post.username}</div>
-          <div class="post-time">${post.time_ago} • <i class="fas fa-globe-americas"></i></div>
+          <div class="post-time">${
+            post.time_ago
+          } • <i class="fas fa-globe-americas"></i></div>
         </div>
         <div class="post-menu">
           <i class="fas fa-ellipsis-h"></i>
         </div>
       </div>
       <div class="post-content">
-        <p class="post-test">${post.text_content}</p>`;
-
-    if (post.media_conte && post.media_content.length > 0) {
-      post.media_content.forEach((media) => {
-        if (media.match(/\.(mp4)$/i)) {
-          postHTML += `
-            <video controls class="post-media">
-              <source src="${media}" type="video/mp4">
-              Your browser does not support the video tag.
-            </video>`;
-        } else {
-          postHTML += `<img src="${media}" class="post-media" loading="lazy">`;
-        }
-      });
-    }
-
-    postHTML += `
+        <p class="post-test">${post.text_content}</p>
+        ${renderMedia(post.media_content)}
       </div>
       <div class="post-stats">
-        <div>${post.like_count || 0} <i class="fas fa-thumbs-up"></i></div>
-        <div>${post.comment_count || 0} comments • ${
-      post.shares_count || 0
-    } shares</div>
+        <div></div>
+        <div>${post.like_count || 1} <i class="fas fa-thumbs-up"></i>
+        ${post.comment_count || 1} comments</div>
       </div>
       <div class="post-actions">
         <div class="post-action like-btn" data-post-id="${post.post_id}">
@@ -98,13 +96,55 @@ document.addEventListener("DOMContentLoaded", function () {
           <i class="fas fa-comment"></i>
           <span>Comment</span>
         </div>
-        <div class="post-action share-btn" data-post-id="${post.post_id}">
-          <i class="fas fa-share"></i>
-          <span>Share</span>
-        </div>
       </div>`;
 
-    postElement.innerHTML = postHTML;
     return postElement;
+  }
+
+  function renderMedia(mediaArray) {
+    if (!mediaArray || mediaArray.length === 0) return "";
+
+    return mediaArray
+      .map((media) => {
+        if (media.match(/\.(mp4)$/i)) {
+          return `
+          <video controls class="post-media">
+            <source src="${media}" type="video/mp4">
+            Your browser doesn't support videdos
+          </video>  
+          `;
+        } else {
+          return `
+          <img src = "${media}" class="post-media" loading="lazy" onerror="this.style.display='none';">
+        `;
+        }
+      })
+      .join("");
+  }
+
+  function handleScroll() {
+    const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
+    if (scrollTop + clientHeight >= scrollHeight - confit.scrollThreshold) {
+      loadPosts();
+    }
+  }
+
+  function showNoPostsMessage() {
+    elements.container.innerHTML = `
+      <div class="no-posts">
+        <i class="fas fa-newspaper"></i>
+        <p>No posts yet. Be the first to share something!</p>
+      </div>
+    `;
+  }
+
+  function showError(message) {
+    const errorEl = document.createElement("div");
+    errorEl.className = "error-message";
+    errorEl.innerHTML = `
+      <i class="fas fa-exclamation-circle"></i>
+      <p>${message}</p>
+    `;
+    elements.container.appendChild(errorEl);
   }
 });

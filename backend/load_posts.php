@@ -32,21 +32,28 @@ try {
   $posts = [];
 
   while($row = $result->fetch_assoc()) {
-    $row['media_content'] = json_decode($row['media_content'] ?? '[]', true);
+
+    $row['avatar'] =!empty($row['avatar']) ? '/mygamelist/avatars/' . $row['avatar'] : 'mygamelist/default/default_avatar.png';
+
+    $media = json_decode($row['media_content'] ?? '[]', true);
+    $row['media_content'] = array_map(function($path) {
+      return '/mygamelist/' . $path;
+    }, $media);
     $row['time_ago'] = time_ago($row['post_date']);
     $posts[] = $row;
   }
 
-  die(json_encode([
+  echo json_encode([
     'success' => true,
     'posts' => $posts
-  ]));
+  ]);
 } catch (Exception $e) {
-  die(json_encode([
+  http_response_code($e->getCode() ?: 500);
+  echo json_encode([
     'success' => false,
     'error' => $e->getMessage(),
-    'code' => $e->getCode()
-  ]));
+  ]);
+  exit();
 }
 
 
