@@ -13,6 +13,7 @@ if(!isset($_SESSION['loggedin'])) {
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
+    <link rel="stylesheet" href="styles/userpage.css">
     <link rel="stylesheet" href="styles/general.css" />
     <link rel="stylesheet" href="styles/header.css" />
     <link rel="stylesheet" href="styles/sidebars.css" />
@@ -122,13 +123,8 @@ if(!isset($_SESSION['loggedin'])) {
           <div class="sidebar-title">Trending Games</div>
         </div>
       </aside>
-      <main class="feed">
-        <div class="composer">Creating post</div>
-        <div class="feed-sort">
-          <div class="sort-option active">For You</div>
-          <div class="sort-option">Following</div>
-        </div>
-        <!-- Aici o sa fie feedul generat -->
+      <main class="user">
+        
       </main>
       <aside class="right-sidebar">
         <div class="sidebar-section">Suggested users</div>

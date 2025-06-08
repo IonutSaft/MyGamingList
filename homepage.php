@@ -7,7 +7,30 @@ if(!isset($_SESSION['loggedin'])) {
   exit();
 }
 
-if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['content'])) {
+$errors = [];
+
+if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['comment_content'])) {
+  $post_id = (int)$_POST['post_id'];
+  $user_id = $_SESSION['user_id'];
+  $content = trim($_POST['comment_content']);
+
+  if(!empty($content)) {
+    $stmt = $conn->prepare("INSERT INTO comment (user_id, post_id, content, comment_date) VALUES (?, ?, ?, NOW())");
+    $stmt->bind_param("iis", $user_id, $post_id, $content);
+    $stmt->execute();
+    $stmt->close();
+
+    $update_stmt = $conn->prepare("UPDATE post SET comment_count = comment_count + 1 WHERE post_id = ?");
+    $update_stmt->bind_param("i", $post_id);
+    $update_stmt->execute();
+    $update_stmt->close();
+    header("Location: homepage.php");
+    exit();
+  }
+}
+
+
+if($_SERVER['REQUEST_METHOD'] === 'POST') {
   $content = trim($_POST['content']);
   $user_id = $_SESSION['user_id'];
 
@@ -27,10 +50,23 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['content'])) {
   }
   $media_content = implode(', ', $media_paths);
 
-  $stmt = $conn->prepare("INSERT INTO post (user_id, text_content, media_content, post_date) VALUES (?, ?, ?, NOW())");
-  $stmt->bind_param("iss", $user_id, $content, $media_content);
-  $stmt->execute();
-  $stmt->close();
+  if(empty($content) && empty($media_content)) {
+    $errors['content'] = "A text content or a media content is required.";
+  }
+
+  if(empty($errors)) {
+    $stmt = $conn->prepare("INSERT INTO post (user_id, text_content, media_content, post_date) VALUES (?, ?, ?, NOW())");
+    $stmt->bind_param("iss", $user_id, $content, $media_content);
+    $stmt->execute();
+    $stmt->close();
+    $_SESSION['saved'] = "Post saved successfully.";
+  }
+
+  if(!empty($errors)) {
+    $_SESSION['errors'] = $errors;
+    header("Location: homepage.php");
+    exit();
+  }
 }
 
 if(isset($_GET['like_post'])) {
@@ -57,23 +93,7 @@ if(isset($_GET['like_post'])) {
   exit();
 }
 
-if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['comment_content'])) {
-  $post_id = (int)$_POST['post_id'];
-  $user_id = $_SESSION['user_id'];
-  $content = trim($_POST['comment_content']);
 
-  if(!empty($content)) {
-    $stmt = $conn->prepare("INSERT INTO comment (user_id, post_id, content, comment_date) VALUES (?, ?, ?, NOW())");
-    $stmt->bind_param("iis", $user_id, $post_id, $content);
-    $stmt->execute();
-    $stmt->close();
-
-    $update_stmt = $conn->prepare("UPDATE post SET comment_count = comment_count + 1 WHERE post_id = ?");
-    $update_stmt->bind_param("i", $post_id);
-    $update_stmt->execute();
-    $update_stmt->close();
-  }
-}
 
 $posts = [];
 $post_stmt = $conn->prepare("
@@ -88,6 +108,26 @@ while($row = $result->fetch_assoc()) {
   $posts[] = $row;
 }
 $post_stmt->close();
+
+$comments = [];
+$comment_stmt = $conn->prepare("
+  SELECT c.*, u.username, u.avatar
+  FROM comment c
+  JOIN user u on c.user_id = u.user_id
+  ORDER BY c.comment_date DESC
+"); 
+$comment_stmt->execute();
+$result = $comment_stmt->get_result();
+while($row = $result->fetch_assoc()) {
+  $comments[] = $row;
+}
+$comment_stmt->close();
+
+if(!empty($errors)) {
+  $_SESSION['errors'] = $errors;
+  header("Location: homepage.php");
+  exit();
+}
 ?>
 
 <!DOCTYPE html>
@@ -254,8 +294,16 @@ $post_stmt->close();
                     <?= $time_ago ?> · <i class="fas fa-globe-americas"></i>
                   </div>
                 </div>
-                <div class="post-menu">
+                <div class="post-menu" id="postMenu">
                   <i class="fas fa-ellipsis-h"></i>
+                  <div class="post-options" id="postOptions">
+                    <button class="post-option">
+                      <span>Hide</span>
+                    </button>
+                    <button class="post-option">
+                      <span>Report</span>
+                    </button>
+                  </div>
                 </div>
               </div>
 
@@ -289,10 +337,48 @@ $post_stmt->close();
                 </div>
               </div>
               <form method="POST" class="comment-form" style="display: none;">
+                <a class="user-card" href="http://localhost/mygamelist/userpage.php">
+                <img src="<?php echo $_SESSION["avatar"]; ?>" alt="Profile">
+                <div>
+                  <div class="post-author"><?php echo isset($_SESSION['username']) ? htmlspecialchars($_SESSION['username']) : 'Guest'; ?></div>
+                </div>
+                </a>
                 <input type="hidden" name="post_id" value="<?= $post['post_id'] ?>">
-                <input type="text" name="comment_content" placeholder="Write a comment..." required>
+                <textarea name="comment_content" rows="1" placeholder="Write a comment..."></textarea>
                 <button type="submit" class="post-button">Post</button>
-             </form>
+              </form>
+
+              <div class="comments-list" style="display: none;">
+                <?php foreach($comments as $comment):
+                  if($comment['post_id'] == $post['post_id']):
+                    $comment_date = new DateTime($comment['comment_date']);
+                    $now = new DateTime();
+                    $interval = $now->diff($comment_date);
+
+                    if($interval->y) $time_ago = $interval->y . ' years ago';
+                    elseif ($interval->m) $time_ago = $interval->m . ' months ago';
+                    elseif ($interval->d) $time_ago = $interval->d . ' days ago';
+                    elseif ($interval->h) $time_ago = $interval->h . ' hours ago';
+                    elseif ($interval->i) $time_ago = $interval->i . ' minutes ago';
+                    else $time_ago = 'Just now';
+                  ?>
+                    <div class="comment">
+                      <a class="user-card" href="http://localhost/mygamelist/userpage.php">
+                      <img src="<?= $comment['avatar'] ?>" alt="Profile">
+                      <div>
+                        <div class="post-author"><?= $comment['username'] ?></div>
+                        <div class="post-time"><?= $time_ago ?></div>
+                      </div>
+                      </a>
+                      <div>
+                        <div >
+                          <p class="comment-text"><?= $comment['content'] ?></p>
+                        </div>
+                      </div>
+                    </div>
+                  <?php endif; ?>
+                <?php endforeach; ?>
+              </div>
             </div>
           <?php endforeach; ?>
         <?php endif; ?>
@@ -320,6 +406,14 @@ $post_stmt->close();
       });
     </script>
     <script>
+      document.querySelectorAll('.post-menu').forEach(trigger => {
+        trigger.addEventListener('click', () => {
+          const form = trigger.closest('.feed-item').querySelector('.post-options');
+          form.style.display = form.style.display === 'none' ? 'block' : 'none';
+        });
+      })
+    </script>
+    <script>
       document.getElementById('post-form').addEventListener('submit', function(e) {
         const fileInput = document.getElementById('media-upload');
         const maxSize = 5 * 1024 * 1024; // 5MB in bytes
@@ -337,7 +431,9 @@ $post_stmt->close();
       document.querySelectorAll('.comment-trigger').forEach(trigger => {
         trigger.addEventListener('click', () => {
           const form = trigger.closest('.feed-item').querySelector('.comment-form');
-          form.style.display = form.style.display === 'none' ? 'block' : 'none';
+          form.style.display = form.style.display === 'none' ? 'flex' : 'none';
+          const commentsList = trigger.closest('.feed-item').querySelector('.comments-list');
+          commentsList.style.display = commentsList.style.display === 'none' ? 'block' : 'none';
         });
       });
     </script>
