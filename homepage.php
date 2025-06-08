@@ -1,10 +1,93 @@
 <?php
 session_start();
+require_once 'backend/db_connect.php';
 
 if(!isset($_SESSION['loggedin'])) {
   header("Location: loginpage.php");
   exit();
 }
+
+if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['content'])) {
+  $content = trim($_POST['content']);
+  $user_id = $_SESSION['user_id'];
+
+  $media_paths = [];
+  if(!empty($_FILES['media']['name'][0])) {
+    foreach($_FILES['media']['tmp_name'] as $key => $tmp_name) {
+      $file_name = $_FILES['media']['name'][$key];
+      $file_tmp = $_FILES['media']['tmp_name'][$key];
+      $file_ext = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
+      $new_name = uniqid() . '.' . $file_ext;
+      $upload_path = 'uploads/' . $new_name;
+
+      if(move_uploaded_file($file_tmp, $upload_path)) {
+        $media_paths[] = $upload_path;
+      }
+    }
+  }
+  $media_content = implode(', ', $media_paths);
+
+  $stmt = $conn->prepare("INSERT INTO post (user_id, text_content, media_content, post_date) VALUES (?, ?, ?, NOW())");
+  $stmt->bind_param("iss", $user_id, $content, $media_content);
+  $stmt->execute();
+  $stmt->close();
+}
+
+if(isset($_GET['like_post'])) {
+  $post_id = (int)$_GET['like_post'];
+  $user_id = $_SESSION['user_id'];
+
+  $check_stmt = $conn->prepare("SELECT * FROM `like` WHERE user_id = ? and post_id = ?");
+  $check_stmt->bind_param("ii", $user_id, $post_id);
+  $check_stmt->execute();
+
+  if($check_stmt->get_result()->num_rows == 0) {
+    $like_stmt = $conn->prepare("INSERT INTO `like` (user_id, post_id) VALUES (?, ?)");
+    $like_stmt->bind_param("ii", $user_id, $post_id);
+    $like_stmt->execute();
+    $like_stmt->close();
+
+    $update_stmt = $conn->prepare("UPDATE post SET like_count = like_count + 1 WHERE post_id = ?");
+    $update_stmt->bind_param("i", $post_id);
+    $update_stmt->execute();
+    $update_stmt->close();
+  }
+  $check_stmt->close();
+  header("Location: homepage.php");
+  exit();
+}
+
+if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['comment_content'])) {
+  $post_id = (int)$_POST['post_id'];
+  $user_id = $_SESSION['user_id'];
+  $content = trim($_POST['comment_content']);
+
+  if(!empty($content)) {
+    $stmt = $conn->prepare("INSERT INTO comment (user_id, post_id, content, comment_date) VALUES (?, ?, ?, NOW())");
+    $stmt->bind_param("iis", $user_id, $post_id, $content);
+    $stmt->execute();
+    $stmt->close();
+
+    $update_stmt = $conn->prepare("UPDATE post SET comment_count = comment_count + 1 WHERE post_id = ?");
+    $update_stmt->bind_param("i", $post_id);
+    $update_stmt->execute();
+    $update_stmt->close();
+  }
+}
+
+$posts = [];
+$post_stmt = $conn->prepare("
+  SELECT p.*, u.username, u.avatar
+  FROM post p
+  JOIN user u on p.user_id = u.user_id
+  ORDER BY p.post_date DESC
+");
+$post_stmt->execute();
+$result = $post_stmt->get_result();
+while($row = $result->fetch_assoc()) {
+  $posts[] = $row;
+}
+$post_stmt->close();
 ?>
 
 <!DOCTYPE html>
@@ -111,7 +194,7 @@ if(!isset($_SESSION['loggedin'])) {
       </aside>
       <main class="feed">
         <div class="composer">
-          <form id="post-form" action="http://localhost/mygamelist/backend/create_post.php" method="POST" enctype="multipart/form-data">
+          <form id="post-form" action="http://localhost/mygamelist/homepage.php" method="POST" enctype="multipart/form-data">
             <?php
             if(isset($_SESSION["errors"])) {
               echo '<div class="error-message">';
@@ -144,14 +227,76 @@ if(!isset($_SESSION['loggedin'])) {
         </div>
         <!-- Aici o sa fie feedul generat -->
         <!-- Exemplu: -->
-        
-        <div class="feed-item" id="feed-container">
+         
+        <?php if(empty($posts)): ?>
+          <div class="no-posts">No posts found. Be the first to post!</div>
+        <?php else: ?>
+          <?php foreach($posts as $post):
+            $post_date = new DateTime($post['post_date']);
+            $now = new DateTime();
+            $interval = $now->diff($post_date);
 
-        </div>
+            if($interval->y) $time_ago = $interval->y . ' years ago';
+            elseif ($interval->m) $time_ago = $interval->m . ' months ago';
+            elseif ($interval->d) $time_ago = $interval->d . ' days ago';
+            elseif ($interval->h) $time_ago = $interval->h . ' hours ago';
+            elseif ($interval->i) $time_ago = $interval->i . ' minutes ago';
+            else $time_ago = 'Just now';
 
-        <div id="loading" style="text-align: center; display: none;">
-          <i class="fas fa-spinner fa-spin"></i> Loading more posts...
-        </div>        
+            $media_files = $post['media_content'] ? explode(', ', $post['media_content']) : [];
+            ?>
+            <div class="feed-item">
+              <div class="post-header">
+                <img src="<?= htmlspecialchars($post['avatar']) ?>" alt="User">
+                <div>
+                  <div class="post-author"><?= htmlspecialchars($post['username']) ?></div>
+                  <div class="post-time">
+                    <?= $time_ago ?> · <i class="fas fa-globe-americas"></i>
+                  </div>
+                </div>
+                <div class="post-menu">
+                  <i class="fas fa-ellipsis-h"></i>
+                </div>
+              </div>
+
+              <div class="post-content">
+                <p class="post-text"><?= htmlspecialchars($post['text_content']) ?></p>
+                <?php foreach($media_files as $media):
+                  if(pathinfo($media, PATHINFO_EXTENSION) === 'mp4'): ?>
+                    <video controls class="post-meida">
+                      <source src="<?= $media ?>" type="video/mp4">
+                    </video>
+                  <?php else: ?>
+                    <img src="<?= $media ?>" alt="Post" class="post-media">
+                  <?php endif;
+                endforeach; ?>
+              </div>
+              <div class="post-stats">
+                <div></div>
+                <div>
+                  <?= $post['like_count'] ?> <i class="fas fa-thumbs-up"></i> <?= $post['comment_count'] ?> comments
+                </div>
+              </div>
+
+              <div class="post-action like-btn">
+                <a href="homepage.php?like_post=<?= $post['post_id'] ?>" class="post-action">
+                  <i class="far fa-thumbs-up"></i>
+                  <span>Like</span>
+                </a>
+                <div class="post-action comment-trigger">
+                  <i class="far fa-comment"></i>
+                  <span>Comments</span>
+                </div>
+              </div>
+              <form method="POST" class="comment-form" style="display: none;">
+                <input type="hidden" name="post_id" value="<?= $post['post_id'] ?>">
+                <input type="text" name="comment_content" placeholder="Write a comment..." required>
+                <button type="submit" class="post-button">Post</button>
+             </form>
+            </div>
+          <?php endforeach; ?>
+        <?php endif; ?>
+
       </main>
       <aside class="right-sidebar">
         <div class="sidebar-section">Suggested users</div>
@@ -188,7 +333,14 @@ if(!isset($_SESSION['loggedin'])) {
         }
       })
     </script>
+    <script>
+      document.querySelectorAll('.comment-trigger').forEach(trigger => {
+        trigger.addEventListener('click', () => {
+          const form = trigger.closest('.feed-item').querySelector('.comment-form');
+          form.style.display = form.style.display === 'none' ? 'block' : 'none';
+        });
+      });
+    </script>
     <script src="scripts/preview_media.js"></script>
-    <script src="scripts/generate_feed.js"></script>
   </body>
 </html>
