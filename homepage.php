@@ -51,7 +51,9 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
   $media_content = implode(', ', $media_paths);
 
   if(empty($content) && empty($media_content)) {
-    $errors['content'] = "A text content or a media content is required.";
+    $errors['content'] = "The post cannot be empty.";
+  } elseif(empty($content)) {
+    $errors['content'] = "The post content cannot be empty.";
   }
 
   if(empty($errors)) {
@@ -87,13 +89,31 @@ if(isset($_GET['like_post'])) {
     $update_stmt->bind_param("i", $post_id);
     $update_stmt->execute();
     $update_stmt->close();
+  } else {
+    $dislike_stmt = $conn->prepare("DELETE FROM `like` WHERE user_id = ? and post_id = ?");
+    $dislike_stmt->bind_param("ii", $user_id, $post_id);
+    $dislike_stmt->execute();
+    $dislike_stmt->close();
+
+    $update_stmt = $conn->prepare("UPDATE post SET like_count = like_count - 1 WHERE post_id = ?");
+    $update_stmt->bind_param("i", $post_id);
+    $update_stmt->execute();
+    $update_stmt->close();
   }
   $check_stmt->close();
   header("Location: homepage.php");
   exit();
 }
 
-
+$user = [];
+$user_stmt = $conn->prepare("SELECT * FROM user WHERE user_id = ?");
+$user_stmt->bind_param("i", $_SESSION['user_id']);
+$user_stmt->execute();
+$result = $user_stmt->get_result();
+while($row = $result->fetch_assoc()) {
+  $user = $row;
+}
+$user_stmt->close();
 
 $posts = [];
 $post_stmt = $conn->prepare("
@@ -190,7 +210,7 @@ if(!empty($errors)) {
           <i class="fas fa-caret-down"></i>
         </span>
         <div class="dropdown-menu" id="dropdownMenu">
-          <a href="http://localhost/mygamelist/userpage.php" class="dropdown-item">
+          <a href="userpage.php?id=<?= $_SESSION['user_id'] ?>" class="dropdown-item">
             <i class="fas fa-user"></i>
             <span>Profile</span>
           </a>
@@ -217,8 +237,8 @@ if(!empty($errors)) {
     <div class="container">
       <aside class="sidebar">
         <div class="sidebar-section">
-          <a class="user-card" href="http://localhost/mygamelist/userpage.php">
-            <img src="<?php echo $_SESSION["avatar"]; ?>" alt="Profile">
+          <a class="user-card" href="userpage.php?id=<?= $_SESSION['user_id'] ?>">
+            <img src="<?= $user["avatar"] ?>" alt="Profile">
             <div>
               <div class="post-author"><?php echo isset($_SESSION['username']) ? htmlspecialchars($_SESSION['username']) : 'Guest'; ?></div>
               <div class="post-time">See your profile</div>
@@ -287,9 +307,11 @@ if(!empty($errors)) {
             ?>
             <div class="feed-item">
               <div class="post-header">
-                <img src="<?= htmlspecialchars($post['avatar']) ?>" alt="User">
+                <a href="userpage.php?id=<?= $post['user_id'] ?>" style="display: contents;">
+                  <img src="<?= htmlspecialchars($post['avatar']) ?>" alt="User">
+                </a>
                 <div>
-                  <div class="post-author"><?= htmlspecialchars($post['username']) ?></div>
+                  <a href="userpage.php?id=<?= $post['user_id'] ?>" class="post-author"><?= htmlspecialchars($post['username']) ?></a>
                   <div class="post-time">
                     <?= $time_ago ?> · <i class="fas fa-globe-americas"></i>
                   </div>
@@ -337,8 +359,8 @@ if(!empty($errors)) {
                 </div>
               </div>
               <form method="POST" class="comment-form" style="display: none;">
-                <a class="user-card" href="http://localhost/mygamelist/userpage.php">
-                <img src="<?php echo $_SESSION["avatar"]; ?>" alt="Profile">
+                <a class="user-card" href="userpage.php?id=<?= $_SESSION['user_id'] ?>">
+                <img src="<?= $user["avatar"] ?>" alt="Profile">
                 <div>
                   <div class="post-author"><?php echo isset($_SESSION['username']) ? htmlspecialchars($_SESSION['username']) : 'Guest'; ?></div>
                 </div>
@@ -363,7 +385,7 @@ if(!empty($errors)) {
                     else $time_ago = 'Just now';
                   ?>
                     <div class="comment">
-                      <a class="user-card" href="http://localhost/mygamelist/userpage.php">
+                      <a class="user-card" href="userpage.php?id=<?= $comment['user_id'] ?>">
                       <img src="<?= $comment['avatar'] ?>" alt="Profile">
                       <div>
                         <div class="post-author"><?= $comment['username'] ?></div>
@@ -371,9 +393,7 @@ if(!empty($errors)) {
                       </div>
                       </a>
                       <div>
-                        <div >
-                          <p class="comment-text"><?= $comment['content'] ?></p>
-                        </div>
+                        <p class="comment-text"><?= $comment['content'] ?></p>
                       </div>
                     </div>
                   <?php endif; ?>

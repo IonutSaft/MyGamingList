@@ -149,6 +149,8 @@
 
 .post-author {
   font-weight: 600;
+  color: var(--text-color);
+  text-decoration: none;
 }
 
 .post-time {

@@ -2,3 +2,562 @@
   flex: 1;
   max-width: 680px;
 }
+/* Profile Header */
+.profile-header {
+  background-color: var(--elements-bg-color);
+  border-radius: 10px;
+  margin-bottom: 20px;
+  box-shadow: 0 1px 2px var(--shadow);
+  overflow: hidden;
+}
+
+.cover-photo {
+  position: relative;
+}
+
+.edit-cover {
+  position: absolute;
+  bottom: 15px;
+  right: 15px;
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: opacity 0.2s;
+  opacity: 0;
+}
+
+.cover-photo:hover .edit-cover {
+  opacity: 1;
+}
+
+.cover-photo img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+.profile-info {
+  padding: 20px;
+  position: relative;
+}
+
+.profile-main {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+.profile-avatar {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid var(--elements-bg-color);
+  margin-top: -60px;
+  background-color: var(--elements-bg-color);
+}
+
+.avatar-container {
+  position: relative;
+  display: inline-block;
+}
+.edit-avatar {
+  position: absolute;
+  bottom: 5px;
+  right: 5px;
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  border: none;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.avatar-container:hover .edit-avatar {
+  opacity: 1;
+}
+
+.profile-details {
+  flex: 1;
+}
+
+.profile-name {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.profile-bio {
+  color: var(--secondary-text);
+  margin-bottom: 16px;
+  font-size: 15px;
+}
+
+.profile-stats {
+  display: flex;
+  gap: 20px;
+}
+
+.stat {
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.stat:hover {
+  color: var(--primary);
+}
+
+.stat-number {
+  font-weight: 600;
+  margin-right: 4px;
+}
+
+.stat-label {
+  color: var(--secondary-text);
+  font-size: 14px;
+}
+
+.profile-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.follow-btn {
+  font-family: inherit;
+  padding: 8px 24px;
+  background-color: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 20px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.follow-btn:hover {
+  background-color: var(--secondary);
+}
+
+.report-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: var(--header-color);
+  color: var(--secondary-text);
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.report-btn:hover {
+  background-color: var(--hover);
+  color: #e41e3f;
+}
+
+/* Profile Navigation */
+.profile-nav {
+  display: flex;
+  background-color: var(--elements-bg-color);
+  border-radius: 10px;
+  margin-bottom: 20px;
+  box-shadow: 0 1px 2px var(--shadow);
+}
+
+.profile-nav-btn {
+  flex: 1;
+  padding: 12px;
+  background: none;
+  border: none;
+  color: var(--secondary-text);
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.2s;
+  transition: color 0.3s ease, background-color 0.3s ease;
+}
+
+.profile-nav-btn.active {
+  color: var(--text-color);
+  border-bottom: 3px solid var(--primary);
+}
+
+.profile-nav-btn:hover:not(.active) {
+  background-color: var(--hover);
+}
+
+.profile-nav-btn:not(.active):hover {
+  background-color: var(--hover);
+  color: var(--text-color);
+}
+
+.profile-nav-btn i {
+  transition: transform 0.3s ease;
+}
+
+.profile-nav-btn:hover i {
+  transform: scale(1.1);
+}
+
+/* Profile Content Sections */
+.profile-content {
+  display: block;
+}
+
+.profile-content.hidden {
+  display: none;
+}
+
+.no-games {
+  text-align: center;
+  padding: 40px;
+  background-color: var(--elements-bg-color);
+  border-radius: 10px;
+  color: var(--secondary-text);
+}
+
+.no-games i {
+  font-size: 40px;
+  margin-bottom: 16px;
+  opacity: 0.5;
+}
+
+.no-games p {
+  font-size: 16px;
+}
+
+/* Games List */
+.games-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px;
+}
+
+.game-card {
+  background-color: var(--elements-bg-color);
+  border-radius: 10px;
+  padding: 16px;
+  display: flex;
+  gap: 16px;
+  transition: transform 0.2s;
+}
+
+.game-card:hover {
+  transform: translateY(-2px);
+}
+
+.game-cover {
+  width: 80px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.game-info {
+  flex: 1;
+}
+
+.game-title {
+  font-size: 16px;
+  margin-bottom: 8px;
+}
+
+.game-meta {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 8px;
+  font-size: 14px;
+  color: var(--secondary-text);
+}
+
+.game-meta i {
+  margin-right: 4px;
+  color: var(--primary);
+}
+
+.game-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.game-tag {
+  background-color: var(--header-color);
+  color: var(--secondary-text);
+  padding: 4px 8px;
+  border-radius: 20px;
+  font-size: 12px;
+}
+
+/* Active content state */
+.profile-content {
+  display: none;
+}
+
+.profile-content.active {
+  display: block;
+}
+
+/* Animation Styles */
+.profile-content {
+  display: none;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.profile-content.active {
+  display: block;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.profile-nav-btn {
+  position: relative;
+  overflow: hidden;
+}
+
+.profile-nav-btn::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background-color: var(--primary);
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.3s ease;
+}
+
+.profile-nav-btn.active::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+/* Enhanced Game Card Animation */
+.game-card {
+  /* ... existing styles ... */
+  transform: scale(1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.game-card:hover {
+  transform: scale(1.02);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.edit-profile {
+  background: var(--elements-bg-color);
+  color: var(--text-color);
+  border: 1px solid var(--border-color);
+  padding: 8px 16px;
+  border-radius: 20px;
+  transition: all 0.2s;
+}
+.edit-profile:hover {
+  background: var(--hover);
+}
+
+.profile-stats {
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px solid var(--border-color);
+}
+
+/* Bio Section */
+.profile-bio {
+  background: var(--elements-bg-color);
+  padding: 12px;
+  border-radius: 8px;
+  margin: 10px 0;
+  min-height: 50px;
+}
+.profile-bio[contenteditable="true"] {
+  outline: 2px solid var(--primary);
+}
+
+.profile-content .feed-item {
+  margin-bottom: 20px;
+  background: var(--elements-bg-color);
+  border-radius: 10px;
+  padding: 16px;
+  box-shadow: 0 1px 2px var(--shadow);
+}
+
+/* Delete Option */
+.post-option.delete-post {
+  color: #e74c3c;
+}
+.post-option.delete-post:hover {
+  background: rgba(231, 76, 60, 0.1);
+}
+
+/* No Posts State */
+.no-posts {
+  text-align: center;
+  padding: 40px;
+  color: var(--secondary-text);
+}
+.no-posts i {
+  font-size: 40px;
+  margin-bottom: 15px;
+  opacity: 0.6;
+}
+.no-posts p {
+  font-size: 16px;
+}
+
+/* Edit Button Styles */
+.edit-cover,
+.edit-avatar {
+  position: absolute;
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.edit-cover {
+  bottom: 15px;
+  right: 15px;
+  padding: 8px 12px;
+}
+
+.edit-avatar {
+  bottom: 5px;
+  right: 5px;
+  width: 30px;
+  height: 30px;
+  justify-content: center;
+  border-radius: 50%;
+}
+
+/* Bio Editor */
+.editable-bio {
+  width: 100%;
+  min-height: 100px;
+  padding: 12px;
+  border-radius: 8px;
+  background: var(--elements-bg-color);
+  color: var(--text-color);
+  border: 2px solid var(--primary);
+  resize: vertical;
+  font-family: inherit;
+}
+
+.save-btn {
+  margin-top: 10px;
+  padding: 8px 16px;
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.save-btn:hover {
+  background: var(--secondary);
+}
+
+/* Preview Styles */
+.image-preview {
+  max-width: 100%;
+  max-height: 300px;
+  display: block;
+  margin: 10px auto;
+  border-radius: 8px;
+  border: 2px dashed var(--primary);
+  object-fit: contain;
+}
+
+/* Preview Container */
+#avatar-preview-container,
+#cover-preview-container {
+  position: relative;
+  text-align: center;
+  margin-top: 10px;
+  padding: 10px;
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 8px;
+}
+
+/* For avatar preview specifically */
+#avatar-preview-container .image-preview {
+  max-height: 150px;
+  width: auto;
+  border-radius: 50%;
+}
+
+/* Fade-in animation for new content */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.profile-content.active {
+  animation: fadeIn 0.4s ease forwards;
+}
+
+@media (max-width: 1200px) {
+  .right-sidebar {
+    display: none;
+  }
+}
+
+@media (max-width: 900px) {
+  .sidebar {
+    display: none;
+  }
+
+  .container {
+    padding: 20px 0;
+  }
+
+  .user {
+    max-width: 100%;
+    padding: 0 16px;
+  }
+
+  .search-container {
+    display: none;
+  }
+}
+
+@media (max-width: 600px) {
+  .composer-action span {
+    display: none;
+  }
+
+  .composer-action {
+    padding: 8px;
+  }
+
+  .post-action span {
+    display: none;
+  }
+
+  .user-name {
+    display: none;
+  }
+}

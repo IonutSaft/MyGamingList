@@ -1,10 +1,81 @@
 <?php
 session_start();
+require_once 'backend/db_connect.php';
 
 if(!isset($_SESSION['loggedin'])) {
   header("Location: loginpage.php");
   exit();
 }
+
+
+$current_user_id = $_SESSION['user_id'];
+$profile_user_id = isset($_GET['id']) ? (int)$_GET['id'] : $current_user_id;
+
+$is_own_profile = ($current_user_id == $profile_user_id);
+
+
+$stmt = $conn->prepare("SELECT * FROM user WHERE user_id = ?");
+$stmt->bind_param("i", $profile_user_id);
+$stmt->execute();
+$result = $stmt->get_result();
+$profile_user = $result->fetch_assoc();
+
+
+if(!$profile_user) {
+  die("User not found");
+  exit();
+}
+
+$post_count = $conn->query("SELECT COUNT(*) FROM post WHERE user_id = $profile_user_id")->fetch_row()[0];
+$follower_count = $conn->query("SELECT COUNT(*) FROM follow WHERE followed_user_id = $profile_user_id")->fetch_row()[0];
+$following_count = $conn->query("SELECT COUNT(*) FROM follow WHERE following_user_id = $profile_user_id")->fetch_row()[0];
+
+$is_following = false;
+if(!$is_own_profile) {
+  $check_follow = $conn->prepare("SELECT * FROM follow WHERE following_user_id = ? AND followed_user_id = ?");
+  $check_follow->bind_param("ii", $current_user_id, $profile_user_id);
+  $check_follow->execute();
+
+  if($check_follow->get_result()->num_rows > 0) {
+    $is_following = true;
+  } else {
+    $is_following = false;
+  }
+
+  $check_follow->close();
+}
+
+$stmt->close();
+
+$posts=[];
+$post_stmt = $conn->prepare("
+  SELECT p.*, u.username, u.avatar
+  FROM post p
+  JOIN user u on p.user_id = u.user_id
+  WHERE p.user_id = ?
+  ORDER BY p.post_date DESC
+");
+$post_stmt->bind_param("i", $profile_user_id);
+$post_stmt->execute();
+$result = $post_stmt->get_result();
+while($row = $result->fetch_assoc()) {
+  $posts[] = $row;
+}
+$post_stmt->close();
+
+$comments = [];
+$comment_stmt = $conn->prepare("
+  SELECT c.*, u.username, u.avatar
+  FROM comment c  
+  JOIN user u on c.user_id = u.user_id
+  ORDER BY c.comment_date DESC
+"); 
+$comment_stmt->execute();
+$result = $comment_stmt->get_result();
+while($row = $result->fetch_assoc()) {
+  $comments[] = $row;
+}
+$comment_stmt->close();
 ?>
 
 <!DOCTYPE html>
@@ -124,27 +195,338 @@ if(!isset($_SESSION['loggedin'])) {
         </div>
       </aside>
       <main class="user">
-        
+        <div class="profile-header">
+          <div class="cover-photo">
+            <img src="<?= htmlspecialchars($profile_user['cover'] ?? '') ?>" alt="Cover Photo" id="cover-image">
+            <?php if($is_own_profile): ?>
+              <label for="cover-upload" class="edit-cover">
+                <i class="fas fa-camera"></i> Edit Cover
+                <input type="file" id="cover-upload" accept="image/*" style="display:none;">
+              </label>
+            <?php endif; ?>
+          </div>
+
+          <div class="profile-info">
+            <div class="profile-main">
+              <div class="avatar-container">
+                <img src="<?= htmlspecialchars($profile_user['avatar'] ?? '') ?>" alt="Profile Picture" class="profile-avatar" id="avatar-image">
+                <?php if($is_own_profile): ?>
+                  <lable for="avatar-upload" class="edit-avatar" >
+                    <i class="fas fa-camera"></i>
+                    <input type="file" id="avatar-upload" accept="image/*" style="display:none;">
+                  </lable>
+                <?php endif; ?>
+              </div>
+
+              <div class="profile-details">
+                <h1 class="profile-name"><?= htmlspecialchars($profile_user['username'] ?? 'Error') ?></h1>
+                <?php if($is_own_profile): ?>
+                  <textarea id="profile-bio" class="editable-bio" placeholder="Tell others about yourself...">
+                    <?= htmlspecialchars($profile_user['description'] ?? '') ?>
+                  </textarea>
+                  <button class="save-btn" id="save-bio">Save</button>
+                <?php else: ?>
+                  <p class="profile-bio"><?= htmlspecialchars($profile_user['description'] ?? '') ?></p>
+                <?php endif; ?>
+                <div class="profile-stats">
+                  <div class="stat">
+                    <span class="stat-number"><?= $post_count ?></span>
+                    <span class="stat-label">Posts</span>
+                  </div>
+                  <div class="stat">
+                    <span class="stat-number"><?= $follower_count ?></span>
+                    <span class="stat-label">Followers</span>
+                  </div>
+                  <div class="stat">
+                    <span class="stat-number"><?= $following_count ?></span>
+                    <span class="stat-label">Following</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="profile-actions">
+              <?php if($is_own_profile): ?>
+                <button class="edit-profile">Edit Profile</button>
+              <?php else: ?>
+                <button class="follow-btn <?= $is_following ? 'following' : '' ?>" data-user-id="<?= $profile_user_id ?>">
+                  <?= $is_following ? 'Following' : 'Follow' ?>
+                </button>
+                <button class="report-btn">
+                  <i class="fas fa-flag"></i>
+                </button>
+              <?php endif; ?>
+            </div>
+          </div>
+        </div>
+
+        <!-- Profile Navigation -->
+        <div class="profile-nav">
+          <button class="profile-nav-btn active" data-target="posts-content">
+            <i class="fas fa-scroll"></i> Posts
+          </button>
+          <button class="profile-nav-btn" data-target="games-content">
+            <i class="fas fa-gamepad"></i> Games
+          </button>
+        </div>
+
+        <!-- Posts Section (visible by default) -->
+        <div class="profile-content" id="posts-content">
+          
+        <?php if(empty($posts)): ?>
+          <div class="no-posts">
+            <i class="fas fa-scroll"></i>
+            <p><?= $is_own_profile ? 'You haven' : htmlspecialchars($profile_user['username']) . ' hasn' ?>'t posted yet</p>
+          </div>
+        <?php else: ?>
+          <?php foreach($posts as $post):
+            $post_date = new DateTime($post['post_date']);
+            $now = new DateTime();
+            $interval = $now->diff($post_date);
+
+            if($interval->y) $time_ago = $interval->y . ' years ago';
+            elseif ($interval->m) $time_ago = $interval->m . ' months ago';
+            elseif ($interval->d) $time_ago = $interval->d . ' days ago';
+            elseif ($interval->h) $time_ago = $interval->h . ' hours ago';
+            elseif ($interval->i) $time_ago = $interval->i . ' minutes ago';
+            else $time_ago = 'Just now';
+
+            $media_files = $post['media_content'] ? explode(', ', $post['media_content']) : [];
+            ?>
+            <div class="feed-item">
+              <div class="post-header">
+                <img src="<?= htmlspecialchars($post['avatar']) ?>" alt="User">
+                <div>
+                  <div class="post-author"><?= htmlspecialchars($post['username']) ?></div>
+                  <div class="post-time">
+                    <?= $time_ago ?> · <i class="fas fa-globe-americas"></i>
+                  </div>
+                </div>
+                <?php if($is_own_profile): ?>
+                  <div class="post-menu" id="postMenu">
+                    <i class="fas fa-ellipsis-h"></i>
+                    <div class="post-options" id="postOptions">
+                      <button class="post-option delete-post" data-post-id="<?= $post['post_id'] ?>">
+                        <i class="fas fa-trash"></i>Delete
+                        
+                      </button>
+                    </div>
+                  </div>
+                <?php endif; ?>
+              </div>
+
+              <div class="post-content">
+                <p class="post-text"><?= htmlspecialchars($post['text_content']) ?></p>
+                <?php foreach($media_files as $media):
+                  if(pathinfo($media, PATHINFO_EXTENSION) === 'mp4'): ?>
+                    <video controls class="post-meida">
+                      <source src="<?= $media ?>" type="video/mp4">
+                    </video>
+                  <?php else: ?>
+                    <img src="<?= $media ?>" alt="Post" class="post-media">
+                  <?php endif;
+                endforeach; ?>
+              </div>
+              <div class="post-stats">
+                <div></div>
+                <div>
+                  <?= $post['like_count'] ?> <i class="fas fa-thumbs-up"></i> <?= $post['comment_count'] ?> comments
+                </div>
+              </div>
+
+              <div class="post-action like-btn">
+                <a href="homepage.php?like_post=<?= $post['post_id'] ?>" class="post-action">
+                  <i class="far fa-thumbs-up"></i>
+                  <span>Like</span>
+                </a>
+                <div class="post-action comment-trigger">
+                  <i class="far fa-comment"></i>
+                  <span>Comments</span>
+                </div>
+              </div>
+              <form method="POST" class="comment-form" style="display: none;">
+                <a class="user-card" href="userpage.php?id=<?= $_SESSION['user_id'] ?>">
+                <img src="<?php echo $_SESSION["avatar"]; ?>" alt="Profile">
+                <div>
+                  <div class="post-author"><?php echo isset($_SESSION['username']) ? htmlspecialchars($_SESSION['username']) : 'Guest'; ?></div>
+                </div>
+                </a>
+                <input type="hidden" name="post_id" value="<?= $post['post_id'] ?>">
+                <textarea name="comment_content" rows="1" placeholder="Write a comment..."></textarea>
+                <button type="submit" class="post-button">Post</button>
+              </form>
+
+              <div class="comments-list" style="display: none;">
+                <?php foreach($comments as $comment):
+                  if($comment['post_id'] == $post['post_id']):
+                    $comment_date = new DateTime($comment['comment_date']);
+                    $now = new DateTime();
+                    $interval = $now->diff($comment_date);
+
+                    if($interval->y) $time_ago = $interval->y . ' years ago';
+                    elseif ($interval->m) $time_ago = $interval->m . ' months ago';
+                    elseif ($interval->d) $time_ago = $interval->d . ' days ago';
+                    elseif ($interval->h) $time_ago = $interval->h . ' hours ago';
+                    elseif ($interval->i) $time_ago = $interval->i . ' minutes ago';
+                    else $time_ago = 'Just now';
+                  ?>
+                    <div class="comment">
+                      <a class="user-card" href="userpage.php?id=<?= $comment['user_id'] ?>">
+                      <img src="<?= $comment['avatar'] ?>" alt="Profile">
+                      <div>
+                        <div class="post-author"><?= $comment['username'] ?></div>
+                        <div class="post-time"><?= $time_ago ?></div>
+                      </div>
+                      </a>
+                      <div>
+                        <p class="comment-text"><?= $comment['content'] ?></p>
+                      </div>
+                    </div>
+                  <?php endif; ?>
+                <?php endforeach; ?>
+              </div>
+            </div>
+          <?php endforeach; ?>
+        <?php endif; ?>
+          
+        </div>
+
+        <!-- Games Section (hidden by default) -->
+        <div class="profile-content" id="games-content">
+          <div class="games-list">
+            <div class="game-card">
+              <img src="default/game_cover.jpg" alt="Game Cover" class="game-cover">
+              <div class="game-info">
+                <h3 class="game-title">The Legend of Zelda: Breath of the Wild</h3>
+                <div class="game-meta">
+                  <span class="game-rating"><i class="fas fa-star"></i> 9.5</span>
+                  <span class="game-hours"><i class="fas fa-clock"></i> 85h</span>
+                </div>
+                <div class="game-tags">
+                  <span class="game-tag">Adventure</span>
+                  <span class="game-tag">Open World</span>
+                  <span class="game-tag">RPG</span>
+                </div>
+              </div>
+            </div>
+            
+            <div class="game-card">
+              <img src="default/game_cover.jpg" alt="Game Cover" class="game-cover">
+              <div class="game-info">
+                <h3 class="game-title">Elden Ring</h3>
+                <div class="game-meta">
+                  <span class="game-rating"><i class="fas fa-star"></i> 9.8</span>
+                  <span class="game-hours"><i class="fas fa-clock"></i> 120h</span>
+                </div>
+                <div class="game-tags">
+                  <span class="game-tag">Souls-like</span>
+                  <span class="game-tag">Open World</span>
+                  <span class="game-tag">Difficult</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </main>
       <aside class="right-sidebar">
         <div class="sidebar-section">Suggested users</div>
       </aside>
     </div>
-
     <script src="scripts/changeThemeScript.js"></script>
     <script>
       const userProfile = document.getElementById("usernameDisplay");
       const dropdownMenu = document.getElementById("dropdownMenu");
 
       userProfile.addEventListener("click", (e) => {
-        e.stopPropagation();
+        e.stopPropagation(e);
         dropdownMenu.classList.toggle("show");
       });
 
-      document.addEventListener("click", () => {
+      document.addEventListener("click", (e) => {
         if (!userProfile.contains(e.target)) {
           dropdownMenu.classList.remove("show");
         }
+      });
+    </script>
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        const navButtons = document.querySelectorAll('.profile-nav-btn');
+        const contentSections = document.querySelectorAll('.profile-content');
+        
+        navButtons.forEach(button => {
+          button.addEventListener('click', function() {
+            // Remove active class from all buttons and sections
+            navButtons.forEach(btn => btn.classList.remove('active'));
+            contentSections.forEach(section => section.classList.remove('active'));
+            
+            // Add active class to clicked button
+            this.classList.add('active');
+            
+            // Show corresponding content section
+            const targetId = this.getAttribute('data-target');
+            document.getElementById(targetId).classList.add('active');
+          });
+        });
+      });
+    </script>
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        const navButtons = document.querySelectorAll('.profile-nav-btn');
+        const contentSections = document.querySelectorAll('.profile-content');
+        
+        navButtons.forEach(button => {
+          button.addEventListener('click', function() {
+            // Don't do anything if this tab is already active
+            if (this.classList.contains('active')) return;
+            
+            // Remove active class from all buttons
+            navButtons.forEach(btn => btn.classList.remove('active'));
+            
+            // Fade out current active section
+            const currentActive = document.querySelector('.profile-content.active');
+            if (currentActive) {
+              currentActive.style.opacity = '0';
+              currentActive.style.transform = 'translateY(10px)';
+              setTimeout(() => {
+                currentActive.classList.remove('active');
+              }, 300); // Match this with CSS transition duration
+            }
+            
+            // Add active class to clicked button
+            this.classList.add('active');
+            
+            // Show corresponding content section with fade-in
+            const targetId = this.getAttribute('data-target');
+            const targetSection = document.getElementById(targetId);
+            setTimeout(() => {
+              targetSection.classList.add('active');
+              // Force reflow to trigger animation
+              void targetSection.offsetWidth;
+              targetSection.style.opacity = '1';
+              targetSection.style.transform = 'translateY(0)';
+            }, 300);
+          });
+        });
+      });
+    </script>
+    <script src="scripts/follow.js"></script>
+    <script src="scripts/post_delete.js"></script>
+    <script>
+      document.querySelectorAll('.post-menu').forEach(trigger => {
+        trigger.addEventListener('click', () => {
+          const form = trigger.closest('.feed-item').querySelector('.post-options');
+          form.style.display = form.style.display === 'none' ? 'block' : 'none';
+        });
+      })
+    </script>
+    <script>
+      document.querySelectorAll('.comment-trigger').forEach(trigger => {
+        trigger.addEventListener('click', () => {
+          const form = trigger.closest('.feed-item').querySelector('.comment-form');
+          form.style.display = form.style.display === 'none' ? 'flex' : 'none';
+          const commentsList = trigger.closest('.feed-item').querySelector('.comments-list');
+          commentsList.style.display = commentsList.style.display === 'none' ? 'block' : 'none';
+        });
       });
     </script>
   </body>
