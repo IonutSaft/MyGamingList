@@ -457,10 +457,10 @@
   border: 2px solid var(--primary);
   resize: vertical;
   font-family: inherit;
+  margin-bottom: 10px;
 }
 
 .save-btn {
-  margin-top: 10px;
   padding: 8px 16px;
   background: var(--primary);
   color: white;
@@ -474,33 +474,10 @@
   background: var(--secondary);
 }
 
-/* Preview Styles */
-.image-preview {
-  max-width: 100%;
-  max-height: 300px;
-  display: block;
-  margin: 10px auto;
-  border-radius: 8px;
-  border: 2px dashed var(--primary);
-  object-fit: contain;
-}
-
-/* Preview Container */
-#avatar-preview-container,
-#cover-preview-container {
-  position: relative;
-  text-align: center;
-  margin-top: 10px;
-  padding: 10px;
-  background: rgba(0, 0, 0, 0.05);
-  border-radius: 8px;
-}
-
-/* For avatar preview specifically */
-#avatar-preview-container .image-preview {
-  max-height: 150px;
-  width: auto;
-  border-radius: 50%;
+.image-upload-form {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
 }
 
 /* Fade-in animation for new content */

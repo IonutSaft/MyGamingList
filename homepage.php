@@ -115,6 +115,10 @@ while($row = $result->fetch_assoc()) {
 }
 $user_stmt->close();
 
+$_SESSION['username'] = $user['username'];
+$_SESSION['avatar'] = $user['avatar'];
+$_SESSION['cover'] = $user['cover'];
+
 $posts = [];
 $post_stmt = $conn->prepare("
   SELECT p.*, u.username, u.avatar
@@ -206,7 +210,7 @@ if(!empty($errors)) {
 
       <div class="user-profile" id="userProfile">
         <span class="username" id="usernameDisplay">
-          <?php echo isset($_SESSION['username']) ? htmlspecialchars($_SESSION['username']) : 'Guest'; ?>
+          <?php echo isset($user['username']) ? htmlspecialchars($user['username']) : 'Guest'; ?>
           <i class="fas fa-caret-down"></i>
         </span>
         <div class="dropdown-menu" id="dropdownMenu">
@@ -229,7 +233,7 @@ if(!empty($errors)) {
           </a>
         </div>
         <a href="http://localhost/mygamelist/userpage.php">
-          <img src="<?php echo $_SESSION["avatar"]; ?>" class="profile-pic" alt="Profile">
+          <img src="<?= $user["avatar"] ?>" class="profile-pic" alt="Profile">
         </a>    
       </div>
     </header>
@@ -240,7 +244,7 @@ if(!empty($errors)) {
           <a class="user-card" href="userpage.php?id=<?= $_SESSION['user_id'] ?>">
             <img src="<?= $user["avatar"] ?>" alt="Profile">
             <div>
-              <div class="post-author"><?php echo isset($_SESSION['username']) ? htmlspecialchars($_SESSION['username']) : 'Guest'; ?></div>
+              <div class="post-author"><?php echo isset($user['username']) ? htmlspecialchars($user['username']) : 'Guest'; ?></div>
               <div class="post-time">See your profile</div>
             </div>
           </a>

@@ -199,10 +199,12 @@ $comment_stmt->close();
           <div class="cover-photo">
             <img src="<?= htmlspecialchars($profile_user['cover'] ?? '') ?>" alt="Cover Photo" id="cover-image">
             <?php if($is_own_profile): ?>
-              <label for="cover-upload" class="edit-cover">
-                <i class="fas fa-camera"></i> Edit Cover
-                <input type="file" id="cover-upload" accept="image/*" style="display:none;">
-              </label>
+              <form class="image-upload-form" id="cover-form">
+                <label for="cover-upload" class="edit-cover">
+                  <i class="fas fa-camera"></i> Edit Cover
+                  <input name="cover" type="file" id="cover-upload" accept="image/*" style="display:none;">
+                </label>
+              </form>
             <?php endif; ?>
           </div>
 
@@ -211,23 +213,25 @@ $comment_stmt->close();
               <div class="avatar-container">
                 <img src="<?= htmlspecialchars($profile_user['avatar'] ?? '') ?>" alt="Profile Picture" class="profile-avatar" id="avatar-image">
                 <?php if($is_own_profile): ?>
-                  <lable for="avatar-upload" class="edit-avatar" >
-                    <i class="fas fa-camera"></i>
-                    <input type="file" id="avatar-upload" accept="image/*" style="display:none;">
-                  </lable>
+                  <form class="image-upload-form" id="avatar-form">
+                    <label for="avatar-upload" class="edit-avatar">
+                      <i class="fas fa-camera"></i>
+                      <input name="avatar" type="file" id="avatar-upload" accept="image/*" style="display:none;">
+                    </label>
+                  </form>
                 <?php endif; ?>
               </div>
 
               <div class="profile-details">
                 <h1 class="profile-name"><?= htmlspecialchars($profile_user['username'] ?? 'Error') ?></h1>
-                <?php if($is_own_profile): ?>
-                  <textarea id="profile-bio" class="editable-bio" placeholder="Tell others about yourself...">
-                    <?= htmlspecialchars($profile_user['description'] ?? '') ?>
-                  </textarea>
-                  <button class="save-btn" id="save-bio">Save</button>
-                <?php else: ?>
-                  <p class="profile-bio"><?= htmlspecialchars($profile_user['description'] ?? '') ?></p>
-                <?php endif; ?>
+                <div class="profile-bio-container">
+                  <?php if($is_own_profile): ?>
+                    <textarea id="profile-bio" class="editable-bio" placeholder="Tell others about yourself..."><?= htmlspecialchars($profile_user['description'] ?? '') ?></textarea>
+                    <button class="save-btn" id="save-bio">Save</button>
+                  <?php else: ?>
+                    <p class="profile-bio"><?= htmlspecialchars($profile_user['description'] ?? '') ?></p>
+                  <?php endif; ?>
+                </div>
                 <div class="profile-stats">
                   <div class="stat">
                     <span class="stat-number"><?= $post_count ?></span>
@@ -246,9 +250,7 @@ $comment_stmt->close();
             </div>
 
             <div class="profile-actions">
-              <?php if($is_own_profile): ?>
-                <button class="edit-profile">Edit Profile</button>
-              <?php else: ?>
+              <?php if(!$is_own_profile): ?>
                 <button class="follow-btn <?= $is_following ? 'following' : '' ?>" data-user-id="<?= $profile_user_id ?>">
                   <?= $is_following ? 'Following' : 'Follow' ?>
                 </button>
@@ -432,6 +434,7 @@ $comment_stmt->close();
         <div class="sidebar-section">Suggested users</div>
       </aside>
     </div>
+    <script src="scripts/profileEdit.js"></script>
     <script src="scripts/changeThemeScript.js"></script>
     <script>
       const userProfile = document.getElementById("usernameDisplay");
