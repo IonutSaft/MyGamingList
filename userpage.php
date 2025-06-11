@@ -402,7 +402,6 @@ $comment_stmt->close();
         </div>
 
         <!-- Games Section (hidden by default) -->
-        <div class="profile-content" id="games-content">
         <?php if($_SESSION['user_id'] == $profile_user['user_id']): ?>
           <button id="add-game-btn">Add Game</button>
         <?php endif; ?>
@@ -414,9 +413,8 @@ $comment_stmt->close();
               <div id="game-search-results"></div>
             </div>
           </div>
-
+        <div class="profile-content" id="games-content">
           <div class="games-list" id="user-game-list"></div>
-
         </div>
       </main>
       <aside class="right-sidebar">

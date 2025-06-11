@@ -3,9 +3,10 @@
 session_start();
 require_once 'db_connect.php';
 
-$profile_user_id = intval($_POST['profile_user_id'] ?? 0);
+$profile_user_id = intval($_GET['profile_user_id'] ?? 0);
 $viewer_user_id = $_SESSION['user_id'] ?? 0;
 error_log("profile_user_id: " . $profile_user_id);
+error_log("viewer_user_id: " . $viewer_user_id);
 if(!$profile_user_id) exit;
 
 $stmt = $conn->prepare("
@@ -28,7 +29,7 @@ echo '<div style="display:flex;flex-wrap:wrap;gap:22px;">';
 while($row = $res->fetch_assoc()) {
   echo '<div class="game-card">';
   //remove button for owner
-  if($viewer_user_id === $profile_user_id) {
+  if($viewer_user_id == $profile_user_id) {
     echo "<button class='remove-game-btn' title='Remove' data-game-list-id='{$row['game_list_id']}'>&times;</button>";
   }
  //cover
@@ -51,7 +52,7 @@ while($row = $res->fetch_assoc()) {
   //status
   echo '<div class="game-status-row">';
   echo '<span class="game-status-label">Status:</span>';
-  if($viewer_user_id === $profile_user_id) {
+  if($viewer_user_id == $profile_user_id) {
     echo "<select class='game-status-dropdown' data-game-list-id='{$row['game_list_id']}'>";
     foreach($statuses as $status) {
       $sel = ($row['status'] === $status) ? 'selected' : '';
