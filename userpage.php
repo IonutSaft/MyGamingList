@@ -239,11 +239,19 @@ $comment_stmt->close();
                   </div>
                   <div class="stat">
                     <span class="stat-number"><?= $follower_count ?></span>
-                    <span class="stat-label">Followers</span>
+                    <button id="show-followers" class="stat-label">Followers</button>
                   </div>
                   <div class="stat">
                     <span class="stat-number"><?= $following_count ?></span>
-                    <span class="stat-label">Following</span>
+                    <button id="show-following" class="stat-label">Following</button>
+                  </div>
+                  <div class="modal" id="follow-modal" style="display: none;">
+                    <div class="modal-content">
+                      <span class="close" id="close-modal">&times;</span>
+                      <div id="modal-title"></div>
+                      <div id="modal-body"></div>
+                      <div id="modal-pagination"></div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -434,6 +442,8 @@ $comment_stmt->close();
         <div class="sidebar-section">Suggested users</div>
       </aside>
     </div>
+    <script>window.profileUserId = <?= $profile_user['user_id'] ?></script>
+    <script src="scripts/followModal.js"></script>
     <script src="scripts/profileEdit.js"></script>
     <script src="scripts/changeThemeScript.js"></script>
     <script>

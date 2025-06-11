@@ -120,6 +120,69 @@
 .stat-label {
   color: var(--secondary-text);
   font-size: 14px;
+  background: none;
+  border: none;
+  font-family: inherit;
+  font-size: inherit;
+  cursor: pointer;
+}
+
+.modal {
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.modal-content {
+  background-color: var(--elements-bg-color);
+  padding: 20px;
+  border-radius: 8px;
+  min-width: 300px;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+.close {
+  float: right;
+  font-size: 24px;
+  cursor: pointer;
+  margin-left: 10px;
+}
+ul {
+  padding-left: 0;
+}
+li {
+  list-style: none;
+}
+.follow-btn,
+.unfollow-btn {
+  margin-left: 10px;
+  cursor: pointer;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 4px;
+}
+.follow-btn {
+  background-color: var(--primary);
+  color: var(--text-color);
+}
+.unfollow-btn {
+  background-color: var(--secondary);
+  color: var(--text-color);
+}
+.page-link {
+  cursor: pointer;
+  color: var(--primary);
+  text-decoration: underline;
+  margin: 0 2px;
+}
+.page-link:hover {
+  text-decoration: none;
 }
 
 .profile-actions {
