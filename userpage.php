@@ -403,46 +403,32 @@ $comment_stmt->close();
 
         <!-- Games Section (hidden by default) -->
         <div class="profile-content" id="games-content">
-          <div class="games-list">
-            <div class="game-card">
-              <img src="default/game_cover.jpg" alt="Game Cover" class="game-cover">
-              <div class="game-info">
-                <h3 class="game-title">The Legend of Zelda: Breath of the Wild</h3>
-                <div class="game-meta">
-                  <span class="game-rating"><i class="fas fa-star"></i> 9.5</span>
-                  <span class="game-hours"><i class="fas fa-clock"></i> 85h</span>
-                </div>
-                <div class="game-tags">
-                  <span class="game-tag">Adventure</span>
-                  <span class="game-tag">Open World</span>
-                  <span class="game-tag">RPG</span>
-                </div>
-              </div>
-            </div>
-            
-            <div class="game-card">
-              <img src="default/game_cover.jpg" alt="Game Cover" class="game-cover">
-              <div class="game-info">
-                <h3 class="game-title">Elden Ring</h3>
-                <div class="game-meta">
-                  <span class="game-rating"><i class="fas fa-star"></i> 9.8</span>
-                  <span class="game-hours"><i class="fas fa-clock"></i> 120h</span>
-                </div>
-                <div class="game-tags">
-                  <span class="game-tag">Souls-like</span>
-                  <span class="game-tag">Open World</span>
-                  <span class="game-tag">Difficult</span>
-                </div>
-              </div>
+        <?php if($_SESSION['user_id'] == $profile_user['user_id']): ?>
+          <button id="add-game-btn">Add Game</button>
+        <?php endif; ?>
+          <div id="add-game-modal" class="modal" style="display: none;">
+            <div class="modal-content">
+              <span class="close" id="close-add-game-modal">&times;</span>
+              <h3>Add a Game</h3>
+              <input type="text" id="game-search-input" placeholder="Search for a game...">
+              <div id="game-search-results"></div>
             </div>
           </div>
+
+          <div class="games-list" id="user-game-list"></div>
+
         </div>
       </main>
       <aside class="right-sidebar">
         <div class="sidebar-section">Suggested users</div>
       </aside>
     </div>
-    <script>window.profileUserId = <?= $profile_user['user_id'] ?></script>
+    <script>
+      window.profileUserId = <?= (int)$profile_user['user_id'] ?>;
+      window.currentUserId = <?= (int)$_SESSION['user_id'] ?>;
+    </script>
+
+    <script src="scripts/user_game_list.js"></script>
     <script src="scripts/followModal.js"></script>
     <script src="scripts/profileEdit.js"></script>
     <script src="scripts/changeThemeScript.js"></script>

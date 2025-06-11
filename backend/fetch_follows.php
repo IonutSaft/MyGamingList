@@ -61,7 +61,7 @@ while($row = $result->fetch_assoc()) {
     $isFollowing = $follow_stmt->num_rows > 0;
     $follow_stmt->close();
   }
-  echo "<li style='margin-bottom:10px;display:flex;aling-items:center;'>
+  echo "<li style='margin-bottom:10px;display:flex;align-items:center;'>
           <img src='$avatar' alt='' style='width:32px;height:32px;border-radius:50%;margin-right:8px;'>
           <a href='userpage.php?id=$id' style='margin-right:10px;text-decoration:none;font-family:inherit;color:inherit;'>$username</a>";
   echo "</li>";

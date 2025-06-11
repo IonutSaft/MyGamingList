@@ -13,6 +13,8 @@
   --shadow: rgba(0, 0, 0, 0.4);
   --primary: rgb(31, 125, 83);
   --secondary: rgb(37, 95, 56);
+  --game-card: rgba(0, 80, 40, 0.14);
+  --delete: #ff5a5a;
 }
 
 .light-mode {
@@ -30,6 +32,8 @@
   --shadow: rgba(0, 0, 0, 0.1);
   --primary: rgb(60, 90, 190);
   --secondary: rgb(80, 110, 210);
+  --game-card: rgba(0, 40, 120, 0.13);
+  --delete: #ff5a5a;
 }
 
 * {
