@@ -9,27 +9,6 @@ if(!isset($_SESSION['loggedin'])) {
 
 $errors = [];
 
-if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['comment_content'])) {
-  $post_id = (int)$_POST['post_id'];
-  $user_id = $_SESSION['user_id'];
-  $content = trim($_POST['comment_content']);
-
-  if(!empty($content)) {
-    $stmt = $conn->prepare("INSERT INTO comment (user_id, post_id, content, comment_date) VALUES (?, ?, ?, NOW())");
-    $stmt->bind_param("iis", $user_id, $post_id, $content);
-    $stmt->execute();
-    $stmt->close();
-
-    $update_stmt = $conn->prepare("UPDATE post SET comment_count = comment_count + 1 WHERE post_id = ?");
-    $update_stmt->bind_param("i", $post_id);
-    $update_stmt->execute();
-    $update_stmt->close();
-    header("Location: homepage.php");
-    exit();
-  }
-}
-
-
 if($_SERVER['REQUEST_METHOD'] === 'POST') {
   $content = trim($_POST['content']);
   $user_id = $_SESSION['user_id'];
@@ -71,40 +50,6 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
   }
 }
 
-if(isset($_GET['like_post'])) {
-  $post_id = (int)$_GET['like_post'];
-  $user_id = $_SESSION['user_id'];
-
-  $check_stmt = $conn->prepare("SELECT * FROM `like` WHERE user_id = ? and post_id = ?");
-  $check_stmt->bind_param("ii", $user_id, $post_id);
-  $check_stmt->execute();
-
-  if($check_stmt->get_result()->num_rows == 0) {
-    $like_stmt = $conn->prepare("INSERT INTO `like` (user_id, post_id) VALUES (?, ?)");
-    $like_stmt->bind_param("ii", $user_id, $post_id);
-    $like_stmt->execute();
-    $like_stmt->close();
-
-    $update_stmt = $conn->prepare("UPDATE post SET like_count = like_count + 1 WHERE post_id = ?");
-    $update_stmt->bind_param("i", $post_id);
-    $update_stmt->execute();
-    $update_stmt->close();
-  } else {
-    $dislike_stmt = $conn->prepare("DELETE FROM `like` WHERE user_id = ? and post_id = ?");
-    $dislike_stmt->bind_param("ii", $user_id, $post_id);
-    $dislike_stmt->execute();
-    $dislike_stmt->close();
-
-    $update_stmt = $conn->prepare("UPDATE post SET like_count = like_count - 1 WHERE post_id = ?");
-    $update_stmt->bind_param("i", $post_id);
-    $update_stmt->execute();
-    $update_stmt->close();
-  }
-  $check_stmt->close();
-  header("Location: homepage.php");
-  exit();
-}
-
 $user = [];
 $user_stmt = $conn->prepare("SELECT * FROM user WHERE user_id = ?");
 $user_stmt->bind_param("i", $_SESSION['user_id']);
@@ -119,6 +64,16 @@ $_SESSION['username'] = $user['username'];
 $_SESSION['avatar'] = $user['avatar'];
 $_SESSION['cover'] = $user['cover'];
 
+$liked_post_ids = [];
+$like_stmt = $conn->prepare("SELECT post_id FROM `like` WHERE user_id = ?");
+$like_stmt->bind_param("i", $user_id);
+$like_stmt->execute();
+$like_result = $like_stmt->get_result();
+while ($like_row = $like_result->fetch_assoc()) {
+    $liked_post_ids[] = $like_row['post_id'];
+}
+$like_stmt->close();
+
 $posts = [];
 $post_stmt = $conn->prepare("
   SELECT p.*, u.username, u.avatar
@@ -129,6 +84,7 @@ $post_stmt = $conn->prepare("
 $post_stmt->execute();
 $result = $post_stmt->get_result();
 while($row = $result->fetch_assoc()) {
+  $row['liked_by_user'] = in_array($row['post_id'], $liked_post_ids);
   $posts[] = $row;
 }
 $post_stmt->close();
@@ -337,7 +293,7 @@ if(!empty($errors)) {
                 <p class="post-text"><?= htmlspecialchars($post['text_content']) ?></p>
                 <?php foreach($media_files as $media):
                   if(pathinfo($media, PATHINFO_EXTENSION) === 'mp4'): ?>
-                    <video controls class="post-meida">
+                    <video controls class="post-media">
                       <source src="<?= $media ?>" type="video/mp4">
                     </video>
                   <?php else: ?>
@@ -347,13 +303,13 @@ if(!empty($errors)) {
               </div>
               <div class="post-stats">
                 <div></div>
-                <div>
+                <div class="like-comment-count" data-like-count="<?= $post['like_count'] ?>" data-comment-count="<?= $post['comment_count'] ?>">
                   <?= $post['like_count'] ?> <i class="fas fa-thumbs-up"></i> <?= $post['comment_count'] ?> comments
                 </div>
               </div>
 
-              <div class="post-action like-btn">
-                <a href="homepage.php?like_post=<?= $post['post_id'] ?>" class="post-action">
+              <div class="post-action">
+                <a href="#" class="post-action like-btn <?= $post['liked_by_user'] ? ' liked' : '' ?>" data-post-id="<?= $post['post_id'] ?>">
                   <i class="far fa-thumbs-up"></i>
                   <span>Like</span>
                 </a>
@@ -389,17 +345,20 @@ if(!empty($errors)) {
                     else $time_ago = 'Just now';
                   ?>
                     <div class="comment">
-                      <a class="user-card" href="userpage.php?id=<?= $comment['user_id'] ?>">
-                      <img src="<?= $comment['avatar'] ?>" alt="Profile">
-                      <div>
-                        <div class="post-author"><?= $comment['username'] ?></div>
-                        <div class="post-time"><?= $time_ago ?></div>
+                      <div class="comment-avatar">
+                        <a class="user-card" href="userpage.php?id=<?= $comment['user_id'] ?>">
+                          <img src="<?= $comment['avatar'] ?>" alt="Profile">
+                        </a>
                       </div>
-                      </a>
-                      <div>
-                        <p class="comment-text"><?= $comment['content'] ?></p>
+                      <div class="comment-body">
+                        <div class="comment-header">
+                          <span class="post-author"><?= $comment['username'] ?></span>
+                          <span class="post-time"><?= $time_ago ?></span>
+                        </div>
+                        <div class="comment-text"><?= $comment['content'] ?></div>
                       </div>
                     </div>
+                    
                   <?php endif; ?>
                 <?php endforeach; ?>
               </div>
@@ -412,7 +371,7 @@ if(!empty($errors)) {
         <div class="sidebar-section">Suggested users</div>
       </aside>
     </div>
-
+    <script src="scripts/feed_ajax.js"></script>               
     <script src="scripts/changeThemeScript.js"></script>
     <script>
       const userProfile = document.getElementById("usernameDisplay");

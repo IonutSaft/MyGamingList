@@ -281,124 +281,124 @@ $comment_stmt->close();
         </div>
 
         <!-- Posts Section (visible by default) -->
-        <div class="profile-content" id="posts-content">
-          
-        <?php if(empty($posts)): ?>
-          <div class="no-posts">
-            <i class="fas fa-scroll"></i>
-            <p><?= $is_own_profile ? 'You haven' : htmlspecialchars($profile_user['username']) . ' hasn' ?>'t posted yet</p>
-          </div>
-        <?php else: ?>
-          <?php foreach($posts as $post):
-            $post_date = new DateTime($post['post_date']);
-            $now = new DateTime();
-            $interval = $now->diff($post_date);
+        <div class="profile-content active" id="posts-content">
+          <?php if(empty($posts)): ?>
+            <div class="no-posts">
+              <i class="fas fa-scroll"></i>
+              <p><?= $is_own_profile ? 'You haven' : htmlspecialchars($profile_user['username']) . ' hasn' ?>'t posted yet</p>
+            </div>
+          <?php else: ?>
+            <?php foreach($posts as $post):
+              $post_date = new DateTime($post['post_date']);
+              $now = new DateTime();
+              $interval = $now->diff($post_date);
 
-            if($interval->y) $time_ago = $interval->y . ' years ago';
-            elseif ($interval->m) $time_ago = $interval->m . ' months ago';
-            elseif ($interval->d) $time_ago = $interval->d . ' days ago';
-            elseif ($interval->h) $time_ago = $interval->h . ' hours ago';
-            elseif ($interval->i) $time_ago = $interval->i . ' minutes ago';
-            else $time_ago = 'Just now';
+              if($interval->y) $time_ago = $interval->y . ' years ago';
+              elseif ($interval->m) $time_ago = $interval->m . ' months ago';
+              elseif ($interval->d) $time_ago = $interval->d . ' days ago';
+              elseif ($interval->h) $time_ago = $interval->h . ' hours ago';
+              elseif ($interval->i) $time_ago = $interval->i . ' minutes ago';
+              else $time_ago = 'Just now';
 
-            $media_files = $post['media_content'] ? explode(', ', $post['media_content']) : [];
-            ?>
-            <div class="feed-item">
-              <div class="post-header">
-                <img src="<?= htmlspecialchars($post['avatar']) ?>" alt="User">
-                <div>
-                  <div class="post-author"><?= htmlspecialchars($post['username']) ?></div>
-                  <div class="post-time">
-                    <?= $time_ago ?> · <i class="fas fa-globe-americas"></i>
-                  </div>
-                </div>
-                <?php if($is_own_profile): ?>
-                  <div class="post-menu" id="postMenu">
-                    <i class="fas fa-ellipsis-h"></i>
-                    <div class="post-options" id="postOptions">
-                      <button class="post-option delete-post" data-post-id="<?= $post['post_id'] ?>">
-                        <i class="fas fa-trash"></i>Delete
-                        
-                      </button>
+              $media_files = $post['media_content'] ? explode(', ', $post['media_content']) : [];
+              ?>
+              <div class="feed-item">
+                <div class="post-header">
+                  <img src="<?= htmlspecialchars($post['avatar']) ?>" alt="User">
+                  <div>
+                    <div class="post-author"><?= htmlspecialchars($post['username']) ?></div>
+                    <div class="post-time">
+                      <?= $time_ago ?> · <i class="fas fa-globe-americas"></i>
                     </div>
                   </div>
-                <?php endif; ?>
-              </div>
-
-              <div class="post-content">
-                <p class="post-text"><?= htmlspecialchars($post['text_content']) ?></p>
-                <?php foreach($media_files as $media):
-                  if(pathinfo($media, PATHINFO_EXTENSION) === 'mp4'): ?>
-                    <video controls class="post-meida">
-                      <source src="<?= $media ?>" type="video/mp4">
-                    </video>
-                  <?php else: ?>
-                    <img src="<?= $media ?>" alt="Post" class="post-media">
-                  <?php endif;
-                endforeach; ?>
-              </div>
-              <div class="post-stats">
-                <div></div>
-                <div>
-                  <?= $post['like_count'] ?> <i class="fas fa-thumbs-up"></i> <?= $post['comment_count'] ?> comments
-                </div>
-              </div>
-
-              <div class="post-action like-btn">
-                <a href="homepage.php?like_post=<?= $post['post_id'] ?>" class="post-action">
-                  <i class="far fa-thumbs-up"></i>
-                  <span>Like</span>
-                </a>
-                <div class="post-action comment-trigger">
-                  <i class="far fa-comment"></i>
-                  <span>Comments</span>
-                </div>
-              </div>
-              <form method="POST" class="comment-form" style="display: none;">
-                <a class="user-card" href="userpage.php?id=<?= $_SESSION['user_id'] ?>">
-                <img src="<?php echo $_SESSION["avatar"]; ?>" alt="Profile">
-                <div>
-                  <div class="post-author"><?php echo isset($_SESSION['username']) ? htmlspecialchars($_SESSION['username']) : 'Guest'; ?></div>
-                </div>
-                </a>
-                <input type="hidden" name="post_id" value="<?= $post['post_id'] ?>">
-                <textarea name="comment_content" rows="1" placeholder="Write a comment..."></textarea>
-                <button type="submit" class="post-button">Post</button>
-              </form>
-
-              <div class="comments-list" style="display: none;">
-                <?php foreach($comments as $comment):
-                  if($comment['post_id'] == $post['post_id']):
-                    $comment_date = new DateTime($comment['comment_date']);
-                    $now = new DateTime();
-                    $interval = $now->diff($comment_date);
-
-                    if($interval->y) $time_ago = $interval->y . ' years ago';
-                    elseif ($interval->m) $time_ago = $interval->m . ' months ago';
-                    elseif ($interval->d) $time_ago = $interval->d . ' days ago';
-                    elseif ($interval->h) $time_ago = $interval->h . ' hours ago';
-                    elseif ($interval->i) $time_ago = $interval->i . ' minutes ago';
-                    else $time_ago = 'Just now';
-                  ?>
-                    <div class="comment">
-                      <a class="user-card" href="userpage.php?id=<?= $comment['user_id'] ?>">
-                      <img src="<?= $comment['avatar'] ?>" alt="Profile">
-                      <div>
-                        <div class="post-author"><?= $comment['username'] ?></div>
-                        <div class="post-time"><?= $time_ago ?></div>
-                      </div>
-                      </a>
-                      <div>
-                        <p class="comment-text"><?= $comment['content'] ?></p>
+                  <?php if($is_own_profile): ?>
+                    <div class="post-menu" id="postMenu">
+                      <i class="fas fa-ellipsis-h"></i>
+                      <div class="post-options" id="postOptions">
+                        <button class="post-option delete-post" data-post-id="<?= $post['post_id'] ?>">
+                          <i class="fas fa-trash"></i>Delete
+                          
+                        </button>
                       </div>
                     </div>
                   <?php endif; ?>
-                <?php endforeach; ?>
+                </div>
+
+                <div class="post-content">
+                  <p class="post-text"><?= htmlspecialchars($post['text_content']) ?></p>
+                  <?php foreach($media_files as $media):
+                    if(pathinfo($media, PATHINFO_EXTENSION) === 'mp4'): ?>
+                      <video controls class="post-media">
+                        <source src="<?= $media ?>" type="video/mp4">
+                      </video>
+                    <?php else: ?>
+                      <img src="<?= $media ?>" alt="Post" class="post-media">
+                    <?php endif;
+                  endforeach; ?>
+                </div>
+                <div class="post-stats">
+                  <div></div>
+                  <div class="like-comment-count" data-like-count="<?= $post['like_count'] ?>" data-comment-count="<?= $post['comment_count'] ?>">
+                    <?= $post['like_count'] ?> <i class="fas fa-thumbs-up"></i> <?= $post['comment_count'] ?> comments
+                  </div>
+                </div>
+
+                <div class="post-action">
+                  <a href="#" class="post-action like-btn" data-post-id="<?= $post['post_id'] ?>">
+                    <i class="far fa-thumbs-up"></i>
+                    <span>Like</span>
+                  </a>
+                  <div class="post-action comment-trigger">
+                    <i class="far fa-comment"></i>
+                    <span>Comments</span>
+                  </div>
+                </div>
+                <form method="POST" class="comment-form" style="display: none;">
+                  <a class="user-card" href="userpage.php?id=<?= $_SESSION['user_id'] ?>">
+                  <img src="<?php echo $_SESSION["avatar"]; ?>" alt="Profile">
+                  <div>
+                    <div class="post-author"><?php echo isset($_SESSION['username']) ? htmlspecialchars($_SESSION['username']) : 'Guest'; ?></div>
+                  </div>
+                  </a>
+                  <input type="hidden" name="post_id" value="<?= $post['post_id'] ?>">
+                  <textarea name="comment_content" rows="1" placeholder="Write a comment..."></textarea>
+                  <button type="submit" class="post-button">Post</button>
+                </form>
+
+                <div class="comments-list" style="display: none;">
+                  <?php foreach($comments as $comment):
+                    if($comment['post_id'] == $post['post_id']):
+                      $comment_date = new DateTime($comment['comment_date']);
+                      $now = new DateTime();
+                      $interval = $now->diff($comment_date);
+
+                      if($interval->y) $time_ago = $interval->y . ' years ago';
+                      elseif ($interval->m) $time_ago = $interval->m . ' months ago';
+                      elseif ($interval->d) $time_ago = $interval->d . ' days ago';
+                      elseif ($interval->h) $time_ago = $interval->h . ' hours ago';
+                      elseif ($interval->i) $time_ago = $interval->i . ' minutes ago';
+                      else $time_ago = 'Just now';
+                    ?>
+                      <div class="comment">
+                        <div class="comment-avatar">
+                          <a class="user-card" href="userpage.php?id=<?= $comment['user_id'] ?>">
+                            <img src="<?= $comment['avatar'] ?>" alt="Profile">
+                          </a>
+                        </div>
+                        <div class="comment-body">
+                          <div class="comment-header">
+                            <span class="post-author"><?= $comment['username'] ?></span>
+                            <span class="post-time"><?= $time_ago ?></span>
+                          </div>
+                          <div class="comment-text"><?= $comment['content'] ?></div>
+                        </div>
+                      </div>
+                    <?php endif; ?>
+                  <?php endforeach; ?>
+                </div>
               </div>
-            </div>
-          <?php endforeach; ?>
-        <?php endif; ?>
-          
+            <?php endforeach; ?>
+          <?php endif; ?>  
         </div>
 
         <!-- Games Section (hidden by default) -->
@@ -526,5 +526,6 @@ $comment_stmt->close();
         });
       });
     </script>
+    <script src="scripts/feed_ajax.js"></script>
   </body>
 </html>

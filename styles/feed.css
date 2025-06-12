@@ -214,6 +214,26 @@
   padding: 0 16px 16px;
 }
 
+.post-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* Optional: add spacing between content and media */
+  gap: 1rem;
+}
+
+/* Make media itself centered and consistent size */
+.post-media,
+.post-content video {
+  display: block;
+  margin: 0 auto;
+  max-width: 90%;
+  max-height: 400px;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+  object-fit: cover;
+}
+
 .post-text {
   margin-bottom: 16px;
   font-size: 15px;
@@ -263,13 +283,36 @@
   text-decoration: none;
 }
 
-.post-action:hover {
-  background-color: var(--hover);
+.like-btn:hover {
+  background-color: var(--primary);
+}
+
+.comment-trigger:hover {
+  background-color: var(--primary);
 }
 
 .post-action i {
   margin-right: 8px;
   font-size: 18px;
+}
+
+/* Default like button */
+a.like-btn {
+  color: var(--secondary-text);
+  transition: color 0.2s;
+}
+
+/* When liked */
+a.like-btn.liked,
+a.like-btn.liked i {
+  color: var(--primary);
+  font-weight: bold;
+}
+
+a.like-btn.liked i {
+  /* Optionally, animate or scale the icon */
+  transform: scale(1.2);
+  transition: transform 0.15s;
 }
 
 .comment-form {
@@ -317,17 +360,63 @@
   background-color: var(--primary-hover, #005bb5);
 }
 
+.comments-list {
+  margin-top: 14px;
+}
+
 .comment {
   display: flex;
-  flex-direction: row;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.comment:last-child {
+  border-bottom: none;
+}
+
+.comment-avatar img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: var(--elements-bg-color);
+}
+
+.comment-body {
+  flex: 1;
+}
+
+.comment-header {
+  display: flex;
+  align-items: baseline;
+  gap: 9px;
+  margin-bottom: 2px;
+}
+
+.comment-author {
+  font-weight: 600;
+  font-size: 1em;
+  color: var(--primary);
+}
+
+.comment-time {
+  color: var(--secondary-text);
+  font-size: 0.92em;
 }
 
 .comment-text {
-  display: flex;
-  flex-direction: column;
-  margin-left: 10px;
-  width: 100%;
-  vertical-align: center;
+  font-size: 1em;
+  line-height: 1.45;
+  color: var(--text-color);
+  padding-right: 4px;
+  word-break: break-word;
+}
+
+.comment:hover {
+  background: var(--hover);
+  border-radius: 7px;
 }
 
 .error-message {
@@ -389,6 +478,20 @@
 }
 
 @media (max-width: 600px) {
+  .comment {
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .commment-header {
+    gap: 5px;
+  }
+
+  .comment-avatar img {
+    width: 32px;
+    height: 32px;
+  }
+
   .composer-action span {
     display: none;
   }
