@@ -114,6 +114,8 @@
   color: var(--secondary-text);
   cursor: pointer;
   transition: background-color 0.2s;
+  text-decoration: none;
+  font-family: inherit;
 }
 
 .sort-option.active {
@@ -214,14 +216,6 @@
   padding: 0 16px 16px;
 }
 
-.post-content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  /* Optional: add spacing between content and media */
-  gap: 1rem;
-}
-
 /* Make media itself centered and consistent size */
 .post-media,
 .post-content video {
@@ -238,6 +232,7 @@
   margin-bottom: 16px;
   font-size: 15px;
   line-height: 1.4;
+  text-align: left;
 }
 
 .post-media {
@@ -284,7 +279,7 @@
 }
 
 .like-btn:hover {
-  background-color: var(--primary);
+  background-color: var(--hover);
 }
 
 .comment-trigger:hover {

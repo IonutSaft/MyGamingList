@@ -47,6 +47,16 @@ if(!$is_own_profile) {
 
 $stmt->close();
 
+$liked_post_ids = [];
+$like_stmt = $conn->prepare("SELECT post_id FROM `like` WHERE user_id = ?");
+$like_stmt->bind_param("i", $current_user_id);
+$like_stmt->execute();
+$like_result = $like_stmt->get_result();
+while ($like_row = $like_result->fetch_assoc()) {
+    $liked_post_ids[] = $like_row['post_id'];
+}
+$like_stmt->close();
+
 $posts=[];
 $post_stmt = $conn->prepare("
   SELECT p.*, u.username, u.avatar
@@ -59,6 +69,7 @@ $post_stmt->bind_param("i", $profile_user_id);
 $post_stmt->execute();
 $result = $post_stmt->get_result();
 while($row = $result->fetch_assoc()) {
+  $row['liked_by_user'] = in_array($row['post_id'], $liked_post_ids);
   $posts[] = $row;
 }
 $post_stmt->close();
@@ -344,7 +355,7 @@ $comment_stmt->close();
                 </div>
 
                 <div class="post-action">
-                  <a href="#" class="post-action like-btn" data-post-id="<?= $post['post_id'] ?>">
+                  <a href="#" class="post-action like-btn <?= $post['liked_by_user'] ? ' liked' : '' ?>" data-post-id="<?= $post['post_id'] ?>">
                     <i class="far fa-thumbs-up"></i>
                     <span>Like</span>
                   </a>

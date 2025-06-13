@@ -566,6 +566,16 @@ li {
   background-color: var(--hover);
 }
 
+#game-search-input {
+  padding: 10px 16px 10px 40px;
+  border-radius: 5px;
+  border: none;
+  background-color: var(--elements-bg-color);
+  font-size: 15px;
+  color: var(--text-color);
+  font-family: inherit;
+}
+
 #user-game-list {
   margin-top: 30px;
   display: flex;
