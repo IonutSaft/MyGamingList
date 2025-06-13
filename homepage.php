@@ -307,8 +307,8 @@ if(!empty($errors)) {
             </div>
           <?php else: ?>
             <?php foreach($posts as $post):
-              $post_date = new DateTime($post['post_date']);
-              $now = new DateTime();
+              $post_date = new DateTime($post['post_date'], new DateTimeZone('Europe/Bucharest'));
+              $now = new DateTime('now', new DateTimeZone('Europe/Bucharest'));
               $interval = $now->diff($post_date);
 
               if($interval->y) $time_ago = $interval->y . ' years ago';
@@ -331,13 +331,13 @@ if(!empty($errors)) {
                       <?= $time_ago ?> · <i class="fas fa-globe-americas"></i>
                     </div>
                   </div>
-                  <div class="post-menu" id="postMenu">
+                  <div class="post-menu">
                     <i class="fas fa-ellipsis-h"></i>
-                    <div class="post-options" id="postOptions">
-                      <button class="post-option">
+                    <div class="post-options">
+                      <button class="post-option hide-btn">
                         <span>Hide</span>
                       </button>
-                      <button class="post-option">
+                      <button class="post-option report-btn">
                         <span>Report</span>
                       </button>
                     </div>
@@ -388,8 +388,8 @@ if(!empty($errors)) {
                 <div class="comments-list" style="display: none;">
                   <?php foreach($comments as $comment):
                     if($comment['post_id'] == $post['post_id']):
-                      $comment_date = new DateTime($comment['comment_date']);
-                      $now = new DateTime();
+                      $comment_date = new DateTime($comment['comment_date'], new DateTimeZone('Europe/Bucharest'));
+                      $now = new DateTime('now', new DateTimeZone('Europe/Bucharest'));
                       $interval = $now->diff($comment_date);
 
                       if($interval->y) $time_ago = $interval->y . ' years ago';
@@ -444,14 +444,7 @@ if(!empty($errors)) {
         }
       });
     </script>
-    <script>
-      document.querySelectorAll('.post-menu').forEach(trigger => {
-        trigger.addEventListener('click', () => {
-          const form = trigger.closest('.feed-item').querySelector('.post-options');
-          form.style.display = form.style.display === 'none' ? 'block' : 'none';
-        });
-      })
-    </script>
+    <script src="scripts/post_menu_trigger.js"></script>
     <script>
       document.getElementById('post-form').addEventListener('submit', function(e) {
         const fileInput = document.getElementById('media-upload');

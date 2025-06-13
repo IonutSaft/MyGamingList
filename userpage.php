@@ -300,8 +300,8 @@ $comment_stmt->close();
             </div>
           <?php else: ?>
             <?php foreach($posts as $post):
-              $post_date = new DateTime($post['post_date']);
-              $now = new DateTime();
+              $post_date = new DateTime($post['post_date'], new DateTimeZone('Europe/Bucharest'));
+              $now = new DateTime('now', new DateTimeZone('Europe/Bucharest'));
               $interval = $now->diff($post_date);
 
               if($interval->y) $time_ago = $interval->y . ' years ago';
@@ -379,8 +379,8 @@ $comment_stmt->close();
                 <div class="comments-list" style="display: none;">
                   <?php foreach($comments as $comment):
                     if($comment['post_id'] == $post['post_id']):
-                      $comment_date = new DateTime($comment['comment_date']);
-                      $now = new DateTime();
+                      $comment_date = new DateTime($comment['comment_date'], new DateTimeZone('Europe/Bucharest'));
+                      $now = new DateTime('now', new DateTimeZone('Europe/Bucharest'));
                       $interval = $now->diff($comment_date);
 
                       if($interval->y) $time_ago = $interval->y . ' years ago';
@@ -413,18 +413,18 @@ $comment_stmt->close();
         </div>
 
         <!-- Games Section (hidden by default) -->
-        <?php if($_SESSION['user_id'] == $profile_user['user_id']): ?>
-          <button id="add-game-btn">Add Game</button>
-        <?php endif; ?>
-          <div id="add-game-modal" class="modal" style="display: none;">
-            <div class="modal-content">
-              <span class="close" id="close-add-game-modal">&times;</span>
-              <h3>Add a Game</h3>
-              <input type="text" id="game-search-input" placeholder="Search for a game...">
-              <div id="game-search-results"></div>
-            </div>
+        <div id="add-game-modal" class="modal" style="display: none;">
+          <div class="modal-content">
+            <span class="close" id="close-add-game-modal">&times;</span>
+            <h3>Add a Game</h3>
+            <input type="text" id="game-search-input" placeholder="Search for a game...">
+            <div id="game-search-results"></div>
           </div>
+        </div>
         <div class="profile-content" id="games-content">
+          <?php if($_SESSION['user_id'] == $profile_user['user_id']): ?>
+            <button id="add-game-btn">Add Game</button>
+          <?php endif; ?>
           <div class="games-list" id="user-game-list"></div>
         </div>
       </main>
@@ -519,14 +519,7 @@ $comment_stmt->close();
     </script>
     <script src="scripts/follow.js"></script>
     <script src="scripts/post_delete.js"></script>
-    <script>
-      document.querySelectorAll('.post-menu').forEach(trigger => {
-        trigger.addEventListener('click', () => {
-          const form = trigger.closest('.feed-item').querySelector('.post-options');
-          form.style.display = form.style.display === 'none' ? 'block' : 'none';
-        });
-      })
-    </script>
+    <script src="scripts/post_menu_trigger.js"></script>
     <script>
       document.querySelectorAll('.comment-trigger').forEach(trigger => {
         trigger.addEventListener('click', () => {

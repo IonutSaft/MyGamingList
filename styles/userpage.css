@@ -676,7 +676,9 @@ li {
   border-radius: 5px;
   border: 1px solid var(--border-color);
   font-size: 0.99em;
-  background: var(--text-color);
+  background: var(--primary);
+  color: white;
+  font-family: inherit;
   outline: none;
 }
 

@@ -352,7 +352,7 @@ a.like-btn.liked i {
 }
 
 .comment-form button:hover {
-  background-color: var(--primary-hover, #005bb5);
+  background-color: var(--secondary);
 }
 
 .comments-list {
