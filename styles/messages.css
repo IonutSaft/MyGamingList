@@ -96,3 +96,8 @@
   color: #888;
   margin-top: 3px;
 }
+
+#mutualsList {
+  max-height: 80vh; /* or whatever fits your sidebar */
+  overflow-y: auto;
+}
