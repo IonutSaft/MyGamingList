@@ -62,6 +62,10 @@
   font-weight: 500;
 }
 
+.post-button:hover {
+  background-color: var(--secondary);
+}
+
 .media-preview {
   display: flex;
   gap: 10px;

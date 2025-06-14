@@ -31,6 +31,23 @@ $stmt->bind_param("iis", $post_id, $user_id, $content);
 $stmt->execute();
 $stmt->close();
 
+// Get post owner
+$stmt = $conn->prepare("SELECT user_id FROM post WHERE post_id = ?");
+$stmt->bind_param("i", $post_id);
+$stmt->execute();
+$stmt->bind_result($post_owner_id);
+$stmt->fetch();
+$stmt->close();
+
+// Don't notify self-comment
+if ($user_id !== $post_owner_id) {
+    $notif_content = "commented on your post";
+    $stmt = $conn->prepare("INSERT INTO `notification` (user_id, actor_id,content, created_at) VALUES (?, ?, ?, NOW())");
+    $stmt->bind_param("iis", $post_owner_id, $user_id, $notif_content);
+    $stmt->execute();
+    $stmt->close();
+}
+
 // Increment comment count
 $stmt = $conn->prepare("UPDATE post SET comment_count = comment_count + 1 WHERE post_id = ?");
 $stmt->bind_param("i", $post_id);

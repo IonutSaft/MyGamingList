@@ -76,6 +76,56 @@
   color: var(--text-color);
 }
 
+#notifications-dropdown.dropdown-menu {
+  min-width: 280px;
+  max-height: 400px;
+  overflow-y: auto;
+  right: 0;
+  left: auto;
+  z-index: 100;
+  top: 120%;
+  position: absolute;
+  background: var(--header-color);
+  box-shadow: 0 4px 16px var(--shadow);
+}
+
+#notifications-dropdown .dropdown-item.unread {
+  font-weight: bold;
+  background: var(--hover);
+}
+
+#notifications-dropdown .dropdown-item {
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border-color);
+  color: var(--text-color);
+  cursor: pointer;
+}
+
+#notifications-dropdown .dropdown-item:last-child {
+  border-bottom: none;
+}
+
+.notif-date {
+  color: var(--secondary-text);
+  font-size: 0.85em;
+  float: right;
+}
+
+.notif-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 8px;
+  vertical-align: middle;
+}
+.notif-username {
+  font-weight: bold;
+  margin-right: 4px;
+  color: var(--primary);
+  text-decoration: none;
+}
+
 .notification-badge {
   position: absolute;
   top: 2px;

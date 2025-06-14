@@ -23,20 +23,28 @@ try {
     $conn->begin_transaction();
     
     if ($data['action'] === 'follow') {
-        // Check if follow relationship already exists
-        $check = $conn->prepare("SELECT 1 FROM follow WHERE following_user_id = ? AND followed_user_id = ?");
-        $check->bind_param("ii", $current_user_id, $user_id);
-        $check->execute();
-        
-        if ($check->get_result()->num_rows == 0) {
-            $stmt = $conn->prepare("INSERT INTO follow (following_user_id, followed_user_id) VALUES (?, ?)");
-            $stmt->bind_param("ii", $current_user_id, $user_id);
-            $stmt->execute();
-        }
-    } else {
-        $stmt = $conn->prepare("DELETE FROM follow WHERE following_user_id = ? AND followed_user_id = ?");
+      // Check if follow relationship already exists
+      $check = $conn->prepare("SELECT 1 FROM follow WHERE following_user_id = ? AND followed_user_id = ?");
+      $check->bind_param("ii", $current_user_id, $user_id);
+      $check->execute();
+      
+      if ($check->get_result()->num_rows == 0) {
+        $stmt = $conn->prepare("INSERT INTO follow (following_user_id, followed_user_id) VALUES (?, ?)");
         $stmt->bind_param("ii", $current_user_id, $user_id);
         $stmt->execute();
+        
+        if ($current_user_id !== $user_id) {
+        $notif_content = "started following you";
+        $stmt = $conn->prepare("INSERT INTO `notification` (user_id, actor_id, content, created_at) VALUES (?, ?, ?, NOW())");
+        $stmt->bind_param("iis", $user_id, $current_user_id, $notif_content);
+        $stmt->execute();
+        $stmt->close();
+        }
+      }
+    } else {
+      $stmt = $conn->prepare("DELETE FROM follow WHERE following_user_id = ? AND followed_user_id = ?");
+      $stmt->bind_param("ii", $current_user_id, $user_id);
+      $stmt->execute();
     }
     
     $conn->commit();

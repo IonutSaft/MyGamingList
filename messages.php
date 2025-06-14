@@ -35,6 +35,7 @@ $_SESSION['cover'] = $user['cover'];
     <link rel="stylesheet" href="styles/header.css">
     <link rel="stylesheet" href="styles/sidebars.css">
     <link rel="stylesheet" href="styles/feed.css">
+    <link rel="stylesheet" href="styles/messages.css">
 
     <link
       href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Share+Tech+Mono&display=swap"
@@ -65,13 +66,13 @@ $_SESSION['cover'] = $user['cover'];
         <a class="nav-icon" href="homepage.php">
           <i class="fas fa-home"></i>
         </a >
-        <a class="nav-icon" title="Mail" href="#">
+        <a class="nav-icon" title="Mail" href="messages.php">
           <i class="fas fa-envelope"></i>
-          <span class="notification-badge">4</span>
+          <span class="notification-badge"></span>
         </a>
-        <button class="nav-icon" title="Notifications">
+        <button class="nav-icon" title="Notifications" style="position: relative;">
           <i class="fas fa-bell"></i>
-          <span class="notification-badge">3</span>
+          <span class="notification-badge"></span>
         </button>
         <button id="theme-toggle" class="theme-btn nav-icon" aria-label="Toggle theme">
           <i class="fas fa-sun"></i>
@@ -111,12 +112,26 @@ $_SESSION['cover'] = $user['cover'];
 
     <div class="container">
       <aside class="sidebar">
-        <div class="sidebar-section">
+        <div class="sidebar-section" id="users">
           <div class="sidebar-title">Chats</div>
         </div>
       </aside>
-      <main >
+      <main class="messages-main">
+        <div class="chat-container">
+          <div class="chatbox" id="chatbox">
+            <div class="chat-placeholder"><em>Select a chat to start emssaging.</em></div>
+          </div>
+          <form id="sendForm" style="display: none;" autocomplete="off">
+            <div class="send-msg-row">
+              <input type="text" name="msg" id="msg" placeholder="Type a message..." autocomplete="off" maxlength="500" required/>
+              <button type="submit" class="send-btn"><i class="fas fa-paper-plane"></i></button>
+            </div>
+          </form>
+        </div>
       </main>
+      <aside class="sidebar">
+        
+      </aside>
     </div>
     <script src="scripts/changeThemeScript.js"></script>
     <script>
@@ -133,6 +148,9 @@ $_SESSION['cover'] = $user['cover'];
           dropdownMenu.classList.remove("show");
         }
       });
-    </script>  
+    </script> 
+    <script src="scripts/notifications.js"></script>
+    <script src="scripts/messages.js"></script>
+    <script src="scripts/updateUnreadCount.js"></script>
   </body>
 </html>

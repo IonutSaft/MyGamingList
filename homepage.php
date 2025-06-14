@@ -198,13 +198,13 @@ if(!empty($errors)) {
         <a class="nav-icon" href="homepage.php">
           <i class="fas fa-home"></i>
         </a >
-        <a class="nav-icon" title="Mail" href="#">
+        <a class="nav-icon" title="Mail" href="messages.php">
           <i class="fas fa-envelope"></i>
-          <span class="notification-badge">4</span>
+          <span class="notification-badge"></span>
         </a>
-        <button class="nav-icon" title="Notifications">
+        <button class="nav-icon" title="Notifications" style="position: relative;">
           <i class="fas fa-bell"></i>
-          <span class="notification-badge">3</span>
+          <span class="notification-badge"></span>
         </button>
         <button id="theme-toggle" class="theme-btn nav-icon" aria-label="Toggle theme">
           <i class="fas fa-sun"></i>
@@ -455,7 +455,7 @@ if(!empty($errors)) {
         </div>
       </aside>
     </div>
-    <script src="scripts/feed_ajax.js"></script>               
+    <script src="scripts/notifications.js"></script>         
     <script src="scripts/changeThemeScript.js"></script>
     <script>
       const userProfile = document.getElementById("usernameDisplay");
@@ -497,6 +497,8 @@ if(!empty($errors)) {
         });
       });
     </script>
+    <script src="scripts/feed_ajax.js"></script>     
     <script src="scripts/preview_media.js"></script>
+    <script src="scripts/updateUnreadCount.js"></script>
   </body>
 </html>

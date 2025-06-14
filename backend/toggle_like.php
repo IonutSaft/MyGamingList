@@ -8,6 +8,7 @@ if(!isset($_SESSION['loggedin'])) {
 }
 
 $user_id = (int)$_SESSION['user_id'];
+$username = $_SESSION['username'];
 $post_id = (int)($_POST['post_id'] ?? 0);
 
 $stmt = $conn->prepare("SELECT post_id FROM post WHERE post_id = ?");
@@ -47,6 +48,22 @@ if ($already_liked) {
     $stmt->bind_param("ii", $user_id, $post_id);
     $stmt->execute();
     $stmt->close();
+
+    
+    $stmt = $conn->prepare("SELECT user_id FROM post WHERE post_id = ?");
+    $stmt->bind_param("i", $post_id);
+    $stmt->execute();
+    $stmt->bind_result($post_owner_id);
+    $stmt->fetch();
+    $stmt->close();
+
+    if ($user_id !== $post_owner_id) {
+        $notif_content = "liked your post";
+        $stmt = $conn->prepare("INSERT INTO `notification` (user_id, actor_id, content, created_at) VALUES (?, ?, ?, NOW())");
+        $stmt->bind_param("iis", $post_owner_id, $user_id, $notif_content);
+        $stmt->execute();
+        $stmt->close();
+    }
 
     // Increment like count
     $stmt = $conn->prepare("UPDATE post SET like_count = like_count + 1 WHERE post_id = ?");

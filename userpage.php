@@ -127,13 +127,13 @@ $comment_stmt->close();
         <a class="nav-icon" href="homepage.php">
           <i class="fas fa-home"></i>
         </a>
-        <a class="nav-icon" title="Mail" href="#">
+        <a class="nav-icon" title="Mail" href="messages.php">
           <i class="fas fa-envelope"></i>
-          <span class="notification-badge">4</span>
+          <span class="notification-badge"></span>
         </a>
-        <button class="nav-icon" title="Notifications">
+        <button class="nav-icon" title="Notifications" style="position: relative;">
           <i class="fas fa-bell"></i>
-          <span class="notification-badge">3</span>
+          <span class="notification-badge"></span>
         </button>
         <button
           id="theme-toggle"
@@ -200,6 +200,20 @@ $comment_stmt->close();
         </div>
         <div class="sidebar-section">
           <div class="sidebar-title">Shortcuts</div>
+          <div class="shortcut-buttons">
+            <a class="shortcut-btn" href="userpage.php?id=<?= $_SESSION['user_id'] ?>">
+              <i class="fas fa-user"></i> Profile
+            </a>
+            <a class="shortcut-btn" href="savedpage.php">
+              <i class="fas fa-bookmark"></i> Saved Posts
+            </a>
+            <a class="shortcut-btn" href="settingspage.php">
+              <i class="fas fa-cog"></i> Settings
+            </a>
+            <a class="shortcut-btn" href="messages.php">
+              <i class="fas fa-envelope"></i> Messages
+            </a>
+          </div> 
         </div>
         <div class="sidebar-section">
           <div class="sidebar-title">Trending Games</div>
@@ -546,6 +560,8 @@ $comment_stmt->close();
         });
       });
     </script>
+    <script src="scripts/notifications.js"></script>
     <script src="scripts/feed_ajax.js"></script>
+    <script src="scripts/updateUnreadCount.js"></script>
   </body>
 </html>
