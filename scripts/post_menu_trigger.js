@@ -27,7 +27,7 @@ document.addEventListener("DOMContentLoaded", function () {
       e.stopPropagation();
       const feedItem = btn.closest(".feed-item");
       if (feedItem) feedItem.style.display = "none";
-      alert("Post reported. Thank you for your feedback!");
+      alert("The report has been sent. Thank you for your feedback!");
     });
   });
 });

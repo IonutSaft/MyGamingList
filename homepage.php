@@ -1,7 +1,7 @@
 <?php
 session_start();
 require_once 'backend/db_connect.php';
-
+require_once 'backend/suggested_users.php';
 if(!isset($_SESSION['loggedin'])) {
   header("Location: loginpage.php");
   exit();
@@ -255,6 +255,20 @@ if(!empty($errors)) {
         </div>
         <div class="sidebar-section">
           <div class="sidebar-title">Shortcuts</div>
+          <div class="shortcut-buttons">
+            <a class="shortcut-btn" href="userpage.php?id=<?= $_SESSION['user_id'] ?>">
+              <i class="fas fa-user"></i> Profile
+            </a>
+            <a class="shortcut-btn" href="savedpage.php">
+              <i class="fas fa-bookmark"></i> Saved Posts
+            </a>
+            <a class="shortcut-btn" href="settingspage.php">
+              <i class="fas fa-cog"></i> Settings
+            </a>
+            <a class="shortcut-btn" href="messages.php">
+              <i class="fas fa-envelope"></i> Messages
+            </a>
+          </div> 
         </div>
         <div class="sidebar-section">
           <div class="sidebar-title">Trending Games</div>
@@ -293,9 +307,7 @@ if(!empty($errors)) {
           <a class="sort-option<?= $feed_tab === 'for_you' ? ' active' : '' ?>" href="?feed=for_you">For You</a>
           <a class="sort-option<?= $feed_tab === 'following' ? ' active' : '' ?>" href="?feed=following">Following</a>
         </div>
-        <!-- Aici o sa fie feedul generat -->
-        <!-- Exemplu: -->
-         
+
         <div id="feed-list" class="feed-animated-list">
           <?php if(empty($posts)): ?>
             <div class="no-posts">
@@ -424,7 +436,23 @@ if(!empty($errors)) {
 
       </main>
       <aside class="right-sidebar">
-        <div class="sidebar-section">Suggested users</div>
+        <div class="sidebar-section">
+          <div class="sidebar-title">Suggested users</div>
+          <ul class="suggested-users-list">
+            <?php if(empty($suggested_users)): ?>
+              <li>No suggestions</li>
+            <?php else: ?>
+              <?php foreach($suggested_users as $user): ?>
+                <li>
+                  <a class="user-card" href="userpage.php?id=<?= $user['user_id'] ?>">
+                    <img src="<?= htmlspecialchars($user['avatar']) ?>" alt="">
+                    <span><?= htmlspecialchars($user['username']) ?></span>
+                  </a>
+                </li>
+              <?php endforeach; ?>
+            <?php endif; ?>
+          </ul>
+        </div>
       </aside>
     </div>
     <script src="scripts/feed_ajax.js"></script>               

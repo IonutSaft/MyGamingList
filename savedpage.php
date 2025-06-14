@@ -1,10 +1,65 @@
 <?php
 session_start();
-
+require_once 'backend/db_connect.php';
+require_once 'backend/suggested_users.php';
 if(!isset($_SESSION['loggedin'])) {
   header("Location: loginpage.php");
   exit();
 }
+$user_id = $_SESSION['user_id'];
+
+$user = [];
+$user_stmt = $conn->prepare("SELECT * FROM user WHERE user_id = ?");
+$user_stmt->bind_param("i", $_SESSION['user_id']);
+$user_stmt->execute();
+$result = $user_stmt->get_result();
+while($row = $result->fetch_assoc()) {
+  $user = $row;
+}
+$user_stmt->close();
+
+$liked_post_ids = [];
+$like_stmt = $conn->prepare("SELECT post_id FROM `like` WHERE user_id = ?");
+$like_stmt->bind_param("i", $user_id);
+$like_stmt->execute();
+$like_result = $like_stmt->get_result();
+while ($like_row = $like_result->fetch_assoc()) {
+    $liked_post_ids[] = $like_row['post_id'];
+}
+$like_stmt->close();
+
+$posts = [];
+$post_stmt = $conn->prepare("
+  SELECT p.*, u.username, u.avatar
+  FROM post p
+  JOIN `like` l on l.post_id = p.post_id
+  JOIN user u on p.user_id = u.user_id
+  WHERE l.user_id = ?
+  ORDER BY p.post_date DESC
+");
+$post_stmt->bind_param("i", $user_id);
+$post_stmt->execute();
+$result = $post_stmt->get_result();
+while($row = $result->fetch_assoc()) {
+  $row['liked_by_user'] = in_array($row['post_id'], $liked_post_ids);
+  $posts[] = $row;
+}
+$post_stmt->close();
+
+$comments = [];
+$comment_stmt = $conn->prepare("
+  SELECT c.*, u.username, u.avatar
+  FROM comment c
+  JOIN user u on c.user_id = u.user_id
+  ORDER BY c.comment_date DESC
+"); 
+$comment_stmt->execute();
+$result = $comment_stmt->get_result();
+while($row = $result->fetch_assoc()) {
+  $comments[] = $row;
+}
+$comment_stmt->close();
+
 ?>
 
 <!DOCTYPE html>
@@ -94,7 +149,7 @@ if(!isset($_SESSION['loggedin'])) {
     <div class="container">
       <aside class="sidebar">
         <div class="sidebar-section">
-          <a class="user-card" href="http://localhost/mygamelist/userpage.php">
+          <a class="user-card" href="userpage.php?id=<?= $_SESSION['user_id'] ?>">
             <img src="<?php echo $_SESSION["avatar"]; ?>" alt="Profile">
             <div>
               <div class="post-author">
@@ -112,13 +167,152 @@ if(!isset($_SESSION['loggedin'])) {
         </div>
       </aside>
       <main class="feed">
-        <!-- Aici o sa apara postarile salvate -->
+        <?php if(empty($posts)): ?>
+          <div class="no-posts">
+            <?php if($feed_tab === 'following'): ?>
+              No posts found from people you follow.
+            <?php else: ?>
+              No posts found. Be the first to post!
+            <?php endif ?>
+          </div>
+        <?php else: ?>
+          <?php foreach($posts as $post):
+            $post_date = new DateTime($post['post_date'], new DateTimeZone('Europe/Bucharest'));
+            $now = new DateTime('now', new DateTimeZone('Europe/Bucharest'));
+            $interval = $now->diff($post_date);
+
+            if($interval->y) $time_ago = $interval->y . ' years ago';
+            elseif ($interval->m) $time_ago = $interval->m . ' months ago';
+            elseif ($interval->d) $time_ago = $interval->d . ' days ago';
+            elseif ($interval->h) $time_ago = $interval->h . ' hours ago';
+            elseif ($interval->i) $time_ago = $interval->i . ' minutes ago';
+            else $time_ago = 'Just now';
+
+            $media_files = $post['media_content'] ? explode(', ', $post['media_content']) : [];
+            ?>
+            <div class="feed-item">
+              <div class="post-header">
+                <a href="userpage.php?id=<?= $post['user_id'] ?>" style="display: contents;">
+                  <img src="<?= htmlspecialchars($post['avatar']) ?>" alt="User">
+                </a>
+                <div>
+                  <a href="userpage.php?id=<?= $post['user_id'] ?>" class="post-author"><?= htmlspecialchars($post['username']) ?></a>
+                  <div class="post-time">
+                    <?= $time_ago ?> · <i class="fas fa-globe-americas"></i>
+                  </div>
+                </div>
+                <div class="post-menu">
+                  <i class="fas fa-ellipsis-h"></i>
+                  <div class="post-options">
+                    <button class="post-option hide-btn">
+                      <span>Hide</span>
+                    </button>
+                    <button class="post-option report-btn">
+                      <span>Report</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="post-content">
+                <p class="post-text"><?= htmlspecialchars($post['text_content']) ?></p>
+                <?php foreach($media_files as $media):
+                  if(pathinfo($media, PATHINFO_EXTENSION) === 'mp4'): ?>
+                    <video controls class="post-media">
+                      <source src="<?= $media ?>" type="video/mp4">
+                    </video>
+                  <?php else: ?>
+                    <img src="<?= $media ?>" alt="Post" class="post-media">
+                  <?php endif;
+                endforeach; ?>
+              </div>
+              <div class="post-stats">
+                <div></div>
+                <div class="like-comment-count" data-like-count="<?= $post['like_count'] ?>" data-comment-count="<?= $post['comment_count'] ?>">
+                  <?= $post['like_count'] ?> <i class="fas fa-thumbs-up"></i> <?= $post['comment_count'] ?> comments
+                </div>
+              </div>
+
+              <div class="post-action">
+                <a href="#" class="post-action like-btn <?= $post['liked_by_user'] ? ' liked' : '' ?>" data-post-id="<?= $post['post_id'] ?>">
+                  <i class="far fa-thumbs-up"></i>
+                  <span>Like</span>
+                </a>
+                <div class="post-action comment-trigger">
+                  <i class="far fa-comment"></i>
+                  <span>Comments</span>
+                </div>
+              </div>
+              <form method="POST" class="comment-form" style="display: none;">
+                <a class="user-card" href="userpage.php?id=<?= $_SESSION['user_id'] ?>">
+                <img src="<?= $user["avatar"] ?>" alt="Profile">
+                <div>
+                  <div class="post-author"><?php echo isset($_SESSION['username']) ? htmlspecialchars($_SESSION['username']) : 'Guest'; ?></div>
+                </div>
+                </a>
+                <input type="hidden" name="post_id" value="<?= $post['post_id'] ?>">
+                <textarea name="comment_content" rows="1" placeholder="Write a comment..."></textarea>
+                <button type="submit" class="post-button">Post</button>
+              </form>
+
+              <div class="comments-list" style="display: none;">
+                <?php foreach($comments as $comment):
+                  if($comment['post_id'] == $post['post_id']):
+                    $comment_date = new DateTime($comment['comment_date'], new DateTimeZone('Europe/Bucharest'));
+                    $now = new DateTime('now', new DateTimeZone('Europe/Bucharest'));
+                    $interval = $now->diff($comment_date);
+
+                    if($interval->y) $time_ago = $interval->y . ' years ago';
+                    elseif ($interval->m) $time_ago = $interval->m . ' months ago';
+                    elseif ($interval->d) $time_ago = $interval->d . ' days ago';
+                    elseif ($interval->h) $time_ago = $interval->h . ' hours ago';
+                    elseif ($interval->i) $time_ago = $interval->i . ' minutes ago';
+                    else $time_ago = 'Just now';
+                  ?>
+                    <div class="comment">
+                      <div class="comment-avatar">
+                        <a class="user-card" href="userpage.php?id=<?= $comment['user_id'] ?>">
+                          <img src="<?= $comment['avatar'] ?>" alt="Profile">
+                        </a>
+                      </div>
+                      <div class="comment-body">
+                        <div class="comment-header">
+                          <span class="post-author"><?= $comment['username'] ?></span>
+                          <span class="post-time"><?= $time_ago ?></span>
+                        </div>
+                        <div class="comment-text"><?= $comment['content'] ?></div>
+                      </div>
+                    </div>
+                    
+                  <?php endif; ?>
+                <?php endforeach; ?>
+              </div>
+            </div>
+          <?php endforeach; ?>
+        <?php endif; ?>
       </main>
       <aside class="right-sidebar">
-        <div class="sidebar-section">Recent Posts</div>
+        <div class="sidebar-section">
+          <div class="sidebar-title">Suggested users</div>
+          <ul class="suggested-users-list">
+            <?php if(empty($suggested_users)): ?>
+              <li>No suggestions</li>
+            <?php else: ?>
+              <?php foreach($suggested_users as $user): ?>
+                <li>
+                  <a class="user-card" href="userpage.php?id=<?= $user['user_id'] ?>">
+                    <img src="<?= htmlspecialchars($user['avatar']) ?>" alt="">
+                    <span><?= htmlspecialchars($user['username']) ?></span>
+                  </a>
+                </li>
+              <?php endforeach; ?>
+            <?php endif; ?>
+          </ul>
+        </div>
       </aside>
     </div>
-
+    <script src="scripts/feed_ajax.js"></script>             
+    <script src="scripts/post_menu_trigger.js"></script>                
     <script src="scripts/changeThemeScript.js"></script>
     <script>
       const userProfile = document.getElementById("usernameDisplay");
@@ -129,10 +323,20 @@ if(!isset($_SESSION['loggedin'])) {
         dropdownMenu.classList.toggle("show");
       });
 
-      document.addEventListener("click", () => {
+      document.addEventListener("click", (e) => {
         if (!userProfile.contains(e.target)) {
           dropdownMenu.classList.remove("show");
         }
+      });
+    </script>
+    <script>
+      document.querySelectorAll('.comment-trigger').forEach(trigger => {
+        trigger.addEventListener('click', () => {
+          const form = trigger.closest('.feed-item').querySelector('.comment-form');
+          form.style.display = form.style.display === 'none' ? 'flex' : 'none';
+          const commentsList = trigger.closest('.feed-item').querySelector('.comments-list');
+          commentsList.style.display = commentsList.style.display === 'none' ? 'block' : 'none';
+        });
       });
     </script>
   </body>
