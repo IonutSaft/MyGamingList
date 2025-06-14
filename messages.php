@@ -1,50 +1,138 @@
+<?php
+session_start();
+require_once 'backend/db_connect.php';
+require_once 'backend/suggested_users.php';
+if(!isset($_SESSION['loggedin'])) {
+  header("Location: loginpage.php");
+  exit();
+}
+
+$user_id = $_SESSION['user_id'];
+
+$user = [];
+$user_stmt = $conn->prepare("SELECT * FROM user WHERE user_id = ?");
+$user_stmt->bind_param("i", $_SESSION['user_id']);
+$user_stmt->execute();
+$result = $user_stmt->get_result();
+while($row = $result->fetch_assoc()) {
+  $user = $row;
+}
+$user_stmt->close();
+
+$_SESSION['username'] = $user['username'];
+$_SESSION['avatar'] = $user['avatar'];
+$_SESSION['cover'] = $user['cover'];
+
+?>
+
 <!DOCTYPE html>
-<html>
-<head>
-    <title>Messages</title>
-    <style>
-        #users { width: 200px; float: left; border-right: 1px solid #ccc; height: 90vh; overflow-y: auto;}
-        #chat { margin-left: 210px; }
-        #chatbox { height: 70vh; overflow-y: auto; border: 1px solid #eee; margin-bottom: 10px; padding: 5px;}
-        .me { color: blue; }
-        .them { color: green; }
-        .user-list-item {
-            display: flex; align-items: center; gap: 8px; margin-bottom: 6px; position: relative; border: none; background: transparent; cursor: pointer; width: 100%; text-align: left; padding: 6px 2px;
-        }
-        .user-avatar {
-            width: 36px; height: 36px; border-radius: 50%; object-fit: cover;
-        }
-        .user-label { flex:1; }
-        .user-name { font-weight: 600; }
-        .last-message { font-size: 0.92em; color: #666; }
-        .unread-badge {
-            background: #e74c3c; color: #fff; border-radius: 12px; font-size: 0.8em;
-            padding: 2px 8px; margin-left: 8px; min-width:18px; text-align:center; font-weight: 700;
-        }
-        .msg-sender-header {
-            display: flex; align-items: center; gap: 7px; margin-top: 12px; margin-bottom: 2px;
-        }
-        .chat-avatar {
-            width: 28px; height: 28px; border-radius: 50%; object-fit: cover;
-        }
-        .chat-username {
-            font-weight: 600; color: #444; font-size: 1em;
-        }
-        .msg-bubble {
-            margin-left: 36px; /* align with avatar */
-            margin-bottom: 8px;
-        }
-    </style>
-</head>
-<body>
-    <div id="users"></div>
-    <div id="chat">
-        <div id="chatbox"></div>
-        <form id="sendForm" style="display:none;">
-            <input type="text" id="msg" autocomplete="off" placeholder="Type a message..." />
-            <button type="submit">Send</button>
-        </form>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <link rel="stylesheet" href="styles/general.css">
+    <link rel="stylesheet" href="styles/header.css">
+    <link rel="stylesheet" href="styles/sidebars.css">
+    <link rel="stylesheet" href="styles/feed.css">
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Share+Tech+Mono&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <title>MyGameWorld</title>
+  </head>
+  <body>
+    <header class="top-bar">
+      <a class="logo" href="homepage.php">
+        <i class="fas fa-gamepad"></i>
+        MyGameWorld
+      </a>
+
+      <div class="search-container">
+        <i class="fas fa-search"></i>
+        <input
+          type="text"
+          placeholder="Search posts, users..."
+        />
+      </div>
+      
+      <div class="nav-icons">
+        <a class="nav-icon" href="homepage.php">
+          <i class="fas fa-home"></i>
+        </a >
+        <a class="nav-icon" title="Mail" href="#">
+          <i class="fas fa-envelope"></i>
+          <span class="notification-badge">4</span>
+        </a>
+        <button class="nav-icon" title="Notifications">
+          <i class="fas fa-bell"></i>
+          <span class="notification-badge">3</span>
+        </button>
+        <button id="theme-toggle" class="theme-btn nav-icon" aria-label="Toggle theme">
+          <i class="fas fa-sun"></i>
+          <i class="fas fa-moon" style="display: none"></i>
+        </button>
+      </div>
+
+      <div class="user-profile" id="userProfile">
+        <span class="username" id="usernameDisplay">
+          <?php echo isset($user['username']) ? htmlspecialchars($user['username']) : 'Guest'; ?>
+          <i class="fas fa-caret-down"></i>
+        </span>
+        <div class="dropdown-menu" id="dropdownMenu">
+          <a href="userpage.php?id=<?= $_SESSION['user_id'] ?>" class="dropdown-item">
+            <i class="fas fa-user"></i>
+            <span>Profile</span>
+          </a>
+          <a href="http://localhost/mygamelist/savedpage.php" class="dropdown-item">
+            <i class="fas fa-bookmark"></i>
+            <span>Saved</span>
+          </a>
+          <a href="http://localhost/mygamelist/settingspage.php" class="dropdown-item">
+            <i class="fas fa-cog"></i>
+            <span>Settings</span>
+          </a>
+          <div class="dropdown-divider"></div>
+          <a href="http://localhost/mygamelist/backend/logout.php" class="dropdown-item">
+            <i class="fas fa-sign-out-alt"></i>
+            <span>Log Out</span>
+          </a>
+        </div>
+        <a href="http://localhost/mygamelist/userpage.php">
+          <img src="<?= $user["avatar"] ?>" class="profile-pic" alt="Profile">
+        </a>    
+      </div>
+    </header>
+
+    <div class="container">
+      <aside class="sidebar">
+        <div class="sidebar-section">
+          <div class="sidebar-title">Chats</div>
+        </div>
+      </aside>
+      <main >
+      </main>
     </div>
-    <script src="scripts/messages.js"></script>
-</body>
+    <script src="scripts/changeThemeScript.js"></script>
+    <script>
+      const userProfile = document.getElementById("usernameDisplay");
+      const dropdownMenu = document.getElementById("dropdownMenu");
+
+      userProfile.addEventListener("click", (e) => {
+        e.stopPropagation();
+        dropdownMenu.classList.toggle("show");
+      });
+
+      document.addEventListener("click", (e) => {
+        if(!userProfile.contains(e.target)) {
+          dropdownMenu.classList.remove("show");
+        }
+      });
+    </script>  
+  </body>
 </html>
