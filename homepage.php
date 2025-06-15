@@ -7,6 +7,14 @@ if(!isset($_SESSION['loggedin'])) {
   exit();
 }
 
+function linkify_tags($content) {
+  return preg_replace(
+    '/#(\w+)/u',
+    '<a class="tag-link" href="tag.php?tag=$1">#$1</a>',
+    htmlspecialchars($content)
+  );
+}
+
 $errors = [];
 
 if($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -39,7 +47,33 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt = $conn->prepare("INSERT INTO post (user_id, text_content, media_content, post_date) VALUES (?, ?, ?, NOW())");
     $stmt->bind_param("iss", $user_id, $content, $media_content);
     $stmt->execute();
+    $post_id = $conn->insert_id;
     $stmt->close();
+
+    preg_match_all('/#(\w+)/u', $content, $matches);
+    $tags = array_unique($matches[1]);
+
+    if(!empty($tags)) {
+      foreach($tags as $tag) {
+        $tag_stmt = $conn->prepare("INSERT IGNORE INTO tag (name) VALUES (?)");
+        $tag_stmt->bind_param("s", $tag);
+        $tag_stmt->execute();
+        $tag_stmt->close();
+
+        $tag_id_stmt = $conn->prepare("SELECT tag_id FROM tag WHERE name = ?");
+        $tag_id_stmt->bind_param("s", $tag);
+        $tag_id_stmt->execute();
+        $tag_id_stmt->bind_result($tag_id);
+        $tag_id_stmt->fetch();
+        $tag_id_stmt->close();
+
+        $post_tag_stmt = $conn->prepare("INSERT INTO post_tag (post_id, tag_id) VALUES (?, ?)");
+        $post_tag_stmt->bind_param("ii", $post_id, $tag_id);
+        $post_tag_stmt->execute();
+        $post_tag_stmt->close();
+      }
+    }
+
     $_SESSION['saved'] = "Post saved successfully.";
   }
 
@@ -156,6 +190,22 @@ if(!empty($errors)) {
   header("Location: homepage.php");
   exit();
 }
+
+$trending_tags = [];
+$trend_stmt = $conn->prepare("
+  SELECT t.name, COUNT(pt.post_id) as post_count
+  FROM tag t
+  JOIN post_tag pt ON t.tag_id = pt.tag_id
+  GROUP BY t.tag_id
+  ORDER BY post_count DESC
+  Limit 5
+");
+$trend_stmt->execute();
+$trend_stmt->bind_result($tag_name, $post_count);
+while($trend_stmt->fetch()) {
+  $trending_tags[] = ['name' => $tag_name, 'count' => $post_count];
+}
+$trend_stmt->close();
 ?>
 
 <!DOCTYPE html>
@@ -271,7 +321,20 @@ if(!empty($errors)) {
           </div> 
         </div>
         <div class="sidebar-section">
-          <div class="sidebar-title">Trending Games</div>
+          <div class="sidebar-title">Trending Tags</div>
+          <ul class="trending-tags-list">
+            <?php if(empty($trending_tags)): ?>
+              <li>No trending tags</li>
+            <?php else: ?>
+              <?php foreach($trending_tags as $tag): ?>
+                <li>
+                  <a class="tag-link" href="tag.php?tag=<?= htmlspecialchars($tag['name']) ?>">#<?= htmlspecialchars($tag['name']) ?>
+                    (<?= $tag['count'] ?>)
+                  </a>
+                </li>
+              <?php endforeach; ?>
+            <?php endif; ?>
+          </ul>
         </div>
       </aside>
       <main class="feed">
@@ -357,7 +420,7 @@ if(!empty($errors)) {
                 </div>
 
                 <div class="post-content">
-                  <p class="post-text"><?= htmlspecialchars($post['text_content']) ?></p>
+                  <p class="post-text"><?= linkify_tags($post['text_content']) ?></p>
                   <?php foreach($media_files as $media):
                     if(pathinfo($media, PATHINFO_EXTENSION) === 'mp4'): ?>
                       <video controls class="post-media">

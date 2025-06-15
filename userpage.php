@@ -87,6 +87,31 @@ while($row = $result->fetch_assoc()) {
   $comments[] = $row;
 }
 $comment_stmt->close();
+
+$trending_tags = [];
+$trend_stmt = $conn->prepare("
+  SELECT t.name, COUNT(pt.post_id) as post_count
+  FROM tag t
+  JOIN post_tag pt ON t.tag_id = pt.tag_id
+  GROUP BY t.tag_id
+  ORDER BY post_count DESC
+  Limit 5
+");
+$trend_stmt->execute();
+$trend_stmt->bind_result($tag_name, $post_count);
+while($trend_stmt->fetch()) {
+  $trending_tags[] = ['name' => $tag_name, 'count' => $post_count];
+}
+$trend_stmt->close();
+
+function linkify_tags($content) {
+  return preg_replace(
+    '/#(\w+)/u',
+    '<a class="tag-link" href="tag.php?tag=$1">#$1</a>',
+    htmlspecialchars($content)
+  );
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -216,7 +241,20 @@ $comment_stmt->close();
           </div> 
         </div>
         <div class="sidebar-section">
-          <div class="sidebar-title">Trending Games</div>
+          <div class="sidebar-title">Trending Tags</div>
+          <ul class="trending-tags-list">
+            <?php if(empty($trending_tags)): ?>
+              <li>No trending tags</li>
+            <?php else: ?>
+              <?php foreach($trending_tags as $tag): ?>
+                <li>
+                  <a class="tag-link" href="tag.php?tag=<?= htmlspecialchars($tag['name']) ?>">#<?= htmlspecialchars($tag['name']) ?>
+                    (<?= $tag['count'] ?>)
+                  </a>
+                </li>
+              <?php endforeach; ?>
+            <?php endif; ?>
+          </ul>
         </div>
       </aside>
       <main class="user">
@@ -350,7 +388,7 @@ $comment_stmt->close();
                 </div>
 
                 <div class="post-content">
-                  <p class="post-text"><?= htmlspecialchars($post['text_content']) ?></p>
+                  <p class="post-text"><?= linkify_tags($post['text_content']) ?></p>
                   <?php foreach($media_files as $media):
                     if(pathinfo($media, PATHINFO_EXTENSION) === 'mp4'): ?>
                       <video controls class="post-media">

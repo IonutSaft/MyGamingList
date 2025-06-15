@@ -8,6 +8,11 @@ if(!isset($_SESSION['loggedin'])) {
 }
 $user_id = $_SESSION['user_id'];
 
+if(!isset($_GET['tag']) || !preg_match('/^\w+$/u', $_GET['tag'])) {
+  die("Invalid or missing tag.");
+}
+$tag = $_GET['tag'];
+
 $user = [];
 $user_stmt = $conn->prepare("SELECT * FROM user WHERE user_id = ?");
 $user_stmt->bind_param("i", $_SESSION['user_id']);
@@ -32,12 +37,13 @@ $posts = [];
 $post_stmt = $conn->prepare("
   SELECT p.*, u.username, u.avatar
   FROM post p
-  JOIN `like` l on l.post_id = p.post_id
   JOIN user u on p.user_id = u.user_id
-  WHERE l.user_id = ?
+  JOIN post_tag pt on p.post_id = pt.post_id
+  JOIN tag t on pt.tag_id = t.tag_id
+  WHERE t.name = ?
   ORDER BY p.post_date DESC
 ");
-$post_stmt->bind_param("i", $user_id);
+$post_stmt->bind_param("s", $tag);
 $post_stmt->execute();
 $result = $post_stmt->get_result();
 while($row = $result->fetch_assoc()) {
@@ -218,13 +224,10 @@ function linkify_tags($content) {
         </div>
       </aside>
       <main class="feed">
+        <div class="tag-title">#<?= htmlspecialchars($tag['name']) ?></div>
         <?php if(empty($posts)): ?>
           <div class="no-posts">
-            <?php if($feed_tab === 'following'): ?>
-              No posts found from people you follow.
-            <?php else: ?>
-              No posts found. Be the first to post!
-            <?php endif ?>
+            No posts found for this tag.
           </div>
         <?php else: ?>
           <?php foreach($posts as $post):
