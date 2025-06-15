@@ -8,6 +8,11 @@ if(!isset($_SESSION['loggedin'])) {
 }
 $user_id = $_SESSION['user_id'];
 
+$search = trim($_GET['q'] ?? '');
+if($search === '') {
+  die("No search term provided.");
+}
+
 $user = [];
 $user_stmt = $conn->prepare("SELECT * FROM user WHERE user_id = ?");
 $user_stmt->bind_param("i", $_SESSION['user_id']);
@@ -28,16 +33,27 @@ while ($like_row = $like_result->fetch_assoc()) {
 }
 $like_stmt->close();
 
+$users = [];
+$user_search_stmt = $conn->prepare("SELECT user_id, username, avatar FROM user WHERE username LIKE ? LIMIT 10");
+$like = '%' . $search . '%';
+$user_search_stmt->bind_param("s", $like);
+$user_search_stmt->execute();
+$user_search_result = $user_search_stmt->get_result();
+while($row = $user_search_result->fetch_assoc()) {
+  $users[] = $row;
+}
+$user_search_stmt->close();
+
 $posts = [];
 $post_stmt = $conn->prepare("
   SELECT p.*, u.username, u.avatar
   FROM post p
-  JOIN `like` l on l.post_id = p.post_id
   JOIN user u on p.user_id = u.user_id
-  WHERE l.user_id = ?
+  WHERE p.text_content LIKE ?
   ORDER BY p.post_date DESC
+  LIMIT 20
 ");
-$post_stmt->bind_param("i", $user_id);
+$post_stmt->bind_param("s", $like);
 $post_stmt->execute();
 $result = $post_stmt->get_result();
 while($row = $result->fetch_assoc()) {
@@ -224,129 +240,146 @@ function linkify_tags($content) {
         </div>
       </aside>
       <main class="feed">
-        <?php if(empty($posts)): ?>
-          <div class="no-posts">
-            <?php if($feed_tab === 'following'): ?>
-              No posts found from people you follow.
-            <?php else: ?>
-              No posts found. Be the first to post!
-            <?php endif ?>
-          </div>
-        <?php else: ?>
-          <?php foreach($posts as $post):
-            $post_date = new DateTime($post['post_date'], new DateTimeZone('Europe/Bucharest'));
-            $now = new DateTime('now', new DateTimeZone('Europe/Bucharest'));
-            $interval = $now->diff($post_date);
-
-            if($interval->y) $time_ago = $interval->y . ' years ago';
-            elseif ($interval->m) $time_ago = $interval->m . ' months ago';
-            elseif ($interval->d) $time_ago = $interval->d . ' days ago';
-            elseif ($interval->h) $time_ago = $interval->h . ' hours ago';
-            elseif ($interval->i) $time_ago = $interval->i . ' minutes ago';
-            else $time_ago = 'Just now';
-
-            $media_files = $post['media_content'] ? explode(', ', $post['media_content']) : [];
-            ?>
-            <div class="feed-item">
-              <div class="post-header">
-                <a href="userpage.php?id=<?= $post['user_id'] ?>" style="display: contents;">
-                  <img src="<?= htmlspecialchars($post['avatar']) ?>" alt="User">
-                </a>
-                <div>
-                  <a href="userpage.php?id=<?= $post['user_id'] ?>" class="post-author"><?= htmlspecialchars($post['username']) ?></a>
-                  <div class="post-time">
-                    <?= $time_ago ?> · <i class="fas fa-globe-americas"></i>
-                  </div>
-                </div>
-                <div class="post-menu">
-                  <i class="fas fa-ellipsis-h"></i>
-                  <div class="post-options">
-                    <button class="post-option hide-btn">
-                      <span>Hide</span>
-                    </button>
-                    <button class="post-option report-btn">
-                      <span>Report</span>
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              <div class="post-content">
-                <p class="post-text"><?= linkify_tags($post['text_content']) ?></p>
-                <?php foreach($media_files as $media):
-                  if(pathinfo($media, PATHINFO_EXTENSION) === 'mp4'): ?>
-                    <video controls class="post-media">
-                      <source src="<?= $media ?>" type="video/mp4">
-                    </video>
-                  <?php else: ?>
-                    <img src="<?= $media ?>" alt="Post" class="post-media">
-                  <?php endif;
-                endforeach; ?>
-              </div>
-              <div class="post-stats">
-                <div></div>
-                <div class="like-comment-count" data-like-count="<?= $post['like_count'] ?>" data-comment-count="<?= $post['comment_count'] ?>">
-                  <?= $post['like_count'] ?> <i class="fas fa-thumbs-up"></i> <?= $post['comment_count'] ?> comments
-                </div>
-              </div>
-
-              <div class="post-action">
-                <a href="#" class="post-action like-btn <?= $post['liked_by_user'] ? ' liked' : '' ?>" data-post-id="<?= $post['post_id'] ?>">
-                  <i class="far fa-thumbs-up"></i>
-                  <span>Like</span>
-                </a>
-                <div class="post-action comment-trigger">
-                  <i class="far fa-comment"></i>
-                  <span>Comments</span>
-                </div>
-              </div>
-              <form method="POST" class="comment-form" style="display: none;">
-                <a class="user-card" href="userpage.php?id=<?= $_SESSION['user_id'] ?>">
-                <img src="<?= $user["avatar"] ?>" alt="Profile">
-                <div>
-                  <div class="post-author"><?php echo isset($_SESSION['username']) ? htmlspecialchars($_SESSION['username']) : 'Guest'; ?></div>
-                </div>
-                </a>
-                <input type="hidden" name="post_id" value="<?= $post['post_id'] ?>">
-                <textarea name="comment_content" rows="1" placeholder="Write a comment..."></textarea>
-                <button type="submit" class="post-button">Post</button>
-              </form>
-
-              <div class="comments-list" style="display: none;">
-                <?php foreach($comments as $comment):
-                  if($comment['post_id'] == $post['post_id']):
-                    $comment_date = new DateTime($comment['comment_date'], new DateTimeZone('Europe/Bucharest'));
-                    $now = new DateTime('now', new DateTimeZone('Europe/Bucharest'));
-                    $interval = $now->diff($comment_date);
-
-                    if($interval->y) $time_ago = $interval->y . ' years ago';
-                    elseif ($interval->m) $time_ago = $interval->m . ' months ago';
-                    elseif ($interval->d) $time_ago = $interval->d . ' days ago';
-                    elseif ($interval->h) $time_ago = $interval->h . ' hours ago';
-                    elseif ($interval->i) $time_ago = $interval->i . ' minutes ago';
-                    else $time_ago = 'Just now';
-                  ?>
-                    <div class="comment">
-                      <div class="comment-avatar">
-                        <a class="user-card" href="userpage.php?id=<?= $comment['user_id'] ?>">
-                          <img src="<?= $comment['avatar'] ?>" alt="Profile">
-                        </a>
-                      </div>
-                      <div class="comment-body">
-                        <div class="comment-header">
-                          <span class="post-author"><?= $comment['username'] ?></span>
-                          <span class="post-time"><?= $time_ago ?></span>
-                        </div>
-                        <div class="comment-text"><?= $comment['content'] ?></div>
-                      </div>
-                    </div>
-                    
-                  <?php endif; ?>
-                <?php endforeach; ?>
-              </div>
+        <div class="tag-title">Results for "<?= htmlspecialchars($search) ?>"</div>
+        <section>
+          <h3>Users</h3>
+          <?php if(empty($users)): ?>
+            <div class="no-posts">No users found</div>
+          <?php else: ?>
+            <ul class="suggested-users-list">
+              <?php foreach($users as $usr): ?>
+                <li>
+                  <a href="userpage.php?id=<?= $usr['user_id'] ?>" class="user-card">
+                    <img src="<?= htmlspecialchars($usr['avatar']) ?>" alt="">
+                    <span><?= htmlspecialchars($usr['username']) ?></span>
+                  </a>
+                </li>
+              <?php endforeach; ?>
+            </ul>
+          <?php endif; ?>
+        </section>
+        <section>
+          <h3>Posts</h3>
+          <?php if(empty($posts)): ?>
+            <div class="no-posts">
+              No posts found.
             </div>
-          <?php endforeach; ?>
-        <?php endif; ?>
+          <?php else: ?>
+            <?php foreach($posts as $post):
+              $post_date = new DateTime($post['post_date'], new DateTimeZone('Europe/Bucharest'));
+              $now = new DateTime('now', new DateTimeZone('Europe/Bucharest'));
+              $interval = $now->diff($post_date);
+
+              if($interval->y) $time_ago = $interval->y . ' years ago';
+              elseif ($interval->m) $time_ago = $interval->m . ' months ago';
+              elseif ($interval->d) $time_ago = $interval->d . ' days ago';
+              elseif ($interval->h) $time_ago = $interval->h . ' hours ago';
+              elseif ($interval->i) $time_ago = $interval->i . ' minutes ago';
+              else $time_ago = 'Just now';
+
+              $media_files = $post['media_content'] ? explode(', ', $post['media_content']) : [];
+              ?>
+              <div class="feed-item">
+                <div class="post-header">
+                  <a href="userpage.php?id=<?= $post['user_id'] ?>" style="display: contents;">
+                    <img src="<?= htmlspecialchars($post['avatar']) ?>" alt="User">
+                  </a>
+                  <div>
+                    <a href="userpage.php?id=<?= $post['user_id'] ?>" class="post-author"><?= htmlspecialchars($post['username']) ?></a>
+                    <div class="post-time">
+                      <?= $time_ago ?> · <i class="fas fa-globe-americas"></i>
+                    </div>
+                  </div>
+                  <div class="post-menu">
+                    <i class="fas fa-ellipsis-h"></i>
+                    <div class="post-options">
+                      <button class="post-option hide-btn">
+                        <span>Hide</span>
+                      </button>
+                      <button class="post-option report-btn">
+                        <span>Report</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="post-content">
+                  <p class="post-text"><?= linkify_tags($post['text_content']) ?></p>
+                  <?php foreach($media_files as $media):
+                    if(pathinfo($media, PATHINFO_EXTENSION) === 'mp4'): ?>
+                      <video controls class="post-media">
+                        <source src="<?= $media ?>" type="video/mp4">
+                      </video>
+                    <?php else: ?>
+                      <img src="<?= $media ?>" alt="Post" class="post-media">
+                    <?php endif;
+                  endforeach; ?>
+                </div>
+                <div class="post-stats">
+                  <div></div>
+                  <div class="like-comment-count" data-like-count="<?= $post['like_count'] ?>" data-comment-count="<?= $post['comment_count'] ?>">
+                    <?= $post['like_count'] ?> <i class="fas fa-thumbs-up"></i> <?= $post['comment_count'] ?> comments
+                  </div>
+                </div>
+
+                <div class="post-action">
+                  <a href="#" class="post-action like-btn <?= $post['liked_by_user'] ? ' liked' : '' ?>" data-post-id="<?= $post['post_id'] ?>">
+                    <i class="far fa-thumbs-up"></i>
+                    <span>Like</span>
+                  </a>
+                  <div class="post-action comment-trigger">
+                    <i class="far fa-comment"></i>
+                    <span>Comments</span>
+                  </div>
+                </div>
+                <form method="POST" class="comment-form" style="display: none;">
+                  <a class="user-card" href="userpage.php?id=<?= $_SESSION['user_id'] ?>">
+                  <img src="<?= $user["avatar"] ?>" alt="Profile">
+                  <div>
+                    <div class="post-author"><?php echo isset($_SESSION['username']) ? htmlspecialchars($_SESSION['username']) : 'Guest'; ?></div>
+                  </div>
+                  </a>
+                  <input type="hidden" name="post_id" value="<?= $post['post_id'] ?>">
+                  <textarea name="comment_content" rows="1" placeholder="Write a comment..."></textarea>
+                  <button type="submit" class="post-button">Post</button>
+                </form>
+
+                <div class="comments-list" style="display: none;">
+                  <?php foreach($comments as $comment):
+                    if($comment['post_id'] == $post['post_id']):
+                      $comment_date = new DateTime($comment['comment_date'], new DateTimeZone('Europe/Bucharest'));
+                      $now = new DateTime('now', new DateTimeZone('Europe/Bucharest'));
+                      $interval = $now->diff($comment_date);
+
+                      if($interval->y) $time_ago = $interval->y . ' years ago';
+                      elseif ($interval->m) $time_ago = $interval->m . ' months ago';
+                      elseif ($interval->d) $time_ago = $interval->d . ' days ago';
+                      elseif ($interval->h) $time_ago = $interval->h . ' hours ago';
+                      elseif ($interval->i) $time_ago = $interval->i . ' minutes ago';
+                      else $time_ago = 'Just now';
+                    ?>
+                      <div class="comment">
+                        <div class="comment-avatar">
+                          <a class="user-card" href="userpage.php?id=<?= $comment['user_id'] ?>">
+                            <img src="<?= $comment['avatar'] ?>" alt="Profile">
+                          </a>
+                        </div>
+                        <div class="comment-body">
+                          <div class="comment-header">
+                            <span class="post-author"><?= $comment['username'] ?></span>
+                            <span class="post-time"><?= $time_ago ?></span>
+                          </div>
+                          <div class="comment-text"><?= $comment['content'] ?></div>
+                        </div>
+                      </div>
+                    <?php endif; ?>
+                  <?php endforeach; ?>
+                </div>
+              </div>
+            <?php endforeach; ?>
+          <?php endif; ?>
+        </section>
+        
       </main>
       <aside class="right-sidebar">
         <div class="sidebar-section">

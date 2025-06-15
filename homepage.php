@@ -201,9 +201,9 @@ $trend_stmt = $conn->prepare("
   Limit 5
 ");
 $trend_stmt->execute();
-$trend_stmt->bind_result($tag_name, $post_count);
+$trend_stmt->bind_result($tag_name, $tag_post_count);
 while($trend_stmt->fetch()) {
-  $trending_tags[] = ['name' => $tag_name, 'count' => $post_count];
+  $trending_tags[] = ['name' => $tag_name, 'count' => $tag_post_count];
 }
 $trend_stmt->close();
 ?>
@@ -236,12 +236,18 @@ $trend_stmt->close();
         MyGameWorld
       </a>
 
-      <div class="search-container">
-        <i class="fas fa-search"></i>
-        <input
-          type="text"
-          placeholder="Search posts, users..."
-        />
+      <div class="search-container" style="position: relative;">
+        <form action="http://localhost/mygamelist/search.php" method="GET" id="searchForm" autocomplete="off">
+          <i class="fas fa-search"></i>
+          <input
+            type="text"
+            name="q"
+            id="searchInput"
+            placeholder="Search posts, users..."
+            required
+          />
+          <div id="searchResultsDropdown" class="search-dropdown" style="display:none; position:absolute; left:0; right:0; background:var(--elements-bg-color); z-index:200;"></div>
+        </form>
       </div>
       
       <div class="nav-icons">
@@ -518,6 +524,7 @@ $trend_stmt->close();
         </div>
       </aside>
     </div>
+    <script src="scripts/search_live.js"></script>
     <script src="scripts/notifications.js"></script>         
     <script src="scripts/changeThemeScript.js"></script>
     <script>

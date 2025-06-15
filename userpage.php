@@ -98,9 +98,9 @@ $trend_stmt = $conn->prepare("
   Limit 5
 ");
 $trend_stmt->execute();
-$trend_stmt->bind_result($tag_name, $post_count);
+$trend_stmt->bind_result($tag_name, $tag_post_count);
 while($trend_stmt->fetch()) {
-  $trending_tags[] = ['name' => $tag_name, 'count' => $post_count];
+  $trending_tags[] = ['name' => $tag_name, 'count' => $tag_post_count];
 }
 $trend_stmt->close();
 
@@ -143,9 +143,18 @@ function linkify_tags($content) {
         MyGameWorld
       </a>
 
-      <div class="search-container">
-        <i class="fas fa-search"></i>
-        <input type="text" placeholder="Search posts, users..." />
+      <div class="search-container" style="position: relative;">
+        <form action="http://localhost/mygamelist/search.php" method="GET" id="searchForm" autocomplete="off">
+          <i class="fas fa-search"></i>
+          <input
+            type="text"
+            name="q"
+            id="searchInput"
+            placeholder="Search posts, users..."
+            required
+          />
+          <div id="searchResultsDropdown" class="search-dropdown" style="display:none; position:absolute; left:0; right:0; background:var(--elements-bg-color); z-index:200;"></div>
+        </form>
       </div>
 
       <div class="nav-icons">
@@ -504,7 +513,7 @@ function linkify_tags($content) {
       window.profileUserId = <?= (int)$profile_user['user_id'] ?>;
       window.currentUserId = <?= (int)$_SESSION['user_id'] ?>;
     </script>
-
+    <script src="scripts/search_live.js"></script>
     <script src="scripts/user_game_list.js"></script>
     <script src="scripts/followModal.js"></script>
     <script src="scripts/profileEdit.js"></script>

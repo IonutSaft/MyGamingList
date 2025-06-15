@@ -120,12 +120,18 @@ function linkify_tags($content) {
         MyGameWorld
       </a>
 
-      <div class="search-container">
-        <i class="fas fa-search"></i>
-        <input
-          type="text"
-          placeholder="Search posts, users..."
-        />
+      <div class="search-container" style="position: relative;">
+        <form action="http://localhost/mygamelist/search.php" method="GET" id="searchForm" autocomplete="off">
+          <i class="fas fa-search"></i>
+          <input
+            type="text"
+            name="q"
+            id="searchInput"
+            placeholder="Search posts, users..."
+            required
+          />
+          <div id="searchResultsDropdown" class="search-dropdown" style="display:none; position:absolute; left:0; right:0; background:var(--elements-bg-color); z-index:200;"></div>
+        </form>
       </div>
       
       <div class="nav-icons">
@@ -365,6 +371,7 @@ function linkify_tags($content) {
         </div>
       </aside>
     </div>
+    <script src="scripts/search_live.js"></script>
     <script src="scripts/feed_ajax.js"></script>             
     <script src="scripts/post_menu_trigger.js"></script>                
     <script src="scripts/changeThemeScript.js"></script>
