@@ -713,55 +713,71 @@ li {
   animation: fadeIn 0.4s ease forwards;
 }
 
-@media (max-width: 1200px) {
-  .right-sidebar {
-    display: none;
-  }
-}
-
 @media (max-width: 900px) {
-  .sidebar {
-    display: none;
-  }
-
-  .container {
-    padding: 20px 0;
-  }
-
-  .user {
+  .user,
+  .profile-header,
+  .profile-content.active {
     max-width: 100%;
-    padding: 0 16px;
+    padding: 0 2vw;
   }
-
-  .search-container {
-    display: none;
+  .profile-main {
+    flex-direction: column;
+    gap: 10px;
+  }
+  .profile-avatar {
+    width: 70px;
+    height: 70px;
+    margin-top: -35px;
+  }
+  .profile-details {
+    font-size: 15px;
   }
 }
 
 @media (max-width: 700px) {
+  .games-list {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
   #user-game-list {
     flex-direction: column;
     gap: 16px;
   }
   .game-card {
     width: 98vw;
+    min-width: 0;
+    padding: 6px 6px 4px 6px;
   }
 }
 
 @media (max-width: 600px) {
-  .composer-action span {
-    display: none;
+  .profile-header,
+  .profile-content.active,
+  .profile-nav {
+    padding: 2px;
+    border-radius: 4px;
   }
-
-  .composer-action {
-    padding: 8px;
+  .profile-avatar {
+    width: 48px;
+    height: 48px;
+    margin-top: -24px;
   }
-
-  .post-action span {
-    display: none;
+  .profile-name {
+    font-size: 18px;
   }
-
-  .user-name {
-    display: none;
+  .profile-bio,
+  .editable-bio {
+    min-height: 40px;
+    font-size: 13px;
+    padding: 6px;
+  }
+  .stat,
+  .profile-stats {
+    font-size: 13px;
+    gap: 10px;
+  }
+  .profile-nav-btn {
+    padding: 6px 0;
+    font-size: 13px;
   }
 }

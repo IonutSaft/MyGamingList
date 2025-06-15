@@ -74,45 +74,25 @@ body {
   color: var(--text-color);
 }
 
-@media (max-width: 1200px) {
-  .right-sidebar {
-    display: none;
-  }
-}
-
 @media (max-width: 900px) {
   .sidebar {
     display: none;
   }
 
   .container {
-    padding: 20px 0;
-  }
-
-  .feed {
-    max-width: 100%;
-    padding: 0 16px;
-  }
-
-  .search-container {
-    display: none;
+    padding: 10px 0;
+    flex-direction: column;
+    gap: 0.5rem;
   }
 }
 
 @media (max-width: 600px) {
-  .composer-action span {
-    display: none;
+  body {
+    font-size: 15px;
   }
 
-  .composer-action {
-    padding: 8px;
-  }
-
-  .post-action span {
-    display: none;
-  }
-
-  .user-name {
-    display: none;
+  .container {
+    padding: 0 2px;
+    gap: 0.2rem;
   }
 }

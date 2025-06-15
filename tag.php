@@ -76,9 +76,9 @@ $trend_stmt = $conn->prepare("
   Limit 5
 ");
 $trend_stmt->execute();
-$trend_stmt->bind_result($tag_name, $post_count);
+$trend_stmt->bind_result($tag_name, $tag_post_count);
 while($trend_stmt->fetch()) {
-  $trending_tags[] = ['name' => $tag_name, 'count' => $post_count];
+  $trending_tags[] = ['name' => $tag_name, 'count' => $tag_post_count];
 }
 $trend_stmt->close();
 

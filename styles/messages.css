@@ -223,15 +223,25 @@
 }
 
 @media (max-width: 900px) {
-  .sidebar {
-    display: none;
-  }
   .messages-main {
     padding-left: 0;
   }
   .chat-container {
     min-height: 68vh;
     height: 68vh;
+  }
+  .messages-main .sidebar {
+    display: block !important;
+    width: 120px; /* Or a narrow width for mobile */
+    min-width: 90px;
+    max-width: 200px;
+  }
+  .messages-main {
+    flex-direction: row;
+    flex-wrap: nowrap;
+  }
+  .chat-container {
+    flex: 2;
   }
 }
 
@@ -247,5 +257,15 @@
   }
   .send-msg-row {
     padding: 8px 4px 8px 4px;
+  }
+  .messages-main .sidebar {
+    width: 60px;
+    min-width: 60px;
+    max-width: 80px;
+    padding: 2px;
+  }
+  .user-list-item span.user-name,
+  .user-list-item span.last-message {
+    display: none;
   }
 }
