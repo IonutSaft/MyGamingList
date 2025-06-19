@@ -359,12 +359,14 @@ function linkify_tags($content) {
               <li>No suggestions</li>
             <?php else: ?>
               <?php foreach($suggested_users as $user): ?>
-                <li>
-                  <a class="user-card" href="userpage.php?id=<?= $user['user_id'] ?>">
-                    <img src="<?= htmlspecialchars($user['avatar']) ?>" alt="">
-                    <span><?= htmlspecialchars($user['username']) ?></span>
-                  </a>
-                </li>
+                <?php if($user['username'] != 'admin'): ?>
+                  <li>
+                    <a class="user-card" href="userpage.php?id=<?= $user['user_id'] ?>">
+                      <img src="<?= htmlspecialchars($user['avatar']) ?>" alt="">
+                      <span><?= htmlspecialchars($user['username']) ?></span>
+                    </a>
+                  </li>
+                <?php endif; ?>
               <?php endforeach; ?>
             <?php endif; ?>
           </ul>

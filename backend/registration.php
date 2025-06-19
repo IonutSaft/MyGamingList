@@ -77,8 +77,11 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
     $avatar = "default/default_avatar.png";
     $cover = "default/default_cover.png";  
     $join_date = date('Y-m-d');
+    if($username == "admin") {
+      $is_admin = 1;
+    }
 
-    $query = mysqli_query($connect, "INSERT INTO user (username, password, email_address, birth_date, avatar, cover, join_date) VALUES ('$username','$hashed_password', '$email', '$birth_date', '$avatar', '$cover', '$join_date')");
+    $query = mysqli_query($connect, "INSERT INTO user (username, password, email_address, birth_date, avatar, cover, join_date, is_admin) VALUES ('$username','$hashed_password', '$email', '$birth_date', '$avatar', '$cover', '$join_date', $is_admin)");
 
     if($query) {
       $_SESSION['registration_success'] = "Account created successfully! Please log in.";

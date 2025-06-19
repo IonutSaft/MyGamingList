@@ -30,15 +30,26 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
     $user = mysqli_fetch_assoc($query);
 
     if(password_verify($password, $user["password"])) {
-      $_SESSION["user_id"] = $user["user_id"];
-      $_SESSION["username"] = $user["username"];
-      $_SESSION["avatar"] = $user["avatar"];
-      $_SESSION["email_address"] = $user["email_address"];
-      $_SESSION["cover"] = $user["cover"];
-      $_SESSION["loggedin"] = true;
+      if($user["is_admin"] == 1) {
+        $_SESSION["is_admin"] = true;
+        $_SESSION["loggedin"] = true;
+        $_SESSION["user_id"] = $user["user_id"];
+      } else {
+        $_SESSION["user_id"] = $user["user_id"];
+        $_SESSION["username"] = $user["username"];
+        $_SESSION["avatar"] = $user["avatar"];
+        $_SESSION["email_address"] = $user["email_address"];
+        $_SESSION["cover"] = $user["cover"];
+        $_SESSION["loggedin"] = true;
+      }
 
       if($remember) {
         setcookie("remember_user", $user["user_id"], time() + 86400 * 30, "/");
+      }
+
+      if(isset($_SESSION["is_admin"])) {
+        header("Location: ../admin.php");
+        exit();
       }
 
       header("Location: ../homepage.php");
