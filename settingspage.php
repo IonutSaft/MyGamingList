@@ -165,9 +165,10 @@ if(!isset($_SESSION['loggedin'])) {
         }
       });
 
-      document.getElementById("deleteAccountBtn").addEventListener("click", function() {
+      document.getElementById("deleteAccountBtn").addEventListener("click", function(e) {
+        e.preventDefault();
         if(confirm("Are you sure you want to delete your account? This action cannot be undone.")) {
-          window.location.href = "../backend/deleteuser.php";          
+          window.location.href = this.href;          
         }
       })
     </script>
