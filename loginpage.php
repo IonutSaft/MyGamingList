@@ -64,6 +64,12 @@ if(isset($_SESSION['user_id']) && isset($_SESSION['loggedin'])) {
         }  
         $old_input = $_SESSION['old_input'] ?? [];
         unset($_SESSION['old_input']);
+        if(isset($_SESSION['registration_success'])) {
+          echo '<div class="success-message">';
+          echo '<p>' .  htmlspecialchars($_SESSION['registration_success']) . '</p>';
+          echo '</div>';
+          unset($_SESSION['registration_success']);
+        }
         ?>
         <div class="input-group">
           <label for="username">Username or Email</label>

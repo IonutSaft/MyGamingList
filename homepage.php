@@ -206,6 +206,7 @@ while($trend_stmt->fetch()) {
   $trending_tags[] = ['name' => $tag_name, 'count' => $tag_post_count];
 }
 $trend_stmt->close();
+$conn->close();
 ?>
 
 <!DOCTYPE html>

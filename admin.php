@@ -44,14 +44,14 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
     $get_post->fetch();
     $get_post->close();
 
-    if($post_id) {
+    if(!empty($post_id)) {
       $delete_stmt = $conn->prepare("DELETE FROM comment WHERE comment_id = ?");
       $delete_stmt->bind_param("i", $comment_id);
       $delete_stmt->execute();
       $delete_stmt->close();
 
-      $recount = $conn->prepare("UPDATE post SET comment_count = (SELECT COUNT(*) FROM comment WHERE post_id = ?) WHERE post_id = ?");
-      $recount->bind_param("ii", $post_id, $post_id);
+      $recount = $conn->prepare("UPDATE post SET comment_count = comment_count - 1 WHERE post_id = ?");
+      $recount->bind_param("i", $post_id);
       $recount->execute();
       $recount->close();
     }

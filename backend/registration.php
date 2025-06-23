@@ -81,7 +81,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
       $is_admin = 1;
     }
 
-    $query = mysqli_query($connect, "INSERT INTO user (username, password, email_address, birth_date, avatar, cover, join_date, is_admin) VALUES ('$username','$hashed_password', '$email', '$birth_date', '$avatar', '$cover', '$join_date', $is_admin)");
+    $query = mysqli_query($connect, "INSERT INTO user (username, password, email_address, birth_date, avatar, cover, join_date, is_admin) VALUES ('$username','$hashed_password', '$email', '$birth_date', '$avatar', '$cover', '$join_date', '$is_admin')");
 
     if($query) {
       $_SESSION['registration_success'] = "Account created successfully! Please log in.";

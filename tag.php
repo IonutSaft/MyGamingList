@@ -89,7 +89,7 @@ function linkify_tags($content) {
     htmlspecialchars($content)
   );
 }
-
+$conn->close();
 ?>
 
 <!DOCTYPE html>

@@ -23,6 +23,7 @@ $_SESSION['username'] = $user['username'];
 $_SESSION['avatar'] = $user['avatar'];
 $_SESSION['cover'] = $user['cover'];
 
+$conn->close();
 ?>
 
 <!DOCTYPE html>

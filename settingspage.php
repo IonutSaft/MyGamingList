@@ -6,7 +6,6 @@ if(!isset($_SESSION['loggedin'])) {
   exit();
 }
 
-$user
 ?>
 
 <!DOCTYPE html>

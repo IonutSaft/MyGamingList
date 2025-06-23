@@ -437,3 +437,16 @@ body {
   margin: 5px 0;
   color: #d32f2f;
 }
+
+.success-message {
+  background: #e8f5e9;
+  border-left: 4px solid #4caf50;
+  padding: 4px;
+  margin-bottom: 5px;
+  border-radius: 5px;
+}
+
+.success-message p {
+  margin: 5px 0;
+  color: #2e7d32;
+}
