@@ -5,8 +5,8 @@ require_once 'db_connect.php';
 header('Content-Type: application/json');
 
 if (!isset($_SESSION['loggedin'])) {
-    echo json_encode(['success' => false, 'error' => 'Not logged in']);
-    exit();
+  echo json_encode(['success' => false, 'error' => 'Not logged in']);
+  exit();
 }
 
 $data = json_decode(file_get_contents('php://input'), true);
@@ -15,43 +15,43 @@ $current_user_id = $_SESSION['user_id'];
 
 // Prevent self-follow
 if ($user_id == $current_user_id) {
-    echo json_encode(['success' => false, 'error' => 'Cannot follow yourself']);
-    exit();
+  echo json_encode(['success' => false, 'error' => 'Cannot follow yourself']);
+  exit();
 }
 
 try {
-    $conn->begin_transaction();
+  $conn->begin_transaction();
+  
+  if ($data['action'] === 'follow') {
+    // Check if follow relationship already exists
+    $check = $conn->prepare("SELECT 1 FROM follow WHERE following_user_id = ? AND followed_user_id = ?");
+    $check->bind_param("ii", $current_user_id, $user_id);
+    $check->execute();
     
-    if ($data['action'] === 'follow') {
-      // Check if follow relationship already exists
-      $check = $conn->prepare("SELECT 1 FROM follow WHERE following_user_id = ? AND followed_user_id = ?");
-      $check->bind_param("ii", $current_user_id, $user_id);
-      $check->execute();
-      
-      if ($check->get_result()->num_rows == 0) {
-        $stmt = $conn->prepare("INSERT INTO follow (following_user_id, followed_user_id) VALUES (?, ?)");
-        $stmt->bind_param("ii", $current_user_id, $user_id);
-        $stmt->execute();
-        
-        if ($current_user_id !== $user_id) {
-        $notif_content = "started following you";
-        $stmt = $conn->prepare("INSERT INTO `notification` (user_id, actor_id, content, created_at) VALUES (?, ?, ?, NOW())");
-        $stmt->bind_param("iis", $user_id, $current_user_id, $notif_content);
-        $stmt->execute();
-        $stmt->close();
-        }
-      }
-    } else {
-      $stmt = $conn->prepare("DELETE FROM follow WHERE following_user_id = ? AND followed_user_id = ?");
+    if ($check->get_result()->num_rows == 0) {
+      $stmt = $conn->prepare("INSERT INTO follow (following_user_id, followed_user_id) VALUES (?, ?)");
       $stmt->bind_param("ii", $current_user_id, $user_id);
       $stmt->execute();
+      
+      if ($current_user_id !== $user_id) {
+      $notif_content = "started following you";
+      $stmt = $conn->prepare("INSERT INTO `notification` (user_id, actor_id, content, created_at) VALUES (?, ?, ?, NOW())");
+      $stmt->bind_param("iis", $user_id, $current_user_id, $notif_content);
+      $stmt->execute();
+      $stmt->close();
+      }
     }
-    
-    $conn->commit();
-    echo json_encode(['success' => true]);
+  } else {
+    $stmt = $conn->prepare("DELETE FROM follow WHERE following_user_id = ? AND followed_user_id = ?");
+    $stmt->bind_param("ii", $current_user_id, $user_id);
+    $stmt->execute();
+  }
+  
+  $conn->commit();
+  echo json_encode(['success' => true]);
 } catch (Exception $e) {
-    $conn->rollback();
-    echo json_encode(['success' => false, 'error' => $e->getMessage()]);
+  $conn->rollback();
+  echo json_encode(['success' => false, 'error' => $e->getMessage()]);
 }
 
 ?>

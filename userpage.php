@@ -108,7 +108,7 @@ function linkify_tags($content) {
   return preg_replace(
     '/#(\w+)/u',
     '<a class="tag-link" href="tag.php?tag=$1">#$1</a>',
-    htmlspecialchars($content)
+    $content
   );
 }
 $conn->close();

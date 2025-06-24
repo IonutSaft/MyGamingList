@@ -69,6 +69,8 @@ $del_user->bind_param("i", $user_id);
 $del_user->execute();
 $del_user->close();
 
+$conn->close();
+
 if(!isset($_SESSION['is_admin'])) {
   session_destroy();
   header("Location: ../loginpage.php");

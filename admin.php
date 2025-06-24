@@ -96,7 +96,7 @@ while ($row = $post->fetch_assoc()) {
   echo "<td>
     <form method='POST' style='display: inline;'>
       <input type='hidden' name='delete_post_id' value='".htmlspecialchars($row['post_id'])."'>
-      <button type='submit' onclick=\"return confirm('Delete this user?');\">Delete</button>
+      <button type='submit' onclick=\"return confirm('Delete this post?');\">Delete</button>
     </form>
   </td>";
   echo "</tr>";
@@ -118,7 +118,7 @@ while ($row = $comment->fetch_assoc()) {
   echo "<td>
     <form method='POST' style='display: inline;'>
       <input type='hidden' name='delete_comment_id' value='".htmlspecialchars($row['comment_id'])."'>
-      <button type='submit' onclick=\"return confirm('Delete this user?');\">Delete</button>
+      <button type='submit' onclick=\"return confirm('Delete this comment?');\">Delete</button>
     </form>
   </td>";
   echo "</tr>";
