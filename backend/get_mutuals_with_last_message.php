@@ -3,9 +3,9 @@ session_start();
 require_once('db_connect.php');
 
 if (!isset($_SESSION['loggedin'])) {
-    http_response_code(401);
-    echo json_encode(['error' => 'Not logged in']);
-    exit();
+  http_response_code(401);
+  echo json_encode(['error' => 'Not logged in']);
+  exit();
 }
 
 $user_id = $_SESSION['user_id'];
@@ -57,13 +57,13 @@ ORDER BY last_message_time DESC
 
 $stmt = $conn->prepare($sql);
 $stmt->bind_param(
-    "iiiiiiiiii",
-    $user_id, $user_id,    // for last_message
-    $user_id, $user_id,    // for last_message_time
-    $user_id, $user_id,    // for last_message_sender_id
-    $user_id,              // for unread_count
-    $user_id, $user_id,    // for mutuals
-    $user_id               // not myself
+  "iiiiiiiiii",
+  $user_id, $user_id,    // for last_message
+  $user_id, $user_id,    // for last_message_time
+  $user_id, $user_id,    // for last_message_sender_id
+  $user_id,              // for unread_count
+  $user_id, $user_id,    // for mutuals
+  $user_id               // not myself
 );
 
 $stmt->execute();
@@ -71,15 +71,15 @@ $result = $stmt->get_result();
 
 $mutuals = [];
 while ($row = $result->fetch_assoc()) {
-    $mutuals[] = [
-        "user_id" => $row['user_id'],
-        "username" => $row['username'],
-        "avatar" => $row['avatar'],
-        "last_message" => $row['last_message'],
-        "last_message_time" => $row['last_message_time'],
-        "last_message_sender_id" => $row['last_message_sender_id'],
-        "unread_count" => (int)$row['unread_count']
-    ];
+  $mutuals[] = [
+    "user_id" => $row['user_id'],
+    "username" => $row['username'],
+    "avatar" => $row['avatar'],
+    "last_message" => $row['last_message'],
+    "last_message_time" => $row['last_message_time'],
+    "last_message_sender_id" => $row['last_message_sender_id'],
+    "unread_count" => (int)$row['unread_count']
+  ];
 }
 $stmt->close();
 

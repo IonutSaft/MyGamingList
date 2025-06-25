@@ -20,8 +20,8 @@ $stmt->bind_param("i", $post_id);
 $stmt->execute();
 $stmt->store_result();
 if ($stmt->num_rows === 0) {
-    echo json_encode(['success' => false, 'error' => 'Post not found']);
-    exit;
+  echo json_encode(['success' => false, 'error' => 'Post not found']);
+  exit;
 }
 $stmt->close();
 
@@ -41,11 +41,11 @@ $stmt->close();
 
 // Don't notify self-comment
 if ($user_id !== $post_owner_id) {
-    $notif_content = "commented on your post";
-    $stmt = $conn->prepare("INSERT INTO `notification` (user_id, actor_id,content, created_at) VALUES (?, ?, ?, NOW())");
-    $stmt->bind_param("iis", $post_owner_id, $user_id, $notif_content);
-    $stmt->execute();
-    $stmt->close();
+  $notif_content = "commented on your post";
+  $stmt = $conn->prepare("INSERT INTO `notification` (user_id, actor_id,content, created_at) VALUES (?, ?, ?, NOW())");
+  $stmt->bind_param("iis", $post_owner_id, $user_id, $notif_content);
+  $stmt->execute();
+  $stmt->close();
 }
 
 // Increment comment count
@@ -55,21 +55,20 @@ $stmt->execute();
 $stmt->close();
 
 $stmt = $conn->prepare(
-    "SELECT c.comment_id, c.user_id, c.content, c.comment_date, u.username, u.avatar
-     FROM comment c
-     JOIN user u ON c.user_id = u.user_id
-     WHERE c.post_id = ?
-     ORDER BY c.comment_date DESC
-     LIMIT 10"
+  "SELECT c.comment_id, c.user_id, c.content, c.comment_date, u.username, u.avatar
+  FROM comment c
+  JOIN user u ON c.user_id = u.user_id
+  WHERE c.post_id = ?
+  ORDER BY c.comment_date DESC
+  LIMIT 10"
 );
 $stmt->bind_param("i", $post_id);
 $stmt->execute();
 $result = $stmt->get_result();
 $comments = [];
 while ($row = $result->fetch_assoc()) {
-    // Format comment_date if you want (e.g. "2 minutes ago")
-    $row['comment_date'] = date('Y-m-d H:i', strtotime($row['comment_date']));
-    $comments[] = $row;
+  $row['comment_date'] = date('Y-m-d H:i', strtotime($row['comment_date']));
+  $comments[] = $row;
 }
 $stmt->close();
 
@@ -82,10 +81,10 @@ $stmt->fetch();
 $stmt->close();
 
 echo json_encode([
-    'success' => true,
-    'comments' => $comments,
-    'comment_count' => $comment_count,
-    'like_count' => $like_count
+  'success' => true,
+  'comments' => $comments,
+  'comment_count' => $comment_count,
+  'like_count' => $like_count
 ]);
 exit;
 ?>

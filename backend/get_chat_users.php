@@ -3,9 +3,9 @@ session_start();
 require_once('db_connect.php');
 
 if(!isset($_SESSION['loggedin'])) {
-    http_response_code(401);
-    echo json_encode(['error' => 'Not logged in']);
-    exit();
+  http_response_code(401);
+  echo json_encode(['error' => 'Not logged in']);
+  exit();
 }
 
 $user_id = $_SESSION['user_id'];
@@ -24,7 +24,7 @@ $result = $stmt->get_result();
 
 $users = [];
 while ($row = $result->fetch_assoc()) {
-    $users[] = $row;
+  $users[] = $row;
 }
 $stmt->close();
 

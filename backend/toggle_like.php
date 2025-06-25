@@ -16,8 +16,8 @@ $stmt->bind_param("i", $post_id);
 $stmt->execute();
 $stmt->store_result();
 if ($stmt->num_rows === 0) {
-    echo json_encode(['success' => false, 'error' => 'Post not found']);
-    exit;
+  echo json_encode(['success' => false, 'error' => 'Post not found']);
+  exit;
 }
 $stmt->close();
 
@@ -29,49 +29,49 @@ $already_liked = $stmt->num_rows > 0;
 $stmt->close();
 
 if ($already_liked) {
-    // Unlike: delete like
-    $stmt = $conn->prepare("DELETE FROM `like` WHERE user_id = ? AND post_id = ?");
-    $stmt->bind_param("ii", $user_id, $post_id);
-    $stmt->execute();
-    $stmt->close();
+  // Unlike: delete like
+  $stmt = $conn->prepare("DELETE FROM `like` WHERE user_id = ? AND post_id = ?");
+  $stmt->bind_param("ii", $user_id, $post_id);
+  $stmt->execute();
+  $stmt->close();
 
-    // Decrement like count
-    $stmt = $conn->prepare("UPDATE post SET like_count = like_count - 1 WHERE post_id = ?");
-    $stmt->bind_param("i", $post_id);
-    $stmt->execute();
-    $stmt->close();
+  // Decrement like count
+  $stmt = $conn->prepare("UPDATE post SET like_count = like_count - 1 WHERE post_id = ?");
+  $stmt->bind_param("i", $post_id);
+  $stmt->execute();
+  $stmt->close();
 
-    $liked = false;
+  $liked = false;
 } else {
-    // Like: insert like
-    $stmt = $conn->prepare("INSERT INTO `like` (user_id, post_id) VALUES (?, ?)");
-    $stmt->bind_param("ii", $user_id, $post_id);
-    $stmt->execute();
-    $stmt->close();
+  // Like: insert like
+  $stmt = $conn->prepare("INSERT INTO `like` (user_id, post_id) VALUES (?, ?)");
+  $stmt->bind_param("ii", $user_id, $post_id);
+  $stmt->execute();
+  $stmt->close();
 
-    
-    $stmt = $conn->prepare("SELECT user_id FROM post WHERE post_id = ?");
-    $stmt->bind_param("i", $post_id);
-    $stmt->execute();
-    $stmt->bind_result($post_owner_id);
-    $stmt->fetch();
-    $stmt->close();
+  
+  $stmt = $conn->prepare("SELECT user_id FROM post WHERE post_id = ?");
+  $stmt->bind_param("i", $post_id);
+  $stmt->execute();
+  $stmt->bind_result($post_owner_id);
+  $stmt->fetch();
+  $stmt->close();
 
-    if ($user_id !== $post_owner_id) {
-        $notif_content = "liked your post";
-        $stmt = $conn->prepare("INSERT INTO `notification` (user_id, actor_id, content, created_at) VALUES (?, ?, ?, NOW())");
-        $stmt->bind_param("iis", $post_owner_id, $user_id, $notif_content);
-        $stmt->execute();
-        $stmt->close();
-    }
+  if ($user_id !== $post_owner_id) {
+      $notif_content = "liked your post";
+      $stmt = $conn->prepare("INSERT INTO `notification` (user_id, actor_id, content, created_at) VALUES (?, ?, ?, NOW())");
+      $stmt->bind_param("iis", $post_owner_id, $user_id, $notif_content);
+      $stmt->execute();
+      $stmt->close();
+  }
 
-    // Increment like count
-    $stmt = $conn->prepare("UPDATE post SET like_count = like_count + 1 WHERE post_id = ?");
-    $stmt->bind_param("i", $post_id);
-    $stmt->execute();
-    $stmt->close();
+  // Increment like count
+  $stmt = $conn->prepare("UPDATE post SET like_count = like_count + 1 WHERE post_id = ?");
+  $stmt->bind_param("i", $post_id);
+  $stmt->execute();
+  $stmt->close();
 
-    $liked = true;
+  $liked = true;
 }
 // Get updated counts
 $stmt = $conn->prepare("SELECT like_count, comment_count FROM post WHERE post_id = ?");
@@ -82,10 +82,10 @@ $stmt->fetch();
 $stmt->close();
 
 echo json_encode([
-    'success' => true,
-    'liked' => $liked,
-    'like_count' => $like_count,
-    'comment_count' => $comment_count
+  'success' => true,
+  'liked' => $liked,
+  'like_count' => $like_count,
+  'comment_count' => $comment_count
 ]);
 exit;
 

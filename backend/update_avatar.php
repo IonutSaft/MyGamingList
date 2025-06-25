@@ -5,8 +5,8 @@ require_once 'db_connect.php';
 
 $user_id = $_SESSION['user_id'] ?? null;
 if (!$user_id || !isset($_FILES['avatar']) || $_FILES['avatar']['error'] !== UPLOAD_ERR_OK) {
-    echo json_encode(['success' => false, 'error' => 'No file']);
-    exit;
+  echo json_encode(['success' => false, 'error' => 'No file']);
+  exit;
 }
 
 // Settings
@@ -22,12 +22,12 @@ finfo_close($finfo);
 
 $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
 if (!in_array($mime_type, $allowed_types) || !in_array($ext, $allowed_exts)) {
-    echo json_encode(['success' => false, 'error' => 'Invalid file type']);
-    exit;
+  echo json_encode(['success' => false, 'error' => 'Invalid file type']);
+  exit;
 }
 if ($file['size'] > $max_size) {
-    echo json_encode(['success' => false, 'error' => 'File too large']);
-    exit;
+  echo json_encode(['success' => false, 'error' => 'File too large']);
+  exit;
 }
 
 // Generate random filename
@@ -39,13 +39,13 @@ $targetFile = $targetDir . $filename;
 
 // Move file
 if (move_uploaded_file($file['tmp_name'], '../' . $targetFile)) {
-    $stmt = $conn->prepare("UPDATE user SET avatar = ? WHERE user_id = ?");
-    $stmt->bind_param("si", $targetFile, $user_id);
-    $stmt->execute();
-    $stmt->close();
-    echo json_encode(['success' => true, 'url' => $targetFile]);
+  $stmt = $conn->prepare("UPDATE user SET avatar = ? WHERE user_id = ?");
+  $stmt->bind_param("si", $targetFile, $user_id);
+  $stmt->execute();
+  $stmt->close();
+  echo json_encode(['success' => true, 'url' => $targetFile]);
 } else {
-    echo json_encode(['success' => false, 'error' => 'Move failed']);
+  echo json_encode(['success' => false, 'error' => 'Move failed']);
 }
 
 $conn->close();

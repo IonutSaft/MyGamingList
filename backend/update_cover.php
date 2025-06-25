@@ -8,9 +8,9 @@ header('Content-Type: application/json');
 $user_id = $_SESSION['user_id'] ?? null;
 
 if (!$user_id) {
-    error_log('User ID not set in session!');
-    echo json_encode(['success' => false, 'error' => 'Not logged in']);
-    exit;
+  error_log('User ID not set in session!');
+  echo json_encode(['success' => false, 'error' => 'Not logged in']);
+  exit;
 }
 
 if(!isset($_FILES['cover']) || $_FILES['cover']['error'] !== UPLOAD_ERR_OK) {

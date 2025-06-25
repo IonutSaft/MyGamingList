@@ -6,8 +6,8 @@ $user_id = $_SESSION['user_id'] ?? null;
 $bio = trim($_POST['bio'] ?? '');
 
 if (!$user_id) {
-    echo json_encode(['success' => false, 'error' => 'Not logged in']);
-    exit;
+  echo json_encode(['success' => false, 'error' => 'Not logged in']);
+  exit;
 }
 
 // Optionally limit bio length and strip unwanted tags:

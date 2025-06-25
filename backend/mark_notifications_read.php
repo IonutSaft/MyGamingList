@@ -3,8 +3,8 @@ session_start();
 require_once('db_connect.php');
 
 if (!isset($_SESSION['loggedin'])) {
-    http_response_code(401);
-    exit();
+  http_response_code(401);
+  exit();
 }
 
 $user_id = $_SESSION['user_id'];
