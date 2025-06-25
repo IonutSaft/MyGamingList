@@ -34,7 +34,10 @@ git clone https://github.com/IonutSaft/MyGamingList.git
 - Creează o bază de date MySQL, de exemplu `mygamelist`
 - Creează tabelele conform instrucțiunilor din fișierul `database.sql`
 - Actualizează fișierul de configurare (`backend/db_connect.php`) cu datele de conectare la baza de date
-- Rulează fișierul pentru popularea bazei de date pentru jocuri, folosind comanda `bash php backend\igdb_request.php` într-un terminal.
+- Rulează fișierul pentru popularea bazei de date pentru jocuri, folosind comanda următoare într-un terminal:
+  ```bash
+  php backend/igdb_request.php
+  ```
 
 4. **Configurează permisiunile:**
    Asigură-te că serverul web are permisiuni de scriere, întru-cât aplicația salvează fișiere local.
