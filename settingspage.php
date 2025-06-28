@@ -37,7 +37,7 @@ if(!isset($_SESSION['loggedin'])) {
       </a>
 
       <div class="search-container" style="position: relative;">
-        <form action="http://localhost/mygamelist/search.php" method="GET" id="searchForm" autocomplete="off">
+        <form action="https://localhost/mygamelist/search.php" method="GET" id="searchForm" autocomplete="off">
           <i class="fas fa-search"></i>
           <input
             type="text"
@@ -74,25 +74,25 @@ if(!isset($_SESSION['loggedin'])) {
           <i class="fas fa-caret-down"></i>
         </span>
         <div class="dropdown-menu" id="dropdownMenu">
-          <a href="http://localhost/mygamelist/userpage.php" class="dropdown-item">
+          <a href="https://localhost/mygamelist/userpage.php" class="dropdown-item">
             <i class="fas fa-user"></i>
             <span>Profile</span>
           </a>
-          <a href="http://localhost/mygamelist/savedpage.php" class="dropdown-item">
+          <a href="https://localhost/mygamelist/savedpage.php" class="dropdown-item">
             <i class="fas fa-bookmark"></i>
             <span>Saved</span>
           </a>
-          <a href="http://localhost/mygamelist/settingspage.php" class="dropdown-item">
+          <a href="https://localhost/mygamelist/settingspage.php" class="dropdown-item">
             <i class="fas fa-cog"></i>
             <span>Settings</span>
           </a>
           <div class="dropdown-divider"></div>
-          <a href="http://localhost/mygamelist/backend/logout.php" class="dropdown-item">
+          <a href="https://localhost/mygamelist/backend/logout.php" class="dropdown-item">
             <i class="fas fa-sign-out-alt"></i>
             <span>Log Out</span>
           </a>
         </div>
-        <a href="http://localhost/mygamelist/userpage.php">
+        <a href="https://localhost/mygamelist/userpage.php">
           <img src="<?php echo $_SESSION["avatar"]; ?>" class="profile-pic" alt="Profile">
         </a>    
       </div>
@@ -118,7 +118,7 @@ if(!isset($_SESSION['loggedin'])) {
         }
         ?>
 
-        <form method="POST" class="settings-form" action="http://localhost/mygamelist/backend/updateuser.php">
+        <form method="POST" class="settings-form" action="https://localhost/mygamelist/backend/updateuser.php">
           <div class="settings-section">
             <div class="settings-item">
               <label for="">Username</label>
@@ -134,11 +134,11 @@ if(!isset($_SESSION['loggedin'])) {
                 <i class="fas fa-save"></i>
                 <span>Save Changes</span>
               </button>
-              <a href="http://localhost/mygamelist/resetpass.php" class="settings-btn change-password-btn">
+              <a href="https://localhost/mygamelist/resetpass.php" class="settings-btn change-password-btn">
                 <i class="fas fa-key"></i>
                 <span>Change Password</span>
               </a>
-              <a class="settings-btn delete-account-btn" href="http://localhost/mygamelist/backend/deleteuser.php" id="deleteAccountBtn">
+              <a class="settings-btn delete-account-btn" href="https://localhost/mygamelist/backend/deleteuser.php" id="deleteAccountBtn">
                 <i class="fas fa-trash-alt"></i>
                 <span>Delete Account</span>
               </a>

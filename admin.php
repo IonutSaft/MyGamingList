@@ -138,7 +138,7 @@ $conn->close();
   <title>MyGameWorld</title>
 </head>
 <body>
-  <a href="http://localhost/mygamelist/backend/logout.php" style="text-decoration: none;">
+  <a href="https://localhost/mygamelist/backend/logout.php" style="text-decoration: none;">
     <i class="fas fa-sign-out-alt"></i>
     <button>Logout</button>
   </a>

@@ -54,7 +54,7 @@ if (isset($_SESSION['loggedin'])) {
       <h1>MyGameWorld</h1>
       <p class="subtitle">Enter the gaming universe</p>
 
-      <form class="login-form" method="post" action="http://localhost/mygamelist/backend/registration.php">
+      <form class="login-form" method="post" action="https://localhost/mygamelist/backend/registration.php">
         <?php
         if(isset($_SESSION['errors'])) {
           echo '<div class="error-message">';
@@ -192,7 +192,7 @@ if (isset($_SESSION['loggedin'])) {
         <button type="submit" class="login-btn">Register</button>
 
         <div class="register-link">
-          <p>Already a member? <a href="http://localhost/mygamelist/loginpage.php">Login now</a></p>
+          <p>Already a member? <a href="https://localhost/mygamelist/loginpage.php">Login now</a></p>
         </div>
       </form>
     </div>

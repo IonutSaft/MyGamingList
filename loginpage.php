@@ -54,7 +54,7 @@ if(isset($_SESSION['user_id']) && isset($_SESSION['loggedin'])) {
       <h1>MyGameWorld</h1>
       <p class="subtitle">Enter the gaming universe</p>
 
-      <form class="login-form" method="post" action="http://localhost/mygamelist/backend/signin.php">
+      <form class="login-form" method="post" action="https://localhost/mygamelist/backend/signin.php">
         <?php
         if(isset($_SESSION['error'])) {
           echo '<div class="error-message">';
@@ -99,12 +99,12 @@ if(isset($_SESSION['user_id']) && isset($_SESSION['loggedin'])) {
             <input type="checkbox" id="remember" name="remember" />
             <label for="remember">Remember me</label>
           </div>
-          <a href="http://localhost/mygamelist/chpasspage.php" class="forgot-password">Forgot Password?</a>
+          <a href="https://localhost/mygamelist/chpasspage.php" class="forgot-password">Forgot Password?</a>
         </div>
 
         <button type="submit" class="login-btn">Login</button>
         <div class="register-link">
-          <p>Not a member? <a href="http://localhost/mygamelist/registerpage.php">Join now</a></p>
+          <p>Not a member? <a href="https://localhost/mygamelist/registerpage.php">Join now</a></p>
         </div>
       </form>
     </div>

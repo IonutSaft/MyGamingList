@@ -52,7 +52,7 @@ session_start();
       <form
         class="login-form"
         method="post"
-        action="http://localhost/mygamelist/backend/reset_password.php"
+        action="https://localhost/mygamelist/backend/reset_password.php"
       >
         <?php
         if(isset($_SESSION['error'])) {
@@ -99,7 +99,7 @@ session_start();
         <div class="register-link">
           <p>
             Changed your mind?
-            <a href="http://localhost/mygamelist/loginpage.php"
+            <a href="https://localhost/mygamelist/loginpage.php"
               >Back to Login</a
             >
           </p>

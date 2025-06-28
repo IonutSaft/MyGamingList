@@ -238,7 +238,7 @@ $conn->close();
       </a>
 
       <div class="search-container" style="position: relative;">
-        <form action="http://localhost/mygamelist/search.php" method="GET" id="searchForm" autocomplete="off">
+        <form action="https://localhost/mygamelist/search.php" method="GET" id="searchForm" autocomplete="off">
           <i class="fas fa-search"></i>
           <input
             type="text"
@@ -279,21 +279,21 @@ $conn->close();
             <i class="fas fa-user"></i>
             <span>Profile</span>
           </a>
-          <a href="http://localhost/mygamelist/savedpage.php" class="dropdown-item">
+          <a href="https://localhost/mygamelist/savedpage.php" class="dropdown-item">
             <i class="fas fa-bookmark"></i>
             <span>Saved</span>
           </a>
-          <a href="http://localhost/mygamelist/settingspage.php" class="dropdown-item">
+          <a href="https://localhost/mygamelist/settingspage.php" class="dropdown-item">
             <i class="fas fa-cog"></i>
             <span>Settings</span>
           </a>
           <div class="dropdown-divider"></div>
-          <a href="http://localhost/mygamelist/backend/logout.php" class="dropdown-item">
+          <a href="https://localhost/mygamelist/backend/logout.php" class="dropdown-item">
             <i class="fas fa-sign-out-alt"></i>
             <span>Log Out</span>
           </a>
         </div>
-        <a href="http://localhost/mygamelist/userpage.php">
+        <a href="https://localhost/mygamelist/userpage.php">
           <img src="<?= $user["avatar"] ?>" class="profile-pic" alt="Profile">
         </a>    
       </div>
@@ -346,7 +346,7 @@ $conn->close();
       </aside>
       <main class="feed">
         <div class="composer">
-          <form id="post-form" action="http://localhost/mygamelist/homepage.php" method="POST" enctype="multipart/form-data">
+          <form id="post-form" action="https://localhost/mygamelist/homepage.php" method="POST" enctype="multipart/form-data">
             <?php
             if(isset($_SESSION["errors"])) {
               echo '<div class="error-message">';

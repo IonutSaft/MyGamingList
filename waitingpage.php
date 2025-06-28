@@ -52,7 +52,7 @@ session_start();
       <form
         class="login-form"
         method="post"
-        action="http://localhost/mygamelist/loginpage.php"
+        action="https://localhost/mygamelist/loginpage.php"
       >
         <?php
         if(isset($_SESSION['success'])) {
@@ -73,7 +73,7 @@ session_start();
         <div class="register-link">
           <p>
             Not a member?
-            <a href="http://localhost/mygamelist/registerpage.php">Join now</a>
+            <a href="https://localhost/mygamelist/registerpage.php">Join now</a>
           </p>
         </div>
       </form>

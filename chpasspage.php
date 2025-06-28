@@ -51,7 +51,7 @@ session_start();
       <form
         class="login-form"
         method="POST"
-        action="http://localhost/mygamelist/backend/reset_pass_request.php"
+        action="https://localhost/mygamelist/backend/reset_pass_request.php"
       >
         <?php
         if(isset($_SESSION['error'])) {

@@ -38,7 +38,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
       $token = bin2hex(random_bytes(50));
       $expires = date("Y-m-d H:i:s", strtotime("+1 hour"));
 
-      $url = "http://localhost/mygamelist/resetpass.php?token=$token";
+      $url = "https://localhost/mygamelist/resetpass.php?token=$token";
 
       $query = mysqli_query($connect, "INSERT INTO token(user_id, token, expires_at) VALUES ($user[user_id], '$token', '$expires')");
 

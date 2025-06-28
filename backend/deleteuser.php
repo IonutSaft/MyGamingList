@@ -29,10 +29,48 @@ $del_post->bind_param("i", $user_id);
 $del_post->execute();
 $del_post->close();
 
+$comm_post_ids = [];
+$comm_post = $conn->prepare("SELECT post_id FROM comment WHERE user_id = ?");
+$comm_post->bind_param("i", $user_id);
+$comm_post->execute();
+$result = $comm_post->get_result();
+while($row = $result->fetch_assoc()) {
+  $comm_post_ids[] = $row['post_id'];
+}
+$comm_post->close();
+
+if(!empty($comm_post_ids)) {
+  foreach($comm_post_ids as $post_id) {
+    $post_update = $conn->prepare("UPDATE post SET comment_count = comment_count - 1 WHERE post_id = ?");
+    $post_update->bind_param("i", $post_id);
+    $post_update->execute();
+    $post_update->close();
+  }
+}
+
 $del_comm = $conn->prepare("DELETE FROM comment WHERE user_id = ?");
 $del_comm->bind_param("i", $user_id);
 $del_comm->execute();
 $del_comm->close();
+
+$post_ids = [];
+$like_post = $conn->prepare("SELECT post_id FROM `like` WHERE user_id = ?");
+$like_post->bind_param("i", $user_id);
+$like_post->execute();
+$result = $like_post->get_result();
+while ($row = $result->fetch_assoc()) {
+    $post_ids[] = $row['post_id'];
+}
+$like_post->close();
+
+if(!empty($post_ids)) {
+  foreach($post_ids as $post_id) {
+    $post_update = $conn->prepare("UPDATE post SET like_count = like_count - 1 WHERE post_id = ?");
+    $post_update->bind_param("i", $post_id);
+    $post_update->execute();
+    $post_update->close();
+  }
+}
 
 $del_like = $conn->prepare("DELETE FROM `like` WHERE user_id = ?");
 $del_like->bind_param("i", $user_id);

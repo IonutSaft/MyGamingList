@@ -131,7 +131,7 @@ $conn->close();
       </a>
 
       <div class="search-container" style="position: relative;">
-        <form action="http://localhost/mygamelist/search.php" method="GET" id="searchForm" autocomplete="off">
+        <form action="https://localhost/mygamelist/search.php" method="GET" id="searchForm" autocomplete="off">
           <i class="fas fa-search"></i>
           <input
             type="text"
@@ -168,7 +168,7 @@ $conn->close();
           <i class="fas fa-caret-down"></i>
         </span>
         <div class="dropdown-menu" id="dropdownMenu">
-          <a href="http://localhost/mygamelist/userpage.php" class="dropdown-item">
+          <a href="https://localhost/mygamelist/userpage.php" class="dropdown-item">
             <i class="fas fa-user"></i>
             <span>Profile</span>
           </a>
@@ -176,17 +176,17 @@ $conn->close();
             <i class="fas fa-bookmark"></i>
             <span>Saved</span>
           </a>
-          <a href="http://localhost/mygamelist/settingspage.php" class="dropdown-item">
+          <a href="https://localhost/mygamelist/settingspage.php" class="dropdown-item">
             <i class="fas fa-cog"></i>
             <span>Settings</span>
           </a>
           <div class="dropdown-divider"></div>
-          <a href="http://localhost/mygamelist/backend/logout.php" class="dropdown-item">
+          <a href="https://localhost/mygamelist/backend/logout.php" class="dropdown-item">
             <i class="fas fa-sign-out-alt"></i>
             <span>Log Out</span>
           </a>
         </div>
-        <a href="http://localhost/mygamelist/userpage.php">
+        <a href="https://localhost/mygamelist/userpage.php">
           <img src="<?php echo $_SESSION["avatar"]; ?>" class="profile-pic" alt="Profile">
         </a>    
       </div>
